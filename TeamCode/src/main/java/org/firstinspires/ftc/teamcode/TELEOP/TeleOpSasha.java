@@ -1,14 +1,8 @@
 package org.firstinspires.ftc.teamcode.TELEOP;
-
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
-
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
@@ -22,6 +16,7 @@ public class TeleOpSasha extends LinearOpMode {
     DcMotor leftBack;
 
     DcMotor rightFront;
+    
 
     DcMotor rightBack;
 

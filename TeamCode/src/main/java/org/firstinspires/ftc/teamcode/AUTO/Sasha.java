@@ -69,12 +69,12 @@ public class Sasha extends LinearOpMode {
         waitForStart();
 
         sleep(2000);
-        rotate(-0.4,-30);
+        rotate(-0.4,-25);
         forward(0.4,40);
         rotate(0.4,90);
         forward(0.4,90);
         sleep(1000);
-        forward(-0.4,-90);
+        forward(-0.4,90);
         side(0.4,40);
         rotate(-0.4,-45);
         forward(-0.4,-10);
@@ -85,7 +85,7 @@ public class Sasha extends LinearOpMode {
         rotate(0.4,90);
         forward(0.4,90);
         sleep(1000);
-        forward(-0.4,-90);
+        forward(-0.4,90);
         side(0.4,60);
         rotate(-0.4,-45);
         sleep(2000);

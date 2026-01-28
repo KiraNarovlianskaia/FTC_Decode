@@ -89,7 +89,7 @@ public class Sasha extends LinearOpMode {
         side(0.4,60);
         rotate(-0.4,-45);
         sleep(2000);
-        forward(0.4,20);
+        forward(0.4,10);
 
 
 

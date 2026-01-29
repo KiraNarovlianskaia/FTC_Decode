@@ -1,11 +1,10 @@
-package org.firstinspires.ftc.teamcode.TELEOP;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+package org.firstinspires.ftc.teamcode.pedroPathing;
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-
+@Configurable
 @TeleOp(name="Sasha TeleOP Sasha")
 
 public class TeleOpSasha extends LinearOpMode {
@@ -20,7 +19,7 @@ public class TeleOpSasha extends LinearOpMode {
 
     DcMotor rightBack;
 
-    DcMotor intake1;
+    DcMotor intake;
 
 
 
@@ -53,7 +52,7 @@ public class TeleOpSasha extends LinearOpMode {
 
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
 
-        intake1 = hardwareMap.get(DcMotor.class, "intake1");
+        intake = hardwareMap.get(DcMotor.class, "shooter");
 
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
@@ -94,7 +93,7 @@ public class TeleOpSasha extends LinearOpMode {
 
             rightBack.setPower((forward + rotation - side)* SPEEDFACTOR);
 
-            intake1.setPower((intaker - intakel)* SPEEDINTAKE);
+            intake.setPower((intaker - intakel)* SPEEDINTAKE);
 
 
             sleep(50);

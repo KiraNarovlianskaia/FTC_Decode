@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
+package org.firstinspires.ftc.teamcode.AUTO.Kira.Example;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -6,10 +6,13 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-@Autonomous(name = "Into Square", group = "Tests  ")
-public class TestSquare extends OpMode {
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+@Disabled
+@Autonomous(name = "Straight Line", group = "Tests")
+public class StraightLine extends OpMode {
     private Follower follower;
     private Timer pathTimer, opModeTimer;
 
@@ -22,8 +25,8 @@ public class TestSquare extends OpMode {
     }
     PathState pathState;
 
-    private final Pose startPose = new Pose(10,10, Math.toRadians(90));
-    private final Pose shootPose = new Pose(38, 33, Math.toRadians(90));
+    private final Pose startPose = new Pose(23.077534791252486,119.93638170974155, Math.toRadians(138));
+    private final Pose shootPose = new Pose(59.54671968190855, 83.88071570576541, Math.toRadians(138));
 
     private PathChain driveStartPosShootPos;
     public void buildPaths() {

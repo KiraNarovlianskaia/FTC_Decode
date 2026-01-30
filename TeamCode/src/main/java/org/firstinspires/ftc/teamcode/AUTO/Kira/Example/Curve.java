@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
+package org.firstinspires.ftc.teamcode.AUTO.Kira.Example;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -6,10 +6,13 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+@Disabled
 @Autonomous(name = "Curve", group = "Tests")
-public class Sample3AutoPathing extends OpMode {
+public class Curve extends OpMode {
 
     private Follower follower;
     private Timer pathTimer, opModeTimer;

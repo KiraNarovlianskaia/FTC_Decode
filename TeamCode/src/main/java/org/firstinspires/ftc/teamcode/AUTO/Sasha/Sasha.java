@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.AUTO;
+package org.firstinspires.ftc.teamcode.AUTO.Sasha;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -12,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 
 
-@Autonomous (name="Auto Sasha Red")
+@Autonomous (name="Auto Sasha Red", group = "Sasha")
 public class Sasha extends LinearOpMode {
 
 

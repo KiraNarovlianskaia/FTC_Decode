@@ -21,12 +21,16 @@ public class TeleOpSasha extends LinearOpMode {
 
     DcMotor intake;
 
+    DcMotor shooter;
+
 
 
 
     static final double SPEEDFACTOR = 0.3;
 
-    static final double SPEEDINTAKE = 0.5;
+    static final double SPEEDINTAKE = 0.8;
+
+    static final double SPEEDSHOOT = 1.0;
 
 
     public void runOpMode(){
@@ -42,6 +46,12 @@ public class TeleOpSasha extends LinearOpMode {
 
         double intakel;
 
+        double shoter;
+
+        boolean shotup;
+
+        boolean shotdown;
+
 
 
         leftFront = hardwareMap.get(DcMotor.class, "left_front");
@@ -52,7 +62,9 @@ public class TeleOpSasha extends LinearOpMode {
 
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
 
-        intake = hardwareMap.get(DcMotor.class, "shooter");
+        intake = hardwareMap.get(DcMotor.class, "intake");
+
+        shooter = hardwareMap.get(DcMotor.class, "shooter");
 
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
@@ -84,6 +96,14 @@ public class TeleOpSasha extends LinearOpMode {
 
             intakel = gamepad2.left_trigger;
 
+            shoter = gamepad2.left_stick_y;
+
+            shotdown = gamepad2.b;
+
+            shotup = gamepad2.a;
+
+
+
 
             leftFront.setPower((forward - rotation - side) * SPEEDFACTOR);
 
@@ -93,7 +113,9 @@ public class TeleOpSasha extends LinearOpMode {
 
             rightBack.setPower((forward + rotation - side)* SPEEDFACTOR);
 
-            intake.setPower((intaker - intakel)* SPEEDINTAKE);
+            intake.setPower((intaker - intakel));
+
+            shooter.setPower((shoter)*SPEEDSHOOT );
 
 
             sleep(50);

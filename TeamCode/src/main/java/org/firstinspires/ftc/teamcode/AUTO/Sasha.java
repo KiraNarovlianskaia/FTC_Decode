@@ -43,10 +43,10 @@ public class Sasha extends LinearOpMode {
         imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(orientationOnRobot));
 
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
-        leftBack.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
-        rightBack.setDirection(DcMotor.Direction.FORWARD);
+        leftFront.setDirection(DcMotor.Direction.FORWARD);
+        leftBack.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
 
         imu.resetYaw();
 
@@ -86,7 +86,7 @@ public class Sasha extends LinearOpMode {
         forward(0.4,90);
         sleep(1000);
         forward(-0.4,90);
-        side(0.4,60);
+        side(-0.4,60);
         rotate(-0.4,-45);
         sleep(2000);
         forward(0.4,10);

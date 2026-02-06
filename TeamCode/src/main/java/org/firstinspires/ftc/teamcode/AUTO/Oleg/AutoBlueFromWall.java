@@ -29,8 +29,8 @@ public class AutoBlueFromWall extends LinearOpMode {
 
     public void runOpMode() {
 
-        leftFront = hardwareMap.get(DcMotor.class, "left_front");
-        leftBack = hardwareMap.get(DcMotor.class, "left_back");
+        leftFront = hardwareMap.get(DcMotor.class, "left_back");
+        leftBack = hardwareMap.get(DcMotor.class, "left_front");
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
         intake = hardwareMap.get(DcMotor.class, "intake");
@@ -57,24 +57,24 @@ public class AutoBlueFromWall extends LinearOpMode {
 
         shoot();
 
-        moveRotate(-0.5, 72);
-        moveSide(0.5, 60);
+        moveRotate(-0.3, 100);
+        moveSide(0.3, 60);
         intakeStart();
-        moveForward(0.5, 70);
+        moveForward(0.3, 50);
         intakeStop();
-        moveForward(-0.5, 70);
-        moveSide(-0.5, 60);
-        moveRotate(0.5, 72);
+        moveForward(-0.3, 50);
+        moveSide(-0.3, 60);
+        moveRotate(0.3, 100);
         shoot();
 
-        moveRotate(-0.5, 72);
-        moveSide(0.5, 120);
+        moveRotate(0.3, 100);
+        moveSide(0.3, 120);
         intakeStart();
-        moveForward(0.5, 70);
+        moveForward(0.3, 50);
         intakeStop();
-        moveForward(-0.5, 70);
-        moveSide(-0.5, 120);
-        moveRotate(0.5, 72);
+        moveForward(-0.3, 50);
+        moveSide(-0.3, 120);
+        moveRotate(-0.3, 100);
         shoot();
 
     }

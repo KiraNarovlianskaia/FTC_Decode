@@ -58,28 +58,26 @@ public class AutoBlueFromGoal extends LinearOpMode {
 
         waitForStart();
 
-        moveForward(-0.5, 95);
+        moveForward(-0.3, 95);
         shoot();
 
-        moveRotate(-0.5, 45);
-        moveSide(0.5, 35);
+        moveRotate(-0.3, 135);
         intakeStart();
-        moveForward(0.5, 60); //collect
+        moveForward(0.3, 60); //collect
         intakeStop();
-        moveForward(-0.5, 60);
-        moveSide(-0.5, 35);
-        moveRotate(0.5, 45);
-        shoot(); // shoot
+        moveForward(-0.3, 60);
+        moveRotate(0.3, 135);
+        shoot();
 
-        moveRotate(-0.5, 45);
-        moveSide(0.5, 55);
+        moveRotate(-0.3, 135);
+        moveSide(0.3, 50);
         intakeStart();
-        moveForward(0.5, 60); //collect
+        moveForward(0.3, 60); //collect
         intakeStop();
-        moveForward(-0.5, 60);
-        moveSide(-0.5, 55);
-        moveRotate(0.5, 45);
-        shoot(); //shoot
+        moveForward(-0.3, 60);
+        moveSide(-0.3, 50);
+        moveRotate(0.3, 135);
+        shoot();
 
 
     }

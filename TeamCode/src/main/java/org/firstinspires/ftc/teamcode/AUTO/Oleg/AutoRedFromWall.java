@@ -57,23 +57,27 @@ public class AutoRedFromWall extends LinearOpMode {
 
         waitForStart();
 
-        sleep(1000); // shoot
+        shoot();
 
-        moveRotate(0.5, 72);
-        moveSide(-0.5, 60);
-        moveForward(0.5, 70);
-        moveForward(-0.5, 70);
-        moveSide(0.5, 60);
-        moveRotate(-0.5, 72);
-        sleep(1000); // shoot
+        moveRotate(0.3, 100);
+        moveSide(-0.3, 60);
+        intakeStart();
+        moveForward(0.3, 50);
+        intakeStop();
+        moveForward(-0.3, 50);
+        moveSide(0.3, 60);
+        moveRotate(-0.3, 100);
+        shoot();
 
-        moveRotate(0.5, 72);
-        moveSide(-0.5, 120);
-        moveForward(0.5, 70);
-        moveForward(-0.5, 70);
-        moveSide(0.5, 120);
-        moveRotate(-0.5, 72);
-        sleep(1000); // shoot
+        moveRotate(0.3, 100);
+        moveSide(-0.3, 120);
+        intakeStart();
+        moveForward(0.3, 50);
+        intakeStop();
+        moveForward(-0.3, 50);
+        moveSide(0.3, 120);
+        moveRotate(-0.3, 100);
+        shoot();
 
     }
     public void moveForward(double speed, double distance) {

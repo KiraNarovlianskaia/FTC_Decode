@@ -57,27 +57,25 @@ public class AutoRedFromGoal extends LinearOpMode {
 
         waitForStart();
 
-        moveForward(-0.3, 130);
+        moveForward(-0.3, 95);
         shoot();
 
-        moveRotate(0.3, 45);
-        moveSide(0.3, 35);
+        moveRotate(0.3, 135);
         intakeStart();
         moveForward(0.3, 60); //collect
         intakeStop();
         moveForward(-0.3, 60);
-        moveSide(-0.3, 35);
-        moveRotate(-0.3, 45);
+        moveRotate(-0.3, 135);
         shoot();
 
-        moveRotate(0.3, 45);
-        moveSide(0.3, 55);
+        moveRotate(0.3, 135);
+        moveSide(0.3, 50);
         intakeStart();
         moveForward(0.3, 60); //collect
         intakeStop();
         moveForward(-0.3, 60);
-        moveSide(-0.3, 55);
-        moveRotate(-0.3, 45);
+        moveSide(-0.3, 50);
+        moveRotate(-0.3, 135);
         shoot();
 
 
@@ -138,8 +136,8 @@ public class AutoRedFromGoal extends LinearOpMode {
     }
 
     public void shoot() {
-        shooter.setPower(1);
-        sleep(5000);
+        shooter.setPower(0.5);
+        sleep(1000);
         shooter.setPower(0);
     }
 

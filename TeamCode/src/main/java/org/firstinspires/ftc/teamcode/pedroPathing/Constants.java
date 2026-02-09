@@ -10,10 +10,12 @@ import com.pedropathing.ftc.localization.Encoder;
 import com.pedropathing.ftc.localization.constants.PinpointConstants;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.pedropathing.ftc.localization.constants.TwoWheelConstants;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -44,8 +46,8 @@ public class Constants {
 
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(111/25.4)
-            .strafePodX(34/25.4)
+            .forwardPodY(116.5/2.54)
+            .strafePodX(-86.5/2.54)
             .distanceUnit(DistanceUnit.MM)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
@@ -65,4 +67,13 @@ public class Constants {
     }
     public static PathConstraints slowConstraints =
             new PathConstraints(0.5, 100, 1.5, 1);
+
+    public static final String intake = "intake";
+    public static final String shooter = "shooter";
+    public static final double intake_power = -0.6;
+    public static final double shooter_power = 0.0;
+    public static final String servoL = "left_servo";
+    public static final String servoR = "right_servo";
+    public static final double servoL_init = 0.0;
+    public static final double servoR_init = 0.0;
 }

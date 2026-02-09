@@ -98,9 +98,9 @@ public class TeleOpSasha extends LinearOpMode {
 
             shoter = gamepad2.left_stick_y;
 
-            shotdown = gamepad2.b;
+            //shotdown = gamepad2.b;
 
-            shotup = gamepad2.a;
+            //shotup = gamepad2.a;
 
 
 
@@ -115,7 +115,7 @@ public class TeleOpSasha extends LinearOpMode {
 
             intake.setPower((intaker - intakel));
 
-            shooter.setPower((shoter)*SPEEDSHOOT );
+            shooter.setPower((shoter)*SPEEDSHOOT);
 
 
             sleep(50);

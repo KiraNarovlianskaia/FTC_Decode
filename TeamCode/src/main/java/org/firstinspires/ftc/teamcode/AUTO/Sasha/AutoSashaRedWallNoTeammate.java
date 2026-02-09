@@ -4,21 +4,30 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 
 
 
-@Autonomous (name="Auto Sasha Red", group = "Sasha")
-public class Sasha extends LinearOpMode {
+@Autonomous (name="Auto Sasha Red Wall No Teammate", group = "Sasha")
+public class AutoSashaRedWallNoTeammate extends LinearOpMode {
 
 
     DcMotor leftFront;
     DcMotor leftBack;
     DcMotor rightFront;
     DcMotor rightBack;
+    DcMotor intake;
+
+    DcMotor shoot;
+    Servo servoL;
+    Servo servoR;
+
     private IMU imu = null;
     static final double forward = 0.3;
     static final double PI = 3.14159265;
@@ -26,6 +35,11 @@ public class Sasha extends LinearOpMode {
     static final double PULSES = 537.7;
     static final double PULSES_PER_CM = PULSES / (PI * WHEEL_DIAMETER);
 
+    static final double SERVO_L_OPEN = 0.45;
+    static final double SERVO_L_CLOSED = 0;
+
+    static final double SERVO_R_OPEN = 0.45;
+    static final double SERVO_R_CLOSED = 0;
 
 
     public void runOpMode(){
@@ -34,6 +48,11 @@ public class Sasha extends LinearOpMode {
         leftBack = hardwareMap.get(DcMotor.class, "left_back");
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        shoot = hardwareMap.get(DcMotor.class, "shooter");
+
+        servoL = hardwareMap.get(Servo.class, "left_servo");
+        servoR = hardwareMap.get(Servo.class, "right_servo");
 
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
@@ -46,6 +65,7 @@ public class Sasha extends LinearOpMode {
         leftBack.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         imu.resetYaw();
 
@@ -67,27 +87,44 @@ public class Sasha extends LinearOpMode {
 
         waitForStart();
 
-        sleep(2000);
+        servoClose();
+        shooter();
+        servoOpen();
+        sleep(1000);
+        stopshoot();
+        servoClose();
         rotate(-0.4,-25);
         forward(0.4,40);
         rotate(0.4,90);
+        intaker();
         forward(0.4,90);
-        sleep(1000);
+        sleep(500);
         forward(-0.4,90);
+        stopintake();
+        shooter();
         side(0.4,40);
         rotate(-0.4,-45);
         forward(-0.4,-10);
-        sleep(2000);
+        servoOpen();
+        sleep(1000);
+        stopshoot();
+        servoClose();
         rotate(-0.4,-45);
         side(0.4,50);
         forward(0.4,90);
         rotate(0.4,90);
+        intaker();
         forward(0.4,90);
-        sleep(1000);
+        sleep(500);
         forward(-0.4,90);
+        stopintake();
+        shooter();
         side(-0.4,60);
         rotate(-0.4,-45);
-        sleep(2000);
+        servoOpen();
+        sleep(1000);
+        stopshoot();
+        servoClose();
         forward(0.4,10);
 
 
@@ -172,4 +209,29 @@ public class Sasha extends LinearOpMode {
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void intaker(){
+        intake.setPower(0.8);
+    }
+    public void stopintake(){
+        intake.setPower(0);
+        sleep(500);
+    }
+
+    public void shooter(){
+        shoot.setPower(0.7);
+    }
+    public void stopshoot(){
+        shoot.setPower(0);
+        sleep(500);
+    }
+
+    public void servoOpen(){
+        servoL.setPosition(SERVO_L_OPEN);
+        servoR.setPosition(SERVO_R_OPEN);
+    }
+
+    public void servoClose(){
+        servoL.setPosition(SERVO_L_CLOSED);
+        servoR.setPosition(SERVO_R_CLOSED);
+    }
 }

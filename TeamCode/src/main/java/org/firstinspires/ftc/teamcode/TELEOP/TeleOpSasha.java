@@ -3,6 +3,7 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @Configurable
 @TeleOp(name="Sasha TeleOP Sasha")
@@ -23,6 +24,9 @@ public class TeleOpSasha extends LinearOpMode {
 
     DcMotor shooter;
 
+    Servo rightServo;
+
+    Servo leftServo;
 
 
 
@@ -30,7 +34,7 @@ public class TeleOpSasha extends LinearOpMode {
 
     static final double SPEEDINTAKE = 0.8;
 
-    static final double SPEEDSHOOT = 1.0;
+    static double SPEEDSHOOT = 1.0;
 
 
     public void runOpMode(){
@@ -48,9 +52,7 @@ public class TeleOpSasha extends LinearOpMode {
 
         double shoter;
 
-        boolean shotup;
 
-        boolean shotdown;
 
 
 
@@ -64,7 +66,11 @@ public class TeleOpSasha extends LinearOpMode {
 
         intake = hardwareMap.get(DcMotor.class, "intake");
 
-        shooter = hardwareMap.get(DcMotor.class, "shooter");
+          shooter = hardwareMap.get(DcMotor.class, "shooter");
+
+        leftServo = hardwareMap.servo.get("left_Servo");
+
+        rightServo = hardwareMap.servo.get("right_Servo");
 
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
@@ -98,11 +104,21 @@ public class TeleOpSasha extends LinearOpMode {
 
             shoter = gamepad2.left_stick_y;
 
-            //shotdown = gamepad2.b;
 
-            //shotup = gamepad2.a;
+            if (gamepad2.a){
+                SPEEDSHOOT -= 0.1;
+
+            }
+
+            if (gamepad2.b){
+                SPEEDSHOOT += 0.1;
+            }
+
+            SPEEDSHOOT = Math.max(0.0, Math.min(1.0, SPEEDSHOOT));
 
 
+            telemetry.addData("SPEEDSHOOT", SPEEDSHOOT);
+            telemetry.update();
 
 
             leftFront.setPower((forward - rotation - side) * SPEEDFACTOR);

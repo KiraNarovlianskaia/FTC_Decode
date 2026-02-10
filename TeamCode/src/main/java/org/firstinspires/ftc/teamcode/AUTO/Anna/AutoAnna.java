@@ -4,27 +4,38 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 
 @Autonomous (name="Anna Auto", group = "Anna")
-public class Anna extends LinearOpMode {
+public class AutoAnna extends LinearOpMode {
 
 
     DcMotor leftFront;
     DcMotor leftBack;
     DcMotor rightFront;
     DcMotor rightBack;
-    static final double forward = 0.3;
+    DcMotor intake;
+    DcMotor shooter;
+    Servo ServoL;
+    Servo ServoR;
     static final double PI = 3.14159265;
     static final double WHEEL_DIAMETER = 10.4;
     static final double PULSES = 537.7;
     static final double PULSES_PER_CM = PULSES / (PI * WHEEL_DIAMETER);
-    static final double DISTANCE = 100;
     private IMU imu = null;
+
+    static final double SERVO_L_OPEN = 0.45;
+    static final double SERVO_L_CLOSED = 0;
+
+    static final double SERVO_R_OPEN = 0.45;
+    static final double SERVO_R_CLOSED = 0;
 
 
     public void runOpMode() {
@@ -34,10 +45,15 @@ public class Anna extends LinearOpMode {
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
 
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
-        leftBack.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
-        rightBack.setDirection(DcMotor.Direction.FORWARD);
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        shooter = hardwareMap.get(DcMotor.class, "shooter");
+        ServoL = hardwareMap.get(Servo.class, "servoL");
+        ServoR = hardwareMap.get(Servo.class, "servoR");
+
+        leftFront.setDirection(DcMotor.Direction.FORWARD);
+        leftBack.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
 
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -59,21 +75,70 @@ public class Anna extends LinearOpMode {
 
         waitForStart();
 
-        moveForward(-0.3, 130);
-        // shoot
-        moveRotate(0.3, -45);
-        moveForward(0.3, 115); //collect
-        moveForward(-0.3, 115);
-        moveRotate(0.3, 45);
-        //shoot
-        moveRotate(0.3, -45);
-        moveSide(0.3, 70);
-        moveForward(0.3, 115); //collect
-        moveForward(-0.3, 115);
-        moveSide(-0.3, 70);
-        moveRotate(0.3, 45);
-        //shoot
+        moveForward(-0.4, 140);
+        servoClosed();
+        shoots();
+        moveRotate(-0.4, 40);
+        startIntake(0.4);
+        moveForward(0.4,90);
+        sleep(500);
+        moveForward(-0.4,90);
+        stopIntake();
+        moveRotate(0.4, 45);
+        shoots();
 
+        moveRotate(-0.4,45);
+        moveSide(0.4, 60);
+        startIntake(0.4);
+        moveForward(0.4,90);
+        sleep(500);
+        moveForward(-0.4,90);
+        stopIntake();
+        moveSide(-0.4, 60);
+        moveRotate(0.4, 45);
+        shoots();
+
+        moveRotate(-0.4, 45);
+        moveSide(0.4, 30);
+        moveForward(0.4, 120);
+        moveForward(-0.4, 120);
+        moveSide(0.4, 90);
+        startIntake(0.4);
+        moveForward(0.4,90);
+        sleep(500);
+        moveForward(-0.4,90);
+        stopIntake();
+        moveSide(-0.4, 120);
+        moveRotate(0.4, 45);
+        shoots();
+
+    }
+    public void shoots(){
+        startShooter(0.4);
+        servoOpen();
+        sleep(1000);
+        stopShooter();
+        servoClosed();
+    }
+    public void startShooter(double power){
+        shooter.setPower(power);
+    }
+    public void stopShooter(){
+        shooter.setPower(0);
+    }
+    public void startIntake(double power){
+        intake.setPower(power);
+    }
+    public void stopIntake(){
+        intake.setPower(0);
+    }
+    public void servoOpen(){
+        ServoL.setPosition(SERVO_L_OPEN);
+        ServoR.setPosition(SERVO_R_OPEN);
+    }
+    public void servoClosed(){
+        ServoL.setPosition(SERVO_L_CLOSED);
+        ServoR.setPosition(SERVO_R_CLOSED);
     }
     public void moveForward(double speed, double distance) {
 
@@ -84,7 +149,9 @@ public class Anna extends LinearOpMode {
         rightFront.setPower(speed);
         rightBack.setPower(speed);
 
-        while (opModeIsActive() && Math.abs(leftFront.getCurrentPosition()) < PULSES_PER_CM * distance) ;
+        while (opModeIsActive() && Math.abs(leftFront.getCurrentPosition()) < PULSES_PER_CM * distance) {
+            idle();
+        }
 
         leftFront.setPower(0);
         leftBack.setPower(0);
@@ -121,7 +188,9 @@ public class Anna extends LinearOpMode {
         rightFront.setPower(-speed);
         rightBack.setPower(speed);
 
-        while (opModeIsActive() && Math.abs(leftFront.getCurrentPosition()) < PULSES_PER_CM * distance) ;
+        while (opModeIsActive() && Math.abs(leftFront.getCurrentPosition()) < PULSES_PER_CM * distance) {
+            idle();
+        }
 
         leftFront.setPower(0);
         leftBack.setPower(0);
@@ -146,5 +215,4 @@ public class Anna extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-
 }

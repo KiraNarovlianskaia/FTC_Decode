@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.FinalCodes.TeleOp;
-
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -12,77 +11,90 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name="TeleOpFinal")
 
 public class TeleOpFinalFinal extends LinearOpMode {
+    DcMotor leftFront;
+    DcMotor leftBack;
+    DcMotor rightFront;
+    DcMotor rightBack;
+    DcMotor intake;
+    DcMotor shooter;
+    Servo servoL;
+    Servo servoR;
 
-    DcMotor leftFront, leftBack, rightFront, rightBack;
-    DcMotor intake, shooter;
-    Servo servoL, servoR;
 
-    // Servo positions
-    static final double servoPush  = 0.45;
-    static final double servoOpen  = 0.0;
+    // Servo position vars
+    static final double servoPush = 0.45;
+    static final double servoOpen = 0;
     static final double servoReady = 0.18;
 
-    // Drive & mechanism speeds
+
+    // Speed vars
     static final double SPEEDFACTOR = 0.55;
     static final double intakeSpeed = 0.9;
     static double shootingSpeed = 0.85;
 
-    // Color sensor thresholds
-    static final float BALL_PRESENT_THRESHOLD = 0.03f;
-    static final float COLOR_MARGIN = 0.02f;
 
-    // Ball state
-    boolean ball_left_present  = false;
-    boolean ball_right_present = false;
-    String leftBallColor  = "none";
-    String rightBallColor = "none";
+    // Variables for color detection
+    String ball_left_color = "None";
+    String ball_right_color = "None";
 
-    @Override
-    public void runOpMode() {
 
-        // Drive motors
-        leftFront  = hardwareMap.get(DcMotor.class, "left_front");
-        leftBack   = hardwareMap.get(DcMotor.class, "left_back");
+
+    public void runOpMode(){
+
+
+        double forward;
+        double rotation;
+        double side;
+        double intakeR;
+        double intakeL;
+        double shoter;
+
+
+        leftFront = hardwareMap.get(DcMotor.class, "left_front");
+        leftBack = hardwareMap.get(DcMotor.class, "left_back");
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
-        rightBack  = hardwareMap.get(DcMotor.class, "right_back");
+        rightBack = hardwareMap.get(DcMotor.class, "right_back");
 
-        intake  = hardwareMap.get(DcMotor.class, "intake");
+        intake = hardwareMap.get(DcMotor.class, "intake");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
 
         servoL = hardwareMap.get(Servo.class, "left_servo");
         servoR = hardwareMap.get(Servo.class, "right_servo");
 
-        NormalizedColorSensor colorSensorLeft  =
-                hardwareMap.get(NormalizedColorSensor.class, "ball_color");
-        NormalizedColorSensor colorSensorRight =
-                hardwareMap.get(NormalizedColorSensor.class, "ball_color2");
+        NormalizedColorSensor colorSensor = hardwareMap.get(NormalizedColorSensor.class, "ball_color");
+        NormalizedColorSensor colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "ball_color2");
+
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
 
+
         waitForStart();
 
         servoL.setPosition(servoOpen);
         servoR.setPosition(servoOpen);
 
+
         while (opModeIsActive()) {
 
-            /* ---------------- SERVO MANUAL CONTROL ---------------- */
 
+            // Open and close left servo
             if (gamepad2.xWasPressed()) {
                 servoL.setPosition(servoPush);
                 sleep(400);
                 servoL.setPosition(servoOpen);
             }
 
+            // Open and close right servo
             if (gamepad2.bWasPressed()) {
                 servoR.setPosition(servoPush);
                 sleep(400);
                 servoR.setPosition(servoOpen);
             }
 
+            // Open and close both servos
             if (gamepad2.yWasPressed()) {
                 servoL.setPosition(servoPush);
                 servoR.setPosition(servoPush);
@@ -91,63 +103,60 @@ public class TeleOpFinalFinal extends LinearOpMode {
                 servoR.setPosition(servoOpen);
             }
 
-            /* ---------------- DRIVE CONTROL ---------------- */
 
-            double forward  = gamepad1.left_stick_y;
-            double side     = gamepad1.left_stick_x;
-            double rotation = gamepad1.right_stick_x;
+            forward = gamepad1.left_stick_y;
+            side = gamepad1.left_stick_x;
+            rotation = gamepad1.right_stick_x;
+            intakeR = gamepad2.right_trigger;
+            intakeL = gamepad2.left_trigger;
+            shoter = gamepad2.left_stick_y;
+
 
             leftFront.setPower((forward - rotation - side) * SPEEDFACTOR);
-            leftBack.setPower((forward - rotation + side) * SPEEDFACTOR);
-            rightFront.setPower((forward + rotation + side) * SPEEDFACTOR);
-            rightBack.setPower((forward + rotation - side) * SPEEDFACTOR);
+            leftBack.setPower((forward - rotation + side)* SPEEDFACTOR);
+            rightFront.setPower((forward + rotation + side)* SPEEDFACTOR);
+            rightBack.setPower((forward + rotation - side)* SPEEDFACTOR);
 
-            /* ---------------- INTAKE & SHOOTER ---------------- */
+            intake.setPower((intakeR - intakeL));
+            shooter.setPower((shoter)*shootingSpeed );
 
-            intake.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
-            shooter.setPower(gamepad2.left_stick_y * shootingSpeed);
+            // Normalize the colors
+            NormalizedRGBA colors = colorSensor.getNormalizedColors();
+            NormalizedRGBA colors2 = colorSensor2.getNormalizedColors();
 
-            /* ---------------- COLOR SENSOR LOGIC ---------------- */
 
-            NormalizedRGBA leftColors  = colorSensorLeft.getNormalizedColors();
-            NormalizedRGBA rightColors = colorSensorRight.getNormalizedColors();
-
-            // LEFT BALL
-            if (leftColors.alpha < BALL_PRESENT_THRESHOLD) {
-                ball_left_present = false;
-                leftBallColor = "none";
+            // LEFT BALL COLOR
+            if (colors.alpha < 0.3 /* > colors.blue && colors.alpha > colors.green */ ) {
+                ball_left_color = "None";
+            } else if (colors.blue > colors.green) {
+                ball_left_color = "Purple";
             } else {
-                ball_left_present = true;
-                if (leftColors.blue > leftColors.green + COLOR_MARGIN) {
-                    leftBallColor = "purple";
-                } else {
-                    leftBallColor = "green";
-                }
+                ball_left_color = "Green";
+            }
+            
+            // RIGHT BALL COLOR
+            if (colors2.alpha < 0.3 /* > colors2.blue && colors2.alpha > colors2.green */) {
+                ball_right_color = "None";
+            } else if (colors2.blue > colors2.green) {
+                ball_right_color = "Purple";
+            } else {
+                ball_right_color = "Green";
             }
 
-            // RIGHT BALL
-            if (rightColors.alpha < BALL_PRESENT_THRESHOLD) {
-                ball_right_present = false;
-                rightBallColor = "none";
-            } else {
-                ball_right_present = true;
-                if (rightColors.blue > rightColors.green + COLOR_MARGIN) {
-                    rightBallColor = "purple";
-                } else {
-                    rightBallColor = "green";
-                }
-            }
 
-            /* ---------------- AUTO SERVO READY ---------------- */
+            telemetry.addData("Left ball: ", ball_left_color);
+            telemetry.addData("Right ball: ", ball_right_color);
+            telemetry.addData("Shooter speed: ", shootingSpeed);
+            telemetry.update();
 
-            if (ball_left_present) {
+
+            if (ball_left_color != "None") {
                 servoR.setPosition(servoReady);
             }
-            if (ball_right_present) {
+            if (ball_right_color != "None") {
                 servoL.setPosition(servoReady);
             }
 
-            /* ---------------- SHOOTER SPEED TUNING ---------------- */
 
             if (gamepad1.left_bumper) {
                 shootingSpeed -= 0.01;
@@ -159,20 +168,10 @@ public class TeleOpFinalFinal extends LinearOpMode {
                 sleep(50);
             }
 
-            /* ---------------- TELEMETRY ---------------- */
-
-            telemetry.addData("Left Ball Present", ball_left_present);
-            telemetry.addData("Left Ball Color", leftBallColor);
-            telemetry.addData("Left Alpha", leftColors.alpha);
-
-            telemetry.addData("Right Ball Present", ball_right_present);
-            telemetry.addData("Right Ball Color", rightBallColor);
-            telemetry.addData("Right Alpha", rightColors.alpha);
-
-            telemetry.addData("Shooter Speed", shootingSpeed);
-            telemetry.update();
 
             sleep(50);
+
         }
     }
 }
+

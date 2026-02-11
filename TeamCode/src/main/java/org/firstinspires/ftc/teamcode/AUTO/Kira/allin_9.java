@@ -7,12 +7,13 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-
+@Disabled
 @Autonomous(name = "AutoBlue_9_Ext", group = "Paths")
 public class allin_9 extends OpMode {
 
@@ -23,6 +24,7 @@ public class allin_9 extends OpMode {
     private Shooter shooter;
 
     private enum PathState {
+        FIRST_SHOT,
         CURVE_TO_COLLECT1,
         LINE_TO_SHOOT1,
         CURVE_TO_COLLECT2,
@@ -33,6 +35,7 @@ public class allin_9 extends OpMode {
         LINE_BACK_TO_SHOOT3,
         DONE
     }
+
     private PathState pathState;
 
     // Позиции
@@ -47,6 +50,7 @@ public class allin_9 extends OpMode {
     private final Pose control3 = new Pose(30.302, 78.164, 0);
 
     // Пути
+    private PathChain startPose_shootPose;
     private PathChain startPose_collectPose1;
     private PathChain collectPose1_shootPose;
     private PathChain shootPose_collectCurve2;
@@ -57,6 +61,7 @@ public class allin_9 extends OpMode {
     private PathChain collectPoint3_shootPose;
 
     private boolean pathStarted = false;
+    private boolean firstShotDone = false;
 
     private void followAndAdvance(PathChain path, PathState next) {
         if (!follower.isBusy() && !pathStarted) {
@@ -84,8 +89,9 @@ public class allin_9 extends OpMode {
     public void init() {
         follower = Constants.createFollower(hardwareMap);
 
-        intake = new Intake(hardwareMap.get(
-                com.qualcomm.robotcore.hardware.DcMotor.class, Constants.intake));
+        intake = new Intake(
+                hardwareMap.get(com.qualcomm.robotcore.hardware.DcMotor.class, Constants.intake)
+        );
 
         shooter = new Shooter(
                 hardwareMap.get(com.qualcomm.robotcore.hardware.DcMotor.class, Constants.shooter),
@@ -96,12 +102,15 @@ public class allin_9 extends OpMode {
         pathTimer = new Timer();
         opModeTimer = new Timer();
 
-        pathState = PathState.CURVE_TO_COLLECT1;
         follower.setPose(startPose);
         buildPaths();
+
+        pathState = PathState.FIRST_SHOT;
     }
 
     private void buildPaths() {
+        startPose_shootPose = buildLine(startPose, shootPose);
+
         startPose_collectPose1 = buildLine(startPose, collectPose1);
         collectPose1_shootPose = buildLine(collectPose1, shootPose);
 
@@ -118,43 +127,52 @@ public class allin_9 extends OpMode {
     public void start() {
         pathTimer.resetTimer();
         opModeTimer.resetTimer();
+
+        intake.start();
     }
 
     @Override
     public void loop() {
+
         follower.update();
-        intake.update();
         shooter.update();
 
-        // Включаем Intake и Shooter на нужных проходах
-        switch (pathState) {
-            case CURVE_TO_COLLECT1:
-            case LINE_TO_COLLECT2:
-            case LINE_TO_COLLECT3:
-                intake.start(); // Intake на 1, 4, 7
-                break;
-
-            case LINE_TO_SHOOT1:
-            case LINE_BACK_TO_SHOOT2:
-            case LINE_BACK_TO_SHOOT3:
-                shooter.spinUp(); // Раскрутка на 2, 5, 8
-                break;
-
-            default:
-                break;
+        // FIRST SHOT — крутим по пути
+        if (pathState == PathState.FIRST_SHOT) {
+            shooter.spinUp();
         }
 
-        // Делаем выстрел только когда на shootPose
+        // Остальные возвраты на шут
+        if (pathState == PathState.LINE_TO_SHOOT1 ||
+                pathState == PathState.LINE_BACK_TO_SHOOT2 ||
+                pathState == PathState.LINE_BACK_TO_SHOOT3) {
+
+            shooter.spinUp();
+        }
+
+        // Первый выстрел
+        if (pathState == PathState.FIRST_SHOT && !follower.isBusy() && !firstShotDone) {
+            if (shooter.isReady()) {
+                shooter.fire();
+                firstShotDone = true;
+            }
+        }
+
+        // Остальные выстрелы
         if ((pathState == PathState.LINE_TO_SHOOT1 && !follower.isBusy()) ||
                 (pathState == PathState.LINE_BACK_TO_SHOOT2 && !follower.isBusy()) ||
                 (pathState == PathState.LINE_BACK_TO_SHOOT3 && !follower.isBusy())) {
+
             if (shooter.isReady()) {
                 shooter.fire();
             }
         }
 
-        // Обновление движения и переход к следующему пути
         switch (pathState) {
+
+            case FIRST_SHOT:
+                followAndAdvance(startPose_shootPose, PathState.CURVE_TO_COLLECT1);
+                break;
 
             case CURVE_TO_COLLECT1:
                 followAndAdvance(startPose_collectPose1, PathState.LINE_TO_SHOOT1);
@@ -194,14 +212,12 @@ public class allin_9 extends OpMode {
                 break;
         }
 
-        // Сброс флага для следующего пути
         if (!follower.isBusy()) {
             pathStarted = false;
         }
 
         telemetry.addData("State", pathState);
-        telemetry.addData("Shooter Busy", shooter.isBusy());
-        telemetry.addData("Intake Busy", intake.isBusy());
+        telemetry.addData("Shooter Ready", shooter.isReady());
         telemetry.update();
     }
 }

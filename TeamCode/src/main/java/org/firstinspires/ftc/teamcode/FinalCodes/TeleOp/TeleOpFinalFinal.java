@@ -127,7 +127,7 @@ public class TeleOpFinalFinal extends LinearOpMode {
 
             // LEFT BALL COLOR
             if (colors.alpha < 0.3 /* > colors.blue && colors.alpha > colors.green */ ) {
-                ball_left_color = "No Color";
+                ball_left_color = "None";
             } else if (colors.blue > colors.green) {
                 ball_left_color = "Purple";
             } else {
@@ -136,7 +136,7 @@ public class TeleOpFinalFinal extends LinearOpMode {
             
             // RIGHT BALL COLOR
             if (colors2.alpha < 0.3 /* > colors2.blue && colors2.alpha > colors2.green */) {
-                ball_right_color = "No Color";
+                ball_right_color = "None";
             } else if (colors2.blue > colors2.green) {
                 ball_right_color = "Purple";
             } else {

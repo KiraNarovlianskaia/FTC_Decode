@@ -28,7 +28,9 @@ public class Shoot2 extends OpMode {
     // Позиции
     private final Pose startPose = new Pose(24.508, 119.077, Math.toRadians(-90));
     private final Pose shootPose = new Pose(48.594, 94.576, Math.toRadians(-45));
+    private final Pose collectCurve1 = new Pose(23.99, 88.429, Math.toRadians(-90));
 
+    private final Pose control1 = new Pose(22.27, 119.848, 0);
     private PathChain start_to_shoot;
 
     private boolean pathStarted = false;

@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.AUTO;
+package org.firstinspires.ftc.teamcode.AUTO.Sasha;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -12,8 +11,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 
 
-@Autonomous (name="Auto Sasha Teammate No Shoot Blue")
-public class AutoSashaTeammateNoShootBlue extends LinearOpMode {
+@Autonomous (name="Auto Sasha Teammate")
+public class AutoSashaTeammate extends LinearOpMode {
 
 
     DcMotor leftFront;
@@ -68,27 +67,26 @@ public class AutoSashaTeammateNoShootBlue extends LinearOpMode {
 
         waitForStart();
 
-        forward(0.4,180);
-        rotate(-0.4,45);
         sleep(2000);
-        rotate(0.4,45);
-        forward(-0.4,120);
-        rotate(-0.4,90);
-        side(0.4,10);
-        forward(0.4,150);
-        sleep(1000);
-        forward(-0.4,150);
-        rotate(0.4,90);
-        forward(0.4,110);
-        rotate(-0.4,45);
-        sleep(2000);
-        rotate(-0.4,45);
-        side(-0.4,40);
-        forward(0.4,100);
-        forward(-0.4,100);
-        rotate(0.4,90);
+        rotate(-0.4,-25);
         forward(0.4,40);
-        rotate(-0.4,45);
+        rotate(0.4,90);
+        forward(0.4,90);
+        sleep(1000);
+        forward(-0.4,90);
+        side(0.4,40);
+        rotate(-0.4,-45);
+        forward(-0.4,-10);
+        sleep(2000);
+        rotate(-0.4,-45);
+        side(0.4,50);
+        forward(0.4,90);
+        rotate(0.4,90);
+        forward(0.4,90);
+        sleep(1000);
+        forward(-0.4,90);
+        side(0.4,60);
+        rotate(-0.4,-45);
         sleep(2000);
         forward(0.4,10);
 

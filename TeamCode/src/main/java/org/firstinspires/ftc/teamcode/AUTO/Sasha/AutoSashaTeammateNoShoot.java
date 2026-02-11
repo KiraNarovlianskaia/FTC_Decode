@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.AUTO;
+package org.firstinspires.ftc.teamcode.AUTO.Sasha;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -12,15 +11,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 
 
-@Autonomous (name="Auto Sasha Teammate Blue")
-public class AutoSashaTeammateBlue extends LinearOpMode {
+@Autonomous (name="Auto Sasha Teammate No Shoot")
+public class AutoSashaTeammateNoShoot extends LinearOpMode {
 
 
     DcMotor leftFront;
     DcMotor leftBack;
     DcMotor rightFront;
     DcMotor rightBack;
-    DcMotor intake;
     private IMU imu = null;
     static final double forward = 0.3;
     static final double PI = 3.14159265;
@@ -36,8 +34,6 @@ public class AutoSashaTeammateBlue extends LinearOpMode {
         leftBack = hardwareMap.get(DcMotor.class, "left_back");
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
-        intake = hardwareMap.get(DcMotor.class, "intake");
-
 
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
@@ -50,7 +46,6 @@ public class AutoSashaTeammateBlue extends LinearOpMode {
         leftBack.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
-        intake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         imu.resetYaw();
 
@@ -72,28 +67,29 @@ public class AutoSashaTeammateBlue extends LinearOpMode {
 
         waitForStart();
 
+        forward(0.4,180);
+        rotate(0.4,45);
         sleep(2000);
-        rotate(0.4,30);
-        forward(0.4,40);
-        rotate(-0.4,-90);
-        forward(0.4,90);
+        rotate(-0.4,45);
+        forward(-0.4,120);
+        rotate(0.4,90);
+        side(-0.4,10);
+        forward(0.4,150);
         sleep(1000);
-        forward(-0.4,-90);
+        forward(-0.4,150);
+        rotate(-0.4,90);
+        forward(0.4,110);
+        rotate(-0.4,45);
+        sleep(2000);
+        rotate(0.4,45);
         side(0.4,40);
-        rotate(0.4,45);
-        forward(-0.4,-10);
-        sleep(2000);
-        rotate(0.4,45);
-        side(0.4,50);
-        forward(0.4,90);
-        rotate(-0.4,-90);
-        forward(0.4,90);
-        sleep(1000);
-        forward(-0.4,-90);
-        side(-0.4,60);
+        forward(0.4,100);
+        forward(-0.4,100);
+        rotate(-0.4,90);
+        forward(0.4,40);
         rotate(0.4,45);
         sleep(2000);
-        forward(0.4,20);
+        forward(0.4,10);
 
 
 
@@ -177,11 +173,4 @@ public class AutoSashaTeammateBlue extends LinearOpMode {
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void intaker(){
-        intake.setPower(0.8);
-    }
-    public void stopintake(){
-        intake.setPower(0);
-        sleep(500 );
-    }
 }

@@ -1,18 +1,19 @@
-package org.firstinspires.ftc.teamcode.AUTO.Oleg;
+package org.firstinspires.ftc.teamcode.FinalCodes.AUTO;
+
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 
-@Autonomous (name="AutoBlueFromGoal")
-public class AutoBlueFromGoal extends LinearOpMode {
+@Autonomous (name="Move")
+public class JustMove extends LinearOpMode {
 
 
     DcMotor leftFront;
@@ -21,6 +22,9 @@ public class AutoBlueFromGoal extends LinearOpMode {
     DcMotor rightBack;
     DcMotor intake;
     DcMotor shooter;
+    Servo servoL;
+    Servo servoR;
+
     static final double PI = 3.14159265;
     static final double WHEEL_DIAMETER = 10.4;
     static final double PULSES = 537.7;
@@ -34,15 +38,15 @@ public class AutoBlueFromGoal extends LinearOpMode {
         leftBack = hardwareMap.get(DcMotor.class, "left_back");
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
-
         intake = hardwareMap.get(DcMotor.class, "intake");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
+        servoL = hardwareMap.get(Servo.class, "left_servo");
+        servoR = hardwareMap.get(Servo.class, "right_servo");
 
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
-
         intake.setDirection(DcMotor.Direction.FORWARD);
         shooter.setDirection(DcMotor.Direction.FORWARD);
 
@@ -58,26 +62,14 @@ public class AutoBlueFromGoal extends LinearOpMode {
 
         waitForStart();
 
-        moveForward(-0.3, 95);
-        shoot();
+        shoots();
+        sleep(2000);
+        pushBalls();
+        shoote();
+        moveForward(0.3, 95);
+        moveForward(-0.3, 70);
 
-        moveRotate(-0.3, 135);
-        intakeStart();
-        moveForward(0.3, 60); //collect
-        intakeStop();
-        moveForward(-0.3, 60);
-        moveRotate(0.3, 135);
-        shoot();
 
-        moveRotate(-0.3, 135);
-        moveSide(0.3, 50);
-        intakeStart();
-        moveForward(0.3, 60); //collect
-        intakeStop();
-        moveForward(-0.3, 60);
-        moveSide(-0.3, 50);
-        moveRotate(0.3, 135);
-        shoot();
 
 
     }
@@ -136,14 +128,25 @@ public class AutoBlueFromGoal extends LinearOpMode {
         sleep(500);
     }
 
-    public void shoot() {
-        shooter.setPower(1);
-        sleep(5000);
+    public void pushBalls() {
+        servoL.setPosition(0.45);
+        servoR.setPosition(0.45);
+        sleep(400);
+        servoL.setPosition(0.);
+        servoR.setPosition(0);
+
+    }
+
+    public void shoots() {
+        shooter.setPower(0.7);
+    }
+
+    public void shoote() {
         shooter.setPower(0);
     }
 
     public void intakeStart() {
-        intake.setPower(0.8);
+        intake.setPower(0.6);
     }
 
     public void intakeStop() {

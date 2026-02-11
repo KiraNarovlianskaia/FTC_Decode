@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.AUTO;
+package org.firstinspires.ftc.teamcode.AUTO.Sasha;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -12,8 +11,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 
 
-@Autonomous (name="Auto Sasha Teammate No Shoot")
-public class AutoSashaTeammateNoShoot extends LinearOpMode {
+@Autonomous (name="Auto Sasha")
+public class AutoSasha extends LinearOpMode {
 
 
     DcMotor leftFront;
@@ -43,10 +42,10 @@ public class AutoSashaTeammateNoShoot extends LinearOpMode {
         imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(orientationOnRobot));
 
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
 
         imu.resetYaw();
 
@@ -68,30 +67,13 @@ public class AutoSashaTeammateNoShoot extends LinearOpMode {
 
         waitForStart();
 
-        forward(0.4,180);
-        rotate(0.4,45);
         sleep(2000);
-        rotate(-0.4,45);
-        forward(-0.4,120);
-        rotate(0.4,90);
-        side(-0.4,10);
-        forward(0.4,150);
+        rotate(-0.3,30);
+        forward(0.3,40);
+        rotate(0.3,90);
+        forward(0.3,90);
         sleep(1000);
-        forward(-0.4,150);
-        rotate(-0.4,90);
-        forward(0.4,110);
-        rotate(-0.4,45);
-        sleep(2000);
-        rotate(0.4,45);
-        side(0.4,40);
-        forward(0.4,100);
-        forward(-0.4,100);
-        rotate(-0.4,90);
-        forward(0.4,40);
-        rotate(0.4,45);
-        sleep(2000);
-        forward(0.4,10);
-
+        forward(0.3,-90);
 
 
 
@@ -123,10 +105,10 @@ public class AutoSashaTeammateNoShoot extends LinearOpMode {
         rightFront.setPower(-speed1);
         rightBack.setPower(-speed1);
 
-        while (opModeIsActive() &&
-                Math.abs(getHeading()) < Math.abs(angle1)) {
-            idle();
-        }
+       while (opModeIsActive() &&
+               Math.abs(getHeading()) < Math.abs(angle1)) {
+           idle();
+       }
 
         leftFront.setPower(0);
         leftBack.setPower(0);

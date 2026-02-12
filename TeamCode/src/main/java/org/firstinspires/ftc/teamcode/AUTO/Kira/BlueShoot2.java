@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.AUTO.Kira;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
@@ -11,21 +10,16 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
-@Autonomous(name = "Shoot + Collect", group = "Paths")
-public class Shoot_Collection extends OpMode {
+@Autonomous(name = "BLUE SingleShot", group = "Paths")
+public class BlueShoot2 extends OpMode {
 
     private Follower follower;
     private Shooter shooter;
-    private Intake intake;
-    private Timer timer = new Timer();
 
     private enum State {
         DRIVE_TO_SHOOT,
         SHOOT,
-        DRIVE_TO_COLLECT,
-        INTAKE_FINISH,
         DONE
     }
 
@@ -34,25 +28,16 @@ public class Shoot_Collection extends OpMode {
     // Позиции
     private final Pose startPose = new Pose(24.508, 119.077, Math.toRadians(-90));
     private final Pose shootPose = new Pose(48.594, 94.576, Math.toRadians(-45));
+    private final Pose collectCurve1 = new Pose(23.99, 88.429, Math.toRadians(-90));
 
-    private final Pose collectCurve1 = new Pose(24.333, 89.033, Math.toRadians(-90));
-    private final Pose control1 = new Pose(24.56, 118.989, 0);
-
+    private final Pose control1 = new Pose(22.27, 119.848, 0);
     private PathChain start_to_shoot;
-    private PathChain shoot_to_collect;
 
     private boolean pathStarted = false;
 
     private PathChain buildLine(Pose from, Pose to) {
         return follower.pathBuilder()
                 .addPath(new BezierLine(from, to))
-                .setLinearHeadingInterpolation(from.getHeading(), to.getHeading())
-                .build();
-    }
-
-    private PathChain buildCurve(Pose from, Pose control, Pose to) {
-        return follower.pathBuilder()
-                .addPath(new BezierCurve(from, control, to))
                 .setLinearHeadingInterpolation(from.getHeading(), to.getHeading())
                 .build();
     }
@@ -68,14 +53,9 @@ public class Shoot_Collection extends OpMode {
                 hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, Constants.servoR)
         );
 
-        intake = new Intake(
-                hardwareMap.get(com.qualcomm.robotcore.hardware.DcMotor.class, Constants.intake)
-        );
-
         follower.setPose(startPose);
 
         start_to_shoot = buildLine(startPose, shootPose);
-        shoot_to_collect = buildCurve(shootPose, control1, collectCurve1);
 
         state = State.DRIVE_TO_SHOOT;
     }
@@ -90,13 +70,16 @@ public class Shoot_Collection extends OpMode {
 
             case DRIVE_TO_SHOOT:
 
+                // начинаем движение
                 if (!pathStarted) {
                     follower.followPath(start_to_shoot, 0.6, true);
                     pathStarted = true;
                 }
 
+                // раскручиваем во время движения
                 shooter.spinUp();
 
+                // когда доехали — переходим к стрельбе
                 if (!follower.isBusy()) {
                     state = State.SHOOT;
                 }
@@ -105,37 +88,14 @@ public class Shoot_Collection extends OpMode {
 
             case SHOOT:
 
+                // продолжаем держать раскрутку
                 shooter.spinUp();
+
+                // даём команду на выстрел
                 shooter.fire();
 
+                // ждём пока shooter полностью закончит (вернётся в IDLE)
                 if (!shooter.isBusy()) {
-                    pathStarted = false;
-                    state = State.DRIVE_TO_COLLECT;
-                }
-
-                break;
-
-            case DRIVE_TO_COLLECT:
-
-                if (!pathStarted) {
-                    follower.followPath(shoot_to_collect, 0.6, true);
-                    pathStarted = true;
-                }
-
-                intake.start();
-
-                if (!follower.isBusy()) {
-                    timer.resetTimer();      // запускаем таймер 3 сек
-                    state = State.INTAKE_FINISH;
-                }
-
-                break;
-
-            case INTAKE_FINISH:
-
-                intake.start(); // продолжаем крутить
-
-                if (timer.getElapsedTimeSeconds() >= 3.0) {
                     state = State.DONE;
                 }
 
@@ -144,12 +104,11 @@ public class Shoot_Collection extends OpMode {
             case DONE:
 
                 shooter.stop();
-                intake.stop();
                 break;
         }
 
         telemetry.addData("State", state);
-        telemetry.addData("Follower Busy", follower.isBusy());
+        telemetry.addData("Shooter Busy", shooter.isBusy());
         telemetry.update();
     }
 }

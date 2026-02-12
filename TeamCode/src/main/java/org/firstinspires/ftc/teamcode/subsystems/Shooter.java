@@ -14,10 +14,19 @@ public class Shooter {
     private enum State {
         IDLE,
         SPINNING,
-        FIRING
+        FIRING,
+        COOLDOWN,
+        BRAKING,
+        FINISHED
     }
 
     private State state = State.IDLE;
+
+    // Тайминги
+    private static final double SERVO_TIME = 0.5;       // сервы вверх
+    private static final double EXTRA_SPIN_TIME = 1.0;  // мотор ещё крутится после возврата серв
+    private static final double BRAKE_POWER = -1;     // реверс для торможения
+    private static final double BRAKE_TIME = 0.2;       // длительность реверса
 
     public Shooter(DcMotor shooter, Servo servoL, Servo servoR) {
         this.shooter = shooter;
@@ -28,59 +37,81 @@ public class Shooter {
         resetServos();
     }
 
-    // Раскрутка (можно во время движения)
+    // Раскрутка
     public void spinUp() {
         if (state == State.IDLE) {
-            timer.resetTimer();
             shooter.setPower(Constants.shooter_power);
+            timer.resetTimer();
             state = State.SPINNING;
         }
     }
 
-    // Выстрел — ТОЛЬКО когда разрешили
+    // Выстрел
     public void fire() {
         if (state == State.SPINNING && timer.getElapsedTimeSeconds() >= 3.0) {
-            timer.resetTimer();
             shootServos();
+            timer.resetTimer();
             state = State.FIRING;
         }
     }
 
-    // ОБЯЗАТЕЛЬНО вызывать в loop
+    // ОБЯЗАТЕЛЬНО в loop
     public void update() {
-        if (state == State.FIRING) {
-            if (timer.getElapsedTimeSeconds() >= 0.5) {
-                resetServos();
-                shooter.setPower(0);
-                state = State.IDLE;
-            }
+
+        switch (state) {
+
+            case FIRING:
+                if (timer.getElapsedTimeSeconds() >= SERVO_TIME) {
+                    resetServos();
+                    timer.resetTimer();
+                    state = State.COOLDOWN;
+                }
+                break;
+
+            case COOLDOWN:
+                if (timer.getElapsedTimeSeconds() >= EXTRA_SPIN_TIME) {
+                    shooter.setPower(BRAKE_POWER);  // короткий реверс для торможения
+                    timer.resetTimer();
+                    state = State.BRAKING;
+                }
+                break;
+
+            case BRAKING:
+                if (timer.getElapsedTimeSeconds() >= BRAKE_TIME) {
+                    shooter.setPower(0);
+                    state = State.FINISHED;
+                }
+                break;
+
+            case FINISHED:
+                // ничего не делаем
+                break;
         }
     }
 
-    // Проверка, готов ли к выстрелу (раскрутился 3 секунды)
     public boolean isReady() {
         return state == State.SPINNING && timer.getElapsedTimeSeconds() >= 3.0;
     }
 
-    // Проверка, занят ли shooter (SPINNING или FIRING)
     public boolean isBusy() {
-        return state != State.IDLE;
+        return state == State.SPINNING || state == State.FIRING || state == State.COOLDOWN || state == State.BRAKING;
     }
 
-    // Полная остановка
+    public boolean isFinished() {
+        return state == State.FINISHED;
+    }
+
     public void stop() {
         shooter.setPower(0);
         resetServos();
         state = State.IDLE;
     }
 
-    // Запуск серв для выстрела
     private void shootServos() {
         servoL.setPosition(Constants.servo_shoot);
         servoR.setPosition(Constants.servo_shoot);
     }
 
-    // Сброс серв в начальное положение
     private void resetServos() {
         servoL.setPosition(Constants.servo_init);
         servoR.setPosition(Constants.servo_init);

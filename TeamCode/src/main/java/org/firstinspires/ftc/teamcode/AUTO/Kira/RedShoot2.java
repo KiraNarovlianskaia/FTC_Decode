@@ -24,13 +24,11 @@ public class RedShoot2 extends OpMode {
 
     private State state;
 
-    // Позиции
+    // ===== Позиции =====
     private final Pose startPose = new Pose(120.126, 118.791, Math.toRadians(-90));
     private final Pose shootPose = new Pose(96.689, 94.862, Math.toRadians(-135));
-    private final Pose collectCurve1 = new Pose(120.524, 88.461, Math.toRadians(-90));
 
-    private final Pose control1 = new Pose(123.614, 128.437, 0);
-    private PathChain start_to_shoot;
+    private PathChain startToShoot;
 
     private boolean pathStarted = false;
 
@@ -53,8 +51,7 @@ public class RedShoot2 extends OpMode {
         );
 
         follower.setPose(startPose);
-
-        start_to_shoot = buildLine(startPose, shootPose);
+        startToShoot = buildLine(startPose, shootPose);
 
         state = State.DRIVE_TO_SHOOT;
     }
@@ -62,52 +59,61 @@ public class RedShoot2 extends OpMode {
     @Override
     public void loop() {
 
+        // ОБЯЗАТЕЛЬНО обновляем
         follower.update();
         shooter.update();
 
         switch (state) {
 
+            // ==========================================
             case DRIVE_TO_SHOOT:
 
-                // начинаем движение
                 if (!pathStarted) {
-                    follower.followPath(start_to_shoot, 0.6, true);
+                    follower.followPath(startToShoot, 0.6, true);
                     pathStarted = true;
                 }
 
-                // раскручиваем во время движения
+                // Раскрутка во время движения
                 shooter.spinUp();
 
-                // когда доехали — переходим к стрельбе
+                // Когда приехали
                 if (!follower.isBusy()) {
                     state = State.SHOOT;
                 }
 
                 break;
 
+            // ==========================================
             case SHOOT:
 
-                // продолжаем держать раскрутку
+                // Если вдруг не раскрутился — продолжаем
                 shooter.spinUp();
 
-                // даём команду на выстрел
-                shooter.fire();
+                // Когда готов — стреляем
+                if (shooter.isReady()) {
+                    shooter.fire();
+                }
 
-                // ждём пока shooter полностью закончит (вернётся в IDLE)
-                if (!shooter.isBusy()) {
+                // Когда полностью завершил цикл
+                if (shooter.isFinished()) {
                     state = State.DONE;
                 }
 
                 break;
 
+            // ==========================================
             case DONE:
 
+                // Дополнительная защита
                 shooter.stop();
                 break;
         }
 
         telemetry.addData("State", state);
+        telemetry.addData("Follower Busy", follower.isBusy());
         telemetry.addData("Shooter Busy", shooter.isBusy());
+        telemetry.addData("Shooter Ready", shooter.isReady());
+        telemetry.addData("Shooter Finished", shooter.isFinished());
         telemetry.update();
     }
 }

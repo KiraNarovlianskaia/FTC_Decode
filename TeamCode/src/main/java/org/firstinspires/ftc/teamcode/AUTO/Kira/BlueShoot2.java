@@ -4,7 +4,6 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -25,13 +24,11 @@ public class BlueShoot2 extends OpMode {
 
     private State state;
 
-    // Позиции
+    // ===== Позиции =====
     private final Pose startPose = new Pose(24.508, 119.077, Math.toRadians(-90));
     private final Pose shootPose = new Pose(48.594, 94.576, Math.toRadians(-45));
-    private final Pose collectCurve1 = new Pose(23.99, 88.429, Math.toRadians(-90));
 
-    private final Pose control1 = new Pose(22.27, 119.848, 0);
-    private PathChain start_to_shoot;
+    private PathChain startToShoot;
 
     private boolean pathStarted = false;
 
@@ -54,8 +51,7 @@ public class BlueShoot2 extends OpMode {
         );
 
         follower.setPose(startPose);
-
-        start_to_shoot = buildLine(startPose, shootPose);
+        startToShoot = buildLine(startPose, shootPose);
 
         state = State.DRIVE_TO_SHOOT;
     }
@@ -68,47 +64,53 @@ public class BlueShoot2 extends OpMode {
 
         switch (state) {
 
+            // ==========================================
             case DRIVE_TO_SHOOT:
 
-                // начинаем движение
                 if (!pathStarted) {
-                    follower.followPath(start_to_shoot, 0.6, true);
+                    follower.followPath(startToShoot, 0.6, true);
                     pathStarted = true;
                 }
 
-                // раскручиваем во время движения
+                // Раскрутка во время движения
                 shooter.spinUp();
 
-                // когда доехали — переходим к стрельбе
                 if (!follower.isBusy()) {
                     state = State.SHOOT;
                 }
 
                 break;
 
+            // ==========================================
             case SHOOT:
 
-                // продолжаем держать раскрутку
+                // Если ещё не раскрутился — продолжаем
                 shooter.spinUp();
 
-                // даём команду на выстрел
-                shooter.fire();
+                // Стреляем ТОЛЬКО когда готов
+                if (shooter.isReady()) {
+                    shooter.fire();
+                }
 
-                // ждём пока shooter полностью закончит (вернётся в IDLE)
-                if (!shooter.isBusy()) {
+                // Когда полностью завершил цикл
+                if (shooter.isFinished()) {
                     state = State.DONE;
                 }
 
                 break;
 
+            // ==========================================
             case DONE:
 
-                shooter.stop();
+                shooter.stop();  // дополнительная защита
                 break;
         }
 
         telemetry.addData("State", state);
+        telemetry.addData("Follower Busy", follower.isBusy());
         telemetry.addData("Shooter Busy", shooter.isBusy());
+        telemetry.addData("Shooter Ready", shooter.isReady());
+        telemetry.addData("Shooter Finished", shooter.isFinished());
         telemetry.update();
     }
 }

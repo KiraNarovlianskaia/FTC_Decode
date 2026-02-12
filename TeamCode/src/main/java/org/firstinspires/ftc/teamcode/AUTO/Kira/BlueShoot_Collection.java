@@ -31,15 +31,14 @@ public class BlueShoot_Collection extends OpMode {
 
     private State state;
 
-    // Позиции
+    // ===== Позиции =====
     private final Pose startPose = new Pose(24.508, 119.077, Math.toRadians(-90));
     private final Pose shootPose = new Pose(48.594, 94.576, Math.toRadians(-45));
-
     private final Pose collectCurve1 = new Pose(24.333, 89.033, Math.toRadians(-90));
     private final Pose control1 = new Pose(24.56, 118.989, 0);
 
-    private PathChain start_to_shoot;
-    private PathChain shoot_to_collect;
+    private PathChain startToShoot;
+    private PathChain shootToCollect;
 
     private boolean pathStarted = false;
 
@@ -74,8 +73,8 @@ public class BlueShoot_Collection extends OpMode {
 
         follower.setPose(startPose);
 
-        start_to_shoot = buildLine(startPose, shootPose);
-        shoot_to_collect = buildCurve(shootPose, control1, collectCurve1);
+        startToShoot = buildLine(startPose, shootPose);
+        shootToCollect = buildCurve(shootPose, control1, collectCurve1);
 
         state = State.DRIVE_TO_SHOOT;
     }
@@ -88,52 +87,63 @@ public class BlueShoot_Collection extends OpMode {
 
         switch (state) {
 
+            // =====================================================
             case DRIVE_TO_SHOOT:
 
                 if (!pathStarted) {
-                    follower.followPath(start_to_shoot, 0.6, true);
+                    follower.followPath(startToShoot, 0.6, true);
                     pathStarted = true;
                 }
 
+                // Раскручиваем во время движения
                 shooter.spinUp();
 
                 if (!follower.isBusy()) {
+                    pathStarted = false;
                     state = State.SHOOT;
                 }
 
                 break;
 
+            // =====================================================
             case SHOOT:
 
                 shooter.spinUp();
-                shooter.fire();
 
-                if (!shooter.isBusy()) {
+                // Стреляем только когда готов
+                if (shooter.isReady()) {
+                    shooter.fire();
+                }
+
+                // Ждём полного завершения (включая COOLDOWN и BRAKING)
+                if (shooter.isFinished()) {
                     pathStarted = false;
                     state = State.DRIVE_TO_COLLECT;
                 }
 
                 break;
 
+            // =====================================================
             case DRIVE_TO_COLLECT:
 
                 if (!pathStarted) {
-                    follower.followPath(shoot_to_collect, 0.6, true);
+                    follower.followPath(shootToCollect, 0.6, true);
                     pathStarted = true;
                 }
 
                 intake.start();
 
                 if (!follower.isBusy()) {
-                    timer.resetTimer();      // запускаем таймер 3 сек
+                    timer.resetTimer();
                     state = State.INTAKE_FINISH;
                 }
 
                 break;
 
+            // =====================================================
             case INTAKE_FINISH:
 
-                intake.start(); // продолжаем крутить
+                intake.start();
 
                 if (timer.getElapsedTimeSeconds() >= 3.0) {
                     state = State.DONE;
@@ -141,6 +151,7 @@ public class BlueShoot_Collection extends OpMode {
 
                 break;
 
+            // =====================================================
             case DONE:
 
                 shooter.stop();
@@ -150,6 +161,9 @@ public class BlueShoot_Collection extends OpMode {
 
         telemetry.addData("State", state);
         telemetry.addData("Follower Busy", follower.isBusy());
+        telemetry.addData("Shooter Busy", shooter.isBusy());
+        telemetry.addData("Shooter Ready", shooter.isReady());
+        telemetry.addData("Shooter Finished", shooter.isFinished());
         telemetry.update();
     }
 }

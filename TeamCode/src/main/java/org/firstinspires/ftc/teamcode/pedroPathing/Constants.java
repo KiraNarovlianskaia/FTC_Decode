@@ -70,10 +70,10 @@ public class Constants {
 
     public static final String intake = "intake";
     public static final String shooter = "shooter";
-    public static final double intake_power = -0.6;
-    public static final double shooter_power = 0.0;
+    public static final double intake_power = 1;
+    public static final double shooter_power = -0.75;
     public static final String servoL = "left_servo";
     public static final String servoR = "right_servo";
-    public static final double servoL_init = 0.0;
-    public static final double servoR_init = 0.0;
+    public static final double servo_init = 0.0;
+    public static final double servo_shoot = 0.45;
 }

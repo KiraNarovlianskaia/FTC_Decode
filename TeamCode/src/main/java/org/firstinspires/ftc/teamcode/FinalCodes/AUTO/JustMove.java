@@ -1,17 +1,20 @@
-package org.firstinspires.ftc.teamcode.AUTO.Oleg;
+package org.firstinspires.ftc.teamcode.FinalCodes.AUTO;
+
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-
-@Autonomous (name="Auto Blue From Wall")
-public class AutoBlueFromWall extends LinearOpMode {
+@Disabled
+@Autonomous (name="Move")
+public class JustMove extends LinearOpMode {
 
 
     DcMotor leftFront;
@@ -20,6 +23,9 @@ public class AutoBlueFromWall extends LinearOpMode {
     DcMotor rightBack;
     DcMotor intake;
     DcMotor shooter;
+    Servo servoL;
+    Servo servoR;
+
     static final double PI = 3.14159265;
     static final double WHEEL_DIAMETER = 10.4;
     static final double PULSES = 537.7;
@@ -29,19 +35,21 @@ public class AutoBlueFromWall extends LinearOpMode {
 
     public void runOpMode() {
 
-        leftFront = hardwareMap.get(DcMotor.class, "left_back");
-        leftBack = hardwareMap.get(DcMotor.class, "left_front");
+        leftFront = hardwareMap.get(DcMotor.class, "left_front");
+        leftBack = hardwareMap.get(DcMotor.class, "left_back");
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
         intake = hardwareMap.get(DcMotor.class, "intake");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
+        servoL = hardwareMap.get(Servo.class, "left_servo");
+        servoR = hardwareMap.get(Servo.class, "right_servo");
 
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
-        intake.setDirection(DcMotor.Direction.REVERSE);
-        shooter.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
+        intake.setDirection(DcMotor.Direction.FORWARD);
+        shooter.setDirection(DcMotor.Direction.FORWARD);
 
         resetEncoders();
 
@@ -55,27 +63,15 @@ public class AutoBlueFromWall extends LinearOpMode {
 
         waitForStart();
 
-        shoot();
+        shoots();
+        sleep(2000);
+        pushBalls();
+        shoote();
+        moveForward(0.3, 95);
+        moveForward(-0.3, 70);
 
-        moveRotate(-0.3, 100);
-        moveSide(0.3, 60);
-        intakeStart();
-        moveForward(0.3, 50);
-        intakeStop();
-        moveForward(-0.3, 50);
-        moveSide(-0.3, 60);
-        moveRotate(0.3, 100);
-        shoot();
 
-        moveRotate(0.3, 100);
-        moveSide(0.3, 120);
-        intakeStart();
-        moveForward(0.3, 50);
-        intakeStop();
-        moveForward(-0.3, 50);
-        moveSide(-0.3, 120);
-        moveRotate(-0.3, 100);
-        shoot();
+
 
     }
     public void moveForward(double speed, double distance) {
@@ -90,7 +86,6 @@ public class AutoBlueFromWall extends LinearOpMode {
         while (opModeIsActive() && Math.abs(leftFront.getCurrentPosition()) < PULSES_PER_CM * distance) ;
 
         leftFront.setPower(0);
-
         leftBack.setPower(0);
         rightFront.setPower(0);
         rightBack.setPower(0);
@@ -134,19 +129,31 @@ public class AutoBlueFromWall extends LinearOpMode {
         sleep(500);
     }
 
-    public void shoot() {
-        shooter.setPower(1);
-        sleep(5000);
+    public void pushBalls() {
+        servoL.setPosition(0.45);
+        servoR.setPosition(0.45);
+        sleep(400);
+        servoL.setPosition(0.);
+        servoR.setPosition(0);
+
+    }
+
+    public void shoots() {
+        shooter.setPower(0.7);
+    }
+
+    public void shoote() {
         shooter.setPower(0);
     }
 
     public void intakeStart() {
-        intake.setPower(0.8);
+        intake.setPower(0.6);
     }
 
     public void intakeStop() {
         intake.setPower(0.0);
     }
+
     public double getHeading() {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         return orientation.getYaw(AngleUnit.DEGREES);

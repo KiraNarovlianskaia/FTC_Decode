@@ -15,8 +15,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 
 @Disabled
-@Autonomous (name="Auto Sasha Red Wall No Teammate", group = "Sasha")
-public class AutoSashaRedWallNoTeammate extends LinearOpMode {
+@Autonomous (name="Auto Sasha Blue Wall No Teammate")
+public class AutoSashaBlueWallNoTeammate extends LinearOpMode {
 
 
     DcMotor leftFront;
@@ -24,10 +24,14 @@ public class AutoSashaRedWallNoTeammate extends LinearOpMode {
     DcMotor rightFront;
     DcMotor rightBack;
     DcMotor intake;
-
     DcMotor shoot;
     Servo servoL;
     Servo servoR;
+    static final double SERVO_L_OPEN = 0.45;
+    static final double SERVO_L_CLOSED = 0;
+
+    static final double SERVO_R_OPEN = 0.45;
+    static final double SERVO_R_CLOSED = 0;
 
     private IMU imu = null;
     static final double forward = 0.3;
@@ -36,11 +40,6 @@ public class AutoSashaRedWallNoTeammate extends LinearOpMode {
     static final double PULSES = 537.7;
     static final double PULSES_PER_CM = PULSES / (PI * WHEEL_DIAMETER);
 
-    static final double SERVO_L_OPEN = 0.45;
-    static final double SERVO_L_CLOSED = 0;
-
-    static final double SERVO_R_OPEN = 0.45;
-    static final double SERVO_R_CLOSED = 0;
 
 
     public void runOpMode(){
@@ -55,6 +54,7 @@ public class AutoSashaRedWallNoTeammate extends LinearOpMode {
         servoL = hardwareMap.get(Servo.class, "left_servo");
         servoR = hardwareMap.get(Servo.class, "right_servo");
 
+
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection,usbDirection);
@@ -67,7 +67,6 @@ public class AutoSashaRedWallNoTeammate extends LinearOpMode {
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
-        shoot.setDirection(DcMotorSimple.Direction.REVERSE);
 
         imu.resetYaw();
 
@@ -88,46 +87,47 @@ public class AutoSashaRedWallNoTeammate extends LinearOpMode {
         }
 
         waitForStart();
+
         shooter();
         servoClose();
-        sleep(3000);
-        servoOpen();
         sleep(500);
-        stopshoot();
-        servoClose();
-        rotate(-0.4,25);
-        forward(-0.4,40);
-        rotate(-0.4,90);
-        intaker();
-        forward(0.4,90);
-        sleep(500);
-        forward(-0.4,90);
-        stopintake();
-        shooter();
-        rotate(0.4,90);
-        forward(-0.4,40);
-        rotate(0.4, 25);
         servoOpen();
         sleep(1000);
         stopshoot();
         servoClose();
-        rotate(-0.4,25);
-        forward(-0.4,120);
+        rotate(0.4,25);
+        forward(-0.4,40);
+        rotate(0.4,90);
+        intaker();
+        forward(0.4,90);
+        sleep(500);
+        forward(-0.4,-90);
+        stopintake();
+        shooter();
         rotate(-0.4,90);
+        forward(0.4,40);
+        rotate(-0.4,25);
+        servoOpen();
+        sleep(1000);
+        stopshoot();
+        servoClose();
+        rotate(0.4,25);
+        forward(0.4,105);
+        rotate(0.4,90);
         intaker();
         forward(0.4,90);
         sleep(500);
         forward(-0.4,90);
         stopintake();
         shooter();
-        rotate(0.4,90);
+        rotate(-0.4,90);
         forward(0.4,45);
-        rotate(0.4,40);
+        rotate(-0.4,45);
         servoOpen();
         sleep(1000);
         stopshoot();
         servoClose();
-        forward(0.4,10);
+        forward(0.4,5);
 
 
 
@@ -218,9 +218,8 @@ public class AutoSashaRedWallNoTeammate extends LinearOpMode {
         intake.setPower(0);
         sleep(500);
     }
-
     public void shooter(){
-        shoot.setPower(0.7875);
+        shoot.setPower(0.9);
     }
     public void stopshoot(){
         shoot.setPower(0);

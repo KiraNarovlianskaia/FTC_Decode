@@ -6,7 +6,6 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -15,103 +14,133 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name = "Example Servos", group = "Tests")
 public class ExampleServos extends OpMode {
+
     private Follower follower;
-    private Timer pathTimer, opModeTimer;
-    private DcMotor intake;
-    //private Servo servoL, servoR;
+    private Timer stateTimer;
 
+    private DcMotor intake, shooter;
+    private Servo servoL, servoR;
 
-    public enum PathState {
-        //START POSITION_END POSITION
-        // DRIVE > MOVEMENT STATE
-        // SHOOT > ATTEMPT TO SCORE THE ARTIFACT
-        DRIVE_STARTPOS_SHOOT_POS,
-        SHOOT_PRELOAD,
-        INTAKE_BALLS,
-        DONE
-    }
-    PathState pathState;
+    private boolean pathStarted = false;
+    private boolean shootingStarted = false;
 
-    private final Pose startPose = new Pose(24.5,118.79, Math.toRadians(-90));
+    private final Pose startPose = new Pose(24.5, 118.79, Math.toRadians(-90));
     private final Pose shootPose = new Pose(24.5, 84.09, Math.toRadians(-90));
 
-    private PathChain driveStartPosShootPos;
-    public void buildPaths() {
-        //put in coordinates from starting pose > ending pose
-        driveStartPosShootPos = follower.pathBuilder()
+    private PathChain drivePath;
+
+    private enum State {
+        DRIVE,
+        INTAKE,
+        SHOOT,
+        DONE
+    }
+
+    private State state;
+
+    // ================= BUILD PATH =================
+    private void buildPaths() {
+        drivePath = follower.pathBuilder()
                 .addPath(new BezierLine(startPose, shootPose))
-                .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
+                .setLinearHeadingInterpolation(
+                        startPose.getHeading(),
+                        shootPose.getHeading()
+                )
                 .build();
     }
 
-
-    public void  statePathUpdate() {
-        switch (pathState){
-            case DRIVE_STARTPOS_SHOOT_POS:
-                follower.followPath(driveStartPosShootPos, 0.5,true);
-                setPathState(PathState.SHOOT_PRELOAD);
-                break;
-            case SHOOT_PRELOAD:
-                // check is follower done it's path?
-                if (!follower.isBusy()){
-                    // TODO add logic to shooter
-                    telemetry.addLine("Done Path l");
-                    setPathState(PathState.INTAKE_BALLS);
-                }
-                break;
-            case INTAKE_BALLS:
-                if (!follower.isBusy()) {
-                    intakeOn();
-                    // собираем шары 1.5 сек
-                    if (pathTimer.getElapsedTimeSeconds() > 1.5) {
-                        intakeOff();
-                        setPathState(PathState.DONE);
-                    }
-                }
-                break;
-            case DONE:
-                // ничего не делаем
-                break;
-        }
-    }
-
-    public void setPathState(PathState newState){
-        pathState = newState;
-        pathTimer.resetTimer();
-    }
-
+    // ================= INIT =================
     @Override
-    public void init(){
-        pathState = PathState.DRIVE_STARTPOS_SHOOT_POS;
-        pathTimer = new Timer();
-        opModeTimer = new Timer();
+    public void init() {
+
         follower = Constants.createFollower(hardwareMap);
-        // ===== DC MOTORS =====
+        stateTimer = new Timer();
+
         intake = hardwareMap.get(DcMotor.class, Constants.intake);
+        shooter = hardwareMap.get(DcMotor.class, Constants.shooter);
+        servoL = hardwareMap.get(Servo.class, Constants.servoL);
+        servoR = hardwareMap.get(Servo.class, Constants.servoR);
 
         intake.setDirection(DcMotor.Direction.FORWARD);
+        shooter.setDirection(DcMotor.Direction.REVERSE);
+
+        intake.setPower(0);
+        shooter.setPower(0);
+
+        servoL.setPosition(Constants.servo_init);
+        servoR.setPosition(Constants.servo_init);
 
         buildPaths();
         follower.setPose(startPose);
 
+        state = State.DRIVE;
     }
 
-    public void intakeOn() {
-        intake.setPower(Constants.intake_power);
-    }
-    public void intakeOff() {
-        intake.setPower(0);
-    }
-
+    // ================= LOOP =================
     @Override
-    public void loop(){
-        follower.update();
-        statePathUpdate();
+    public void loop() {
 
-        telemetry.addData("path state", pathState.toString());
-        telemetry.addData("x", follower.getPose().getX());
-        telemetry.addData("y", follower.getPose().getY());
-        telemetry.addData("heading", follower.getPose().getHeading());
-        telemetry.addData("Path time", pathTimer.getElapsedTimeSeconds());
+        follower.update();
+
+        switch (state) {
+
+            // ---------- DRIVE ----------
+            case DRIVE:
+                if (!pathStarted) {
+                    follower.followPath(drivePath, 0.5, true);
+                    pathStarted = true;
+                }
+
+                if (!follower.isBusy()) {
+                    stateTimer.resetTimer();
+                    state = State.INTAKE;
+                }
+                break;
+
+            // ---------- INTAKE ----------
+            case INTAKE:
+                if (stateTimer.getElapsedTimeSeconds() < 1.5) {
+                    intake.setPower(Constants.intake_power);
+                } else {
+                    intake.setPower(0);
+                    stateTimer.resetTimer();
+                    state = State.SHOOT;
+                }
+                break;
+
+            // ---------- SHOOT ----------
+            case SHOOT:
+
+                if (!shootingStarted) {
+                    shooter.setPower(1.0);
+                    shootingStarted = true;
+                    stateTimer.resetTimer();
+                }
+
+                double t = stateTimer.getElapsedTimeSeconds();
+
+                if (t >= 3.0) {
+                    servoL.setPosition(Constants.servo_shoot);
+                    servoR.setPosition(Constants.servo_shoot);
+                }
+
+                if (t >= 3.5) {
+                    shooter.setPower(0);
+                    servoL.setPosition(Constants.servo_init);
+                    servoR.setPosition(Constants.servo_init);
+                    state = State.DONE;
+                }
+                break;
+
+            // ---------- DONE ----------
+            case DONE:
+                break;
+        }
+
+        telemetry.addData("State", state);
+        telemetry.addData("Timer", stateTimer.getElapsedTimeSeconds());
+        telemetry.addData("X", follower.getPose().getX());
+        telemetry.addData("Y", follower.getPose().getY());
+        telemetry.addData("Heading", follower.getPose().getHeading());
     }
 }

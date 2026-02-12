@@ -1,18 +1,19 @@
-package org.firstinspires.ftc.teamcode.AUTO.Oleg;
-
+package org.firstinspires.ftc.teamcode.FinalCodes.AUTO;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-
-@Autonomous (name="AutoRedFromGoal")
-public class AutoRedFromGoal extends LinearOpMode {
+@Disabled
+@Autonomous (name="Auto Blue From Wall")
+public class AutoBlueFromWall extends LinearOpMode {
 
 
     DcMotor leftFront;
@@ -21,7 +22,8 @@ public class AutoRedFromGoal extends LinearOpMode {
     DcMotor rightBack;
     DcMotor intake;
     DcMotor shooter;
-
+    Servo servoL;
+    Servo servoR;
     static final double PI = 3.14159265;
     static final double WHEEL_DIAMETER = 10.4;
     static final double PULSES = 537.7;
@@ -37,11 +39,16 @@ public class AutoRedFromGoal extends LinearOpMode {
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
         intake = hardwareMap.get(DcMotor.class, "intake");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
+        servoL = hardwareMap.get(Servo.class, "left_servo");
+        servoR = hardwareMap.get(Servo.class, "right_servo");
 
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
-        leftBack.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
-        rightBack.setDirection(DcMotor.Direction.FORWARD);
+
+
+        leftFront.setDirection(DcMotor.Direction.FORWARD);
+        leftBack.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
+
         intake.setDirection(DcMotor.Direction.FORWARD);
         shooter.setDirection(DcMotor.Direction.FORWARD);
 
@@ -57,26 +64,33 @@ public class AutoRedFromGoal extends LinearOpMode {
 
         waitForStart();
 
-        moveForward(-0.3, 95);
-        shoot();
+        shooterStart();
 
-        moveRotate(0.3, 135);
+        moveRotate(0.35, 15);
+        moveForward(0.35, 40);
         intakeStart();
-        moveForward(0.3, 60); //collect
+        moveRotate(0.35, 90);
+        moveForward(-0.35, 45);
         intakeStop();
-        moveForward(-0.3, 60);
-        moveRotate(-0.3, 135);
-        shoot();
+        moveForward(0.25, 45);
+        moveRotate(-0.35, 90);
+        shooterStart();
+        moveForward(-0.35, 40);
+        moveRotate(-0.35, 15);
+        pushBalls();
+        sleep(2000);
+        shooterStop();
 
-        moveRotate(0.3, 135);
-        moveSide(0.3, 50);
+        moveRotate(0.3, 15);
+        moveForward(0.3, 115);
+        moveRotate(0.3, 90);
         intakeStart();
-        moveForward(0.3, 60); //collect
+        moveForward(-0.2, 50);
         intakeStop();
-        moveForward(-0.3, 60);
-        moveSide(-0.3, 50);
-        moveRotate(-0.3, 135);
-        shoot();
+        moveForward(0.3, 50);
+        moveRotate(-0.3, 90);
+        moveForward(-0.3, 115);
+        moveRotate(-0.3, 15);
 
 
     }
@@ -92,6 +106,7 @@ public class AutoRedFromGoal extends LinearOpMode {
         while (opModeIsActive() && Math.abs(leftFront.getCurrentPosition()) < PULSES_PER_CM * distance) ;
 
         leftFront.setPower(0);
+
         leftBack.setPower(0);
         rightFront.setPower(0);
         rightBack.setPower(0);
@@ -117,32 +132,26 @@ public class AutoRedFromGoal extends LinearOpMode {
         rightBack.setPower(0);
         sleep(500);
     }
-    public void moveSide(double speed, double distance) {
 
-        resetEncoders();
-
-        leftFront.setPower(speed);
-        leftBack.setPower(-speed);
-        rightFront.setPower(-speed);
-        rightBack.setPower(speed);
-
-        while (opModeIsActive() && Math.abs(leftFront.getCurrentPosition()) < PULSES_PER_CM * distance) ;
-
-        leftFront.setPower(0);
-        leftBack.setPower(0);
-        rightFront.setPower(0);
-        rightBack.setPower(0);
-        sleep(500);
+    public void pushBalls() {
+        servoL.setPosition(0.45);
+        servoR.setPosition(0.45);
+        sleep(400);
+        servoL.setPosition(0);
+        servoR.setPosition(0);
     }
 
-    public void shoot() {
-        shooter.setPower(0.5);
-        sleep(1000);
+
+    public void shooterStart() {
+        shooter.setPower(0.85);
+    }
+
+    public void shooterStop() {
         shooter.setPower(0);
     }
 
     public void intakeStart() {
-        intake.setPower(0.8);
+        intake.setPower(0.9);
     }
 
     public void intakeStop() {

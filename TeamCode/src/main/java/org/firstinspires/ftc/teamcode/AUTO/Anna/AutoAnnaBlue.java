@@ -13,8 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-@Autonomous (name="Anna Auto", group = "Anna")
-public class AutoAnna extends LinearOpMode {
+@Autonomous (name="Anna Auto Blue Goal 3 Artifacts", group = "Anna")
+public class AutoAnnaBlue extends LinearOpMode {
 
 
     DcMotor leftFront;
@@ -75,46 +75,46 @@ public class AutoAnna extends LinearOpMode {
 
         waitForStart();
 
-        moveForward(-0.4, 130);
+        moveForward(-0.4, 120);
         servoClosed();
         shoots();
-        moveRotate(0.4, 35);
+        moveRotate(-0.4, 35);
         startIntake(0.4);
         moveForward(0.4,90);
         sleep(500);
         moveForward(-0.4,90);
         stopIntake();
-        moveRotate(-0.4, 35);
+        moveRotate(0.4, 35);
         shoots();
 
-        moveRotate(0.4,35);
-        moveSide(0.4, 50);
+        moveRotate(-0.4,35);
+        moveSide(-0.4, 50);
         startIntake(0.4);
         moveForward(0.4,90);
         sleep(500);
         moveForward(-0.4,90);
         stopIntake();
-        moveSide(-0.4, 60);
-        moveRotate(-0.4, 35);
+        moveSide(0.4, 60);
+        moveRotate(0.4, 35);
         shoots();
 
-        moveRotate(0.4, 35);
-        moveSide(0.4, 30);
+        moveRotate(-0.4, 35);
+        moveSide(-0.4, 30);
         moveForward(0.4, 120);
         moveForward(-0.4, 120);
-        moveSide(0.4, 90);
+        moveSide(-0.4, 90);
         startIntake(0.4);
         moveForward(0.4,90);
         sleep(500);
         moveForward(-0.4,90);
         stopIntake();
-        moveSide(-0.4, 120);
-        moveRotate(-0.4, 35);
+        moveSide(0.4, 120);
+        moveRotate(0.4, 35);
         shoots();
 
     }
     public void shoots(){
-        startShooter(0.4);
+        startShooter(0.7);
         servoOpen();
         sleep(1000);
         stopShooter();

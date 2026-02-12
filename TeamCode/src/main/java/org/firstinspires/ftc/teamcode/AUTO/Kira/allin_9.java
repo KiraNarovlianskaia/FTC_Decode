@@ -18,11 +18,11 @@ public class allin_9 extends OpMode {
 
     private Follower follower;
     private Shooter shooter;
-    private Intake intake;
+    //private Intake intake;
     private Timer timer = new Timer();
 
     private enum State {
-        LINE_TO_SHOOT1, SHOOT1, CURVE_TO_COLLECT1, INTAKE1,
+        LINE_TO_SHOOT1, SHOOT1, CURVE_TO_COLLECT1, //INTAKE1,
         LINE_TO_SHOOT2, SHOOT2,
         CURVE_TO_COLLECT2, LINE_COLLECT2,
         LINE_BACK_TO_SHOOT3, SHOOT3,
@@ -69,9 +69,9 @@ public class allin_9 extends OpMode {
                 hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, Constants.servoR)
         );
 
-        intake = new Intake(
-                hardwareMap.get(com.qualcomm.robotcore.hardware.DcMotor.class, Constants.intake)
-        );
+        //intake = new Intake(
+          //      hardwareMap.get(com.qualcomm.robotcore.hardware.DcMotor.class, Constants.intake)
+        //);
 
         follower.setPose(startPose);
         state = State.LINE_TO_SHOOT1;
@@ -142,20 +142,20 @@ public class allin_9 extends OpMode {
                     follower.followPath(shoot1_collect1, 0.6, true);
                     pathStarted = true;
                 }
-                intake.start();
+                //intake.start();
                 if (!follower.isBusy() && shooter.isFinished()) {
                     timer.resetTimer();
-                    state = State.INTAKE1;
-                }
-                break;
-
-            case INTAKE1:
-                intake.start();
-                if (timer.getElapsedTimeSeconds() >= 1.0) {
-                    pathStarted = false;
                     state = State.LINE_TO_SHOOT2;
                 }
                 break;
+
+            //case INTAKE1:
+              //  intake.start();
+                //if (timer.getElapsedTimeSeconds() >= 1.0) {
+                  //  pathStarted = false;
+                    //state = State.LINE_TO_SHOOT2;
+                //}
+                //break;
 
             // ===== ЦИКЛ 2 =====
             case LINE_TO_SHOOT2:
@@ -183,7 +183,7 @@ public class allin_9 extends OpMode {
                     follower.followPath(shoot2_collectCurve2, 0.6, true);
                     pathStarted = true;
                 }
-                intake.start();
+                //intake.start();
                 if (!follower.isBusy() && shooter.isFinished()) {
                     pathStarted = false;
                     state = State.LINE_COLLECT2;
@@ -195,7 +195,7 @@ public class allin_9 extends OpMode {
                     follower.followPath(collectCurve2_collectPoint2, 0.6, true);
                     pathStarted = true;
                 }
-                intake.start();
+                //intake.start();
                 if (!follower.isBusy()) {
                     pathStarted = false;
                     state = State.LINE_BACK_TO_SHOOT3;
@@ -209,7 +209,7 @@ public class allin_9 extends OpMode {
                     pathStarted = true;
                 }
                 shooter.spinUp();
-                intake.start();
+                //intake.start();
                 if (!follower.isBusy()) {
                     pathStarted = false;
                     state = State.SHOOT3;
@@ -229,7 +229,7 @@ public class allin_9 extends OpMode {
                     follower.followPath(shoot3_collectCurve3, 0.6, true);
                     pathStarted = true;
                 }
-                intake.start();
+                //intake.start();
                 if (!follower.isBusy() && shooter.isFinished()) {
                     pathStarted = false;
                     state = State.LINE_COLLECT3;
@@ -241,7 +241,7 @@ public class allin_9 extends OpMode {
                     follower.followPath(collectCurve3_collectPoint3, 0.6, true);
                     pathStarted = true;
                 }
-                intake.start();
+                //intake.start();
                 if (!follower.isBusy()) {
                     pathStarted = false;
                     state = State.LINE_TO_SHOOT4;
@@ -255,7 +255,7 @@ public class allin_9 extends OpMode {
                     pathStarted = true;
                 }
                 shooter.spinUp();
-                intake.stop();
+                //intake.stop();
                 if (!follower.isBusy()) {
                     pathStarted = false;
                     state = State.SHOOT4;
@@ -272,7 +272,7 @@ public class allin_9 extends OpMode {
 
             case DONE:
                 shooter.stop();
-                intake.stop();
+                //intake.stop();
                 break;
         }
 

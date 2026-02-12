@@ -13,13 +13,14 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Disabled
-@Autonomous(name = "AutoBlue_9", group = "Paths")
+@Autonomous(name = "Movements9", group = "Paths")
 public class movements_9 extends OpMode {
 
     private Follower follower;
     private Timer pathTimer, opModeTimer;
 
     private enum PathState {
+        LINE_TO_SHOOT,
         CURVE_TO_COLLECT1,
         LINE_TO_SHOOT1,
         CURVE_TO_COLLECT2,
@@ -34,17 +35,19 @@ public class movements_9 extends OpMode {
 
     // Позиции
     private final Pose startPose = new Pose(24.508, 119.077, Math.toRadians(-90));
-    private final Pose collectPose1 = new Pose(24.508, 90, Math.toRadians(-90));
+    private final Pose collectPose1 = new Pose(24.333, 89.033, Math.toRadians(-90));
     private final Pose shootPose = new Pose(48.594, 94.576, Math.toRadians(135));
     private final Pose collectCurve2 = new Pose(24.894, 74.719, Math.toRadians(-90));
     private final Pose collectPoint2 = new Pose(24.894, 65.848, Math.toRadians(-90));
     private final Pose collectCurve3 = new Pose(24.045, 53.170, Math.toRadians(-90));
     private final Pose collectPoint3 = new Pose(24.045, 40.079, Math.toRadians(-90));
+    private final Pose control1 = new Pose(24.56, 118.989, 0);
     private final Pose control2 = new Pose(25.869, 84.504, 0);
     private final Pose control3 = new Pose(30.302, 78.164, 0);
 
     // Пути
-    private PathChain startPose_collectPose1;
+    private PathChain startPose_shootPose;
+    private PathChain shootPose_collectPose1;
     private PathChain collectPose1_shootPose;
     private PathChain shootPose_collectCurve2;
     private PathChain collectCurve2_collectPoint2;
@@ -87,7 +90,8 @@ public class movements_9 extends OpMode {
     }
 
     private void buildPaths() {
-        startPose_collectPose1 = buildLine(startPose, collectPose1);
+        startPose_shootPose = buildLine(startPose, shootPose);
+        shootPose_collectPose1 = buildCurve(shootPose, control1, collectPose1);
         collectPose1_shootPose = buildLine(collectPose1, shootPose);
 
         shootPose_collectCurve2 = buildCurve(shootPose, control2, collectCurve2);
@@ -110,9 +114,12 @@ public class movements_9 extends OpMode {
         follower.update();
 
         switch (pathState) {
+            case LINE_TO_SHOOT:
+                followAndAdvance(startPose_shootPose, PathState.CURVE_TO_COLLECT1);
+                break;
 
             case CURVE_TO_COLLECT1:
-                followAndAdvance(startPose_collectPose1, PathState.LINE_TO_SHOOT1);
+                followAndAdvance(shootPose_collectPose1, PathState.LINE_TO_SHOOT1);
                 break;
 
             case LINE_TO_SHOOT1:

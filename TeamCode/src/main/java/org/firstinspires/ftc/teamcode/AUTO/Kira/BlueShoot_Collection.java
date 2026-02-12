@@ -95,7 +95,7 @@ public class BlueShoot_Collection extends OpMode {
                     pathStarted = true;
                 }
 
-                // Раскручиваем во время движения
+                // Параллельно раскручиваем шутер
                 shooter.spinUp();
 
                 if (!follower.isBusy()) {
@@ -108,6 +108,7 @@ public class BlueShoot_Collection extends OpMode {
             // =====================================================
             case SHOOT:
 
+                // Если ещё не раскручен, spinUp() гарантирует старт
                 shooter.spinUp();
 
                 // Стреляем только когда готов
@@ -115,7 +116,7 @@ public class BlueShoot_Collection extends OpMode {
                     shooter.fire();
                 }
 
-                // Ждём полного завершения (включая COOLDOWN и BRAKING)
+                // Переходим ко второму проезду только после выстрела
                 if (shooter.isFinished()) {
                     pathStarted = false;
                     state = State.DRIVE_TO_COLLECT;
@@ -131,9 +132,12 @@ public class BlueShoot_Collection extends OpMode {
                     pathStarted = true;
                 }
 
+                // Интейк включаем сразу
                 intake.start();
 
-                if (!follower.isBusy()) {
+                // НЕ блокируем движение, кулдаун шутера продолжается
+                // Ждём, чтобы он завершил кулдаун и торможение перед переходом к INTAKE_FINISH
+                if (!follower.isBusy() && shooter.isFinished()) {
                     timer.resetTimer();
                     state = State.INTAKE_FINISH;
                 }
@@ -159,6 +163,7 @@ public class BlueShoot_Collection extends OpMode {
                 break;
         }
 
+        // ===== Телеметрия =====
         telemetry.addData("State", state);
         telemetry.addData("Follower Busy", follower.isBusy());
         telemetry.addData("Shooter Busy", shooter.isBusy());

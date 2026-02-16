@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import java.util.List;
-@Disabled
+
 @Autonomous(name = "AprilTag ID Reader", group = "Vision")
 public class Camera extends LinearOpMode {
 

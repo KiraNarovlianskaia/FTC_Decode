@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.AUTO.Anna;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -11,7 +12,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-
 
 @Autonomous (name="Anna Auto", group = "Anna")
 public class AutoAnna extends LinearOpMode {
@@ -47,8 +47,8 @@ public class AutoAnna extends LinearOpMode {
 
         intake = hardwareMap.get(DcMotor.class, "intake");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
-        ServoL = hardwareMap.get(Servo.class, "servoL");
-        ServoR = hardwareMap.get(Servo.class, "servoR");
+        ServoL = hardwareMap.get(Servo.class, "left_servo");
+        ServoR = hardwareMap.get(Servo.class, "right_servo");
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
@@ -75,30 +75,30 @@ public class AutoAnna extends LinearOpMode {
 
         waitForStart();
 
-        moveForward(-0.4, 140);
+        moveForward(-0.4, 130);
         servoClosed();
         shoots();
-        moveRotate(-0.4, 40);
+        moveRotate(0.4, 35);
         startIntake(0.4);
         moveForward(0.4,90);
         sleep(500);
         moveForward(-0.4,90);
         stopIntake();
-        moveRotate(0.4, 45);
+        moveRotate(-0.4, 35);
         shoots();
 
-        moveRotate(-0.4,45);
-        moveSide(0.4, 60);
+        moveRotate(0.4,35);
+        moveSide(0.4, 50);
         startIntake(0.4);
         moveForward(0.4,90);
         sleep(500);
         moveForward(-0.4,90);
         stopIntake();
         moveSide(-0.4, 60);
-        moveRotate(0.4, 45);
+        moveRotate(-0.4, 35);
         shoots();
 
-        moveRotate(-0.4, 45);
+        moveRotate(0.4, 35);
         moveSide(0.4, 30);
         moveForward(0.4, 120);
         moveForward(-0.4, 120);
@@ -109,7 +109,7 @@ public class AutoAnna extends LinearOpMode {
         moveForward(-0.4,90);
         stopIntake();
         moveSide(-0.4, 120);
-        moveRotate(0.4, 45);
+        moveRotate(-0.4, 35);
         shoots();
 
     }

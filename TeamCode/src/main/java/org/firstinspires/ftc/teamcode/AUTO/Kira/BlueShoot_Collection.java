@@ -10,14 +10,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 @Autonomous(name = "BLUE Shoot + Collect", group = "Paths")
 public class BlueShoot_Collection extends OpMode {
 
     private Follower follower;
-    private Shooter shooter;
+//    private Shooter shooter;
     private Intake intake;
     private Timer timer = new Timer();
 
@@ -61,11 +60,11 @@ public class BlueShoot_Collection extends OpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        shooter = new Shooter(
-                hardwareMap.get(com.qualcomm.robotcore.hardware.DcMotor.class, Constants.shooter),
-                hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, Constants.servoL),
-                hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, Constants.servoR)
-        );
+//        shooter = new Shooter(
+//                hardwareMap.get(com.qualcomm.robotcore.hardware.DcMotor.class, Constants.shooter),
+//                hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, Constants.servoL),
+//                hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, Constants.servoR)
+//        );
 
         intake = new Intake(
                 hardwareMap.get(com.qualcomm.robotcore.hardware.DcMotor.class, Constants.intake)
@@ -83,7 +82,7 @@ public class BlueShoot_Collection extends OpMode {
     public void loop() {
 
         follower.update();
-        shooter.update();
+//        shooter.update();
 
         switch (state) {
 
@@ -96,33 +95,17 @@ public class BlueShoot_Collection extends OpMode {
                 }
 
                 // Параллельно раскручиваем шутер
-                shooter.spinUp();
+//                shooter.spinUp();
 
                 if (!follower.isBusy()) {
-                    pathStarted = false;
-                    state = State.SHOOT;
-                }
-
-                break;
-
-            // =====================================================
-            case SHOOT:
-
-                // Если ещё не раскручен, spinUp() гарантирует старт
-                shooter.spinUp();
-
-                // Стреляем только когда готов
-                if (shooter.isReady()) {
-                    shooter.fire();
-                }
-
-                // Переходим ко второму проезду только после выстрела
-                if (shooter.isFinished()) {
                     pathStarted = false;
                     state = State.DRIVE_TO_COLLECT;
                 }
 
                 break;
+
+            // =====================================================
+
 
             // =====================================================
             case DRIVE_TO_COLLECT:
@@ -137,10 +120,10 @@ public class BlueShoot_Collection extends OpMode {
 
                 // НЕ блокируем движение, кулдаун шутера продолжается
                 // Ждём, чтобы он завершил кулдаун и торможение перед переходом к INTAKE_FINISH
-                if (!follower.isBusy() && shooter.isFinished()) {
-                    timer.resetTimer();
-                    state = State.INTAKE_FINISH;
-                }
+//                if (!follower.isBusy() && shooter.isFinished()) {
+//                    timer.resetTimer();
+//                    state = State.INTAKE_FINISH;
+//                }
 
                 break;
 

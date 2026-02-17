@@ -1,130 +1,98 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Shooter {
 
     private DcMotor shooter;
     private Servo servoL, servoR;
-    private Timer timer = new Timer();
+    private ElapsedTime stateTimer = new ElapsedTime();
 
-    private enum State {
-        IDLE,       // ничего не делает
-        SPINNING,   // раскрутка мотора
-        FIRING,     // выстрел с серво
-        COOLDOWN,   // мотор ещё крутится после возврата серво
-        BRAKING,    // реверс для остановки
-        FINISHED    // закончено, готов к следующему циклу
+    private enum ShooterState {
+        IDLE,
+        SPIN_UP,
+        LAUNCH,
+        COOLDOWN
     }
 
-    private State state = State.IDLE;
+    private ShooterState shooterState;
 
-    // Тайминги и параметры
-    private static final double SERVO_TIME = 0.5;        // время работы серво вверх
-    private static final double EXTRA_SPIN_TIME = 1.0;   // дополнительное время вращения после выстрела
-    private static final double BRAKE_POWER = -1.0;      // реверс для торможения
-    private static final double BRAKE_TIME = 0.2;        // длительность реверса
+    //-------------GATE CONSTANTS------------
+    private double servo_init = 0.0;
+    private double servo_shoot = 0.45;
+    private double servo_open_time = 0.5;
 
-    public Shooter(DcMotor shooter, Servo servoL, Servo servoR) {
-        this.shooter = shooter;
-        this.servoL = servoL;
-        this.servoR = servoR;
+    //-------------FLYWHEEL CONSTANTS---------
+    private double flywheelVelocity = 0.7;
+    private double flywheel_max_spinup_time = 2;
 
+    //-------------COOLDOWN CONSTANTS---------
+    private double cooldown_time = 1;
+    private double cooldown_vel = -0.5;
+
+    public void init(HardwareMap hwMap) {
+        servoL = hwMap.get(Servo.class, "left_servo");
+        servoR = hwMap.get(Servo.class, "right_servo");
+        shooter = hwMap.get(DcMotor.class, "shooter");
+
+        shooter.setDirection(DcMotor.Direction.REVERSE);
+
+        shooterState = ShooterState.IDLE;
+
+        servoL.setPosition(servo_init);
+        servoR.setPosition(servo_init);
         shooter.setPower(0);
-        resetServos();
     }
 
-    // Запуск мотора (можно параллельно с движением)
-    public void spinUp() {
-        if (state == State.IDLE) {
-            shooter.setPower(Constants.shooter_power);
-            timer.resetTimer();
-            state = State.SPINNING;
+    public void shoot() {
+        if (shooterState == ShooterState.IDLE) {
+            shooterState = ShooterState.SPIN_UP;
+            stateTimer.reset();
+            shooter.setPower(flywheelVelocity);
         }
     }
 
-    // Выстрел (будет выполняться только после достаточной раскрутки)
-    public void fire() {
-        if (state == State.SPINNING && timer.getElapsedTimeSeconds() >= 3.0) {
-            shootServos();
-            timer.resetTimer();
-            state = State.FIRING;
-        }
-    }
-
-    // Обновление состояния, ОБЯЗАТЕЛЬНО в loop
     public void update() {
 
-        switch (state) {
+        switch (shooterState) {
 
-            case FIRING:
-                if (timer.getElapsedTimeSeconds() >= SERVO_TIME) {
-                    resetServos();
-                    timer.resetTimer();
-                    state = State.COOLDOWN;
+            case IDLE:
+                shooter.setPower(0); // защита
+                break;
+
+            case SPIN_UP:
+                if (stateTimer.seconds() > flywheel_max_spinup_time) {
+                    servoL.setPosition(servo_shoot);
+                    servoR.setPosition(servo_shoot);
+                    stateTimer.reset();
+                    shooterState = ShooterState.LAUNCH;
+                }
+                break;
+
+            case LAUNCH:
+                if (stateTimer.seconds() > servo_open_time) {
+                    servoL.setPosition(servo_init);
+                    servoR.setPosition(servo_init);
+
+                    shooter.setPower(cooldown_vel);
+                    stateTimer.reset();
+                    shooterState = ShooterState.COOLDOWN;
                 }
                 break;
 
             case COOLDOWN:
-                if (timer.getElapsedTimeSeconds() >= EXTRA_SPIN_TIME) {
-                    shooter.setPower(BRAKE_POWER);  // короткий реверс для торможения
-                    timer.resetTimer();
-                    state = State.BRAKING;
-                }
-                break;
-
-            case BRAKING:
-                if (timer.getElapsedTimeSeconds() >= BRAKE_TIME) {
+                if (stateTimer.seconds() > cooldown_time) {
                     shooter.setPower(0);
-                    state = State.FINISHED;
+                    shooterState = ShooterState.IDLE;
                 }
-                break;
-
-            case FINISHED:
-                // ничего не делаем, ждём следующего цикла
-                break;
-
-            case SPINNING:
-            case IDLE:
-                // ничего не меняем, ждём вызова fire() или spinUp()
                 break;
         }
     }
 
-    // Проверка, готов ли к выстрелу
-    public boolean isReady() {
-        return state == State.SPINNING && timer.getElapsedTimeSeconds() >= 3.0;
-    }
-
-    // Проверка, занято ли устройство
     public boolean isBusy() {
-        return state == State.SPINNING || state == State.FIRING || state == State.COOLDOWN || state == State.BRAKING;
-    }
-
-    // Проверка, завершена ли работа
-    public boolean isFinished() {
-        return state == State.FINISHED;
-    }
-
-    // Принудительная остановка и сброс
-    public void stop() {
-        shooter.setPower(0);
-        resetServos();
-        state = State.IDLE;
-    }
-
-    // Серво вверх для выстрела
-    private void shootServos() {
-        servoL.setPosition(Constants.servo_shoot);
-        servoR.setPosition(Constants.servo_shoot);
-    }
-
-    // Серво вниз (инициализация)
-    private void resetServos() {
-        servoL.setPosition(Constants.servo_init);
-        servoR.setPosition(Constants.servo_init);
+        return shooterState != ShooterState.IDLE;
     }
 }

@@ -35,7 +35,7 @@ public class movements_9 extends OpMode {
     // Позиции
     private final Pose startPose = new Pose(24.508, 119.077, Math.toRadians(-90));
     private final Pose collectPose1 = new Pose(24.333, 89.033, Math.toRadians(-90));
-    private final Pose shootPose = new Pose(48.594, 94.576, Math.toRadians(135));
+    private final Pose shootPose = new Pose(48.594, 94.576, Math.toRadians(-45));
     private final Pose collectCurve2 = new Pose(24.894, 74.719, Math.toRadians(-90));
     private final Pose collectPoint2 = new Pose(24.894, 65.848, Math.toRadians(-90));
     private final Pose collectCurve3 = new Pose(24.045, 53.170, Math.toRadians(-90));

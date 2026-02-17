@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Configurable
 @TeleOp(name="TeleOpFinal")
 
-public class TeleOpFinal extends LinearOpMode {
+public class TeleOpSemiFinal extends LinearOpMode {
 
     DcMotor leftFront;
     DcMotor leftBack;

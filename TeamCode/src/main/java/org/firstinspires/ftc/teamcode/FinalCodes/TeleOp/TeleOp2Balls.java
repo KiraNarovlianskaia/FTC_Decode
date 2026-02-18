@@ -25,10 +25,10 @@ public class TeleOpFinalFinal extends LinearOpMode {
     static final double servoPush = 0.45;
     static final double servoOpen = 0;
     static final double servoReady = 0.18;
-    boolean rbBefore = false;
+
 
     // Speed vars
-    static double SPEEDFACTOR = 0.55;
+    static final double SPEEDFACTOR = 0.55;
     static final double intakeSpeed = 0.9;
     static double shootingSpeed = 0.85;
 
@@ -81,14 +81,14 @@ public class TeleOpFinalFinal extends LinearOpMode {
 
 
             // Open and close left servo
-            if (gamepad2.bWasPressed()) {
+            if (gamepad2.xWasPressed()) {
                 servoL.setPosition(servoPush);
                 sleep(400);
                 servoL.setPosition(servoOpen);
             }
 
             // Open and close right servo
-            if (gamepad2.xWasPressed()) {
+            if (gamepad2.bWasPressed()) {
                 servoR.setPosition(servoPush);
                 sleep(400);
                 servoR.setPosition(servoOpen);
@@ -126,22 +126,22 @@ public class TeleOpFinalFinal extends LinearOpMode {
 
 
             // LEFT BALL COLOR
-            //if (colors.alpha < 0.3 /* > colors.blue && colors.alpha > colors.green */ ) {
-               // ball_left_color = "None";
-            //} else if (colors.blue > colors.green) {
-               // ball_left_color = "Purple";
-            //} else {
-               // ball_left_color = "Green";
-            //}
+            if (colors.alpha < 0.3 /* > colors.blue && colors.alpha > colors.green */ ) {
+                ball_left_color = "None";
+            } else if (colors.blue > colors.green) {
+                ball_left_color = "Purple";
+            } else {
+                ball_left_color = "Green";
+            }
             
             // RIGHT BALL COLOR
-            //if (colors2.alpha < 0.3 /* > colors2.blue && colors2.alpha > colors2.green */) {
-             //   ball_right_color = "None";
-            //} else if (colors2.blue > colors2.green) {
-              //  ball_right_color = "Purple";
-            //} else {
-              //  ball_right_color = "Green";
-            //}
+            if (colors2.alpha < 0.3 /* > colors2.blue && colors2.alpha > colors2.green */) {
+                ball_right_color = "None";
+            } else if (colors2.blue > colors2.green) {
+                ball_right_color = "Purple";
+            } else {
+                ball_right_color = "Green";
+            }
 
 
             telemetry.addData("Left ball: ", ball_left_color);
@@ -150,25 +150,20 @@ public class TeleOpFinalFinal extends LinearOpMode {
             telemetry.update();
 
 
-            //if (ball_left_color != "None") {
-              //  servoR.setPosition(servoReady);
-            //}
-            //if (ball_right_color != "None") {
-              //  servoL.setPosition(servoReady);
-            //}
+            if (ball_left_color != "None") {
+                servoR.setPosition(servoReady);
+            }
+            if (ball_right_color != "None") {
+                servoL.setPosition(servoReady);
+            }
 
 
-            if (gamepad2.left_bumper ) {
+            if (gamepad1.left_bumper) {
                 shootingSpeed -= 0.01;
                 sleep(50);
             }
 
-            if (gamepad1.left_bumper && !rbBefore) {
-                SPEEDFACTOR = -SPEEDFACTOR;
-            }
-            rbBefore = gamepad1.right_bumper;
-
-            if (gamepad2.right_bumper) {
+            if (gamepad1.right_bumper) {
                 shootingSpeed += 0.01;
                 sleep(50);
             }

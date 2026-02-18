@@ -4,113 +4,109 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
-@Autonomous(name = "BLUE SingleShot", group = "Paths")
+
+@Autonomous(name = "BlueShoot2", group = "Paths")
 public class BlueShoot2 extends OpMode {
 
     private Follower follower;
-    private Shooter shooter;
+    private Timer pathTimer, opModeTimer;
 
-    private enum State {
-        DRIVE_TO_SHOOT,
-        SHOOT,
-        DONE
+    private Shooter shooter = new Shooter();
+    private boolean shotsTriggered = false;
+
+    public enum PathState {
+        DRIVE_STARTPOS_SHOOT_POS,
+        SHOOT_PRELOAD
     }
 
-    private State state;
+    PathState pathState;
 
-    // ===== Позиции =====
-    private final Pose startPose = new Pose(24.508, 119.077, Math.toRadians(-90));
+    private final Pose startPose = new Pose(24.508,119.077, Math.toRadians(-90));
     private final Pose shootPose = new Pose(48.594, 94.576, Math.toRadians(-45));
 
-    private PathChain startToShoot;
+    private PathChain driveStartPosShootPos;
 
-    private boolean pathStarted = false;
-
-    private PathChain buildLine(Pose from, Pose to) {
-        return follower.pathBuilder()
-                .addPath(new BezierLine(from, to))
-                .setLinearHeadingInterpolation(from.getHeading(), to.getHeading())
+    public void buildPaths() {
+        driveStartPosShootPos = follower.pathBuilder()
+                .addPath(new BezierLine(startPose, shootPose))
+                .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
                 .build();
+    }
+
+    public void statePathUpdate() {
+
+        switch (pathState) {
+
+            case DRIVE_STARTPOS_SHOOT_POS:
+                follower.followPath(driveStartPosShootPos, 0.5, true);
+                setPathState(PathState.SHOOT_PRELOAD);
+                break;
+
+            case SHOOT_PRELOAD:
+
+                if (!follower.isBusy()) {
+
+                    // Запускаем выстрел один раз
+                    if (!shotsTriggered) {
+                        shooter.shoot();
+                        shotsTriggered = true;
+                    }
+
+                    // Когда выстрел завершён
+                    if (shotsTriggered && !shooter.isBusy()) {
+                        telemetry.addLine("Shot Complete");
+                    }
+                }
+                break;
+
+            default:
+                telemetry.addLine("No State Commanded");
+                break;
+        }
+    }
+
+    public void setPathState(PathState newState) {
+        pathState = newState;
+        pathTimer.resetTimer();
+        shotsTriggered = false;
     }
 
     @Override
     public void init() {
-
+        pathState = PathState.DRIVE_STARTPOS_SHOOT_POS;
+        pathTimer = new Timer();
+        opModeTimer = new Timer();
         follower = Constants.createFollower(hardwareMap);
 
-        shooter = new Shooter(
-                hardwareMap.get(com.qualcomm.robotcore.hardware.DcMotor.class, Constants.shooter),
-                hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, Constants.servoL),
-                hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, Constants.servoR)
-        );
-
+        shooter.init(hardwareMap);
+        buildPaths();
         follower.setPose(startPose);
-        startToShoot = buildLine(startPose, shootPose);
+    }
 
-        state = State.DRIVE_TO_SHOOT;
+    @Override
+    public void start() {
+        opModeTimer.resetTimer();
+        setPathState(pathState);
     }
 
     @Override
     public void loop() {
-
         follower.update();
         shooter.update();
+        statePathUpdate();
 
-        switch (state) {
-
-            // ==========================================
-            case DRIVE_TO_SHOOT:
-
-                if (!pathStarted) {
-                    follower.followPath(startToShoot, 0.6, true);
-                    pathStarted = true;
-                }
-
-                // Раскрутка во время движения
-                shooter.spinUp();
-
-                if (!follower.isBusy()) {
-                    state = State.SHOOT;
-                }
-
-                break;
-
-            // ==========================================
-            case SHOOT:
-
-                // Если ещё не раскрутился — продолжаем
-                shooter.spinUp();
-
-                // Стреляем ТОЛЬКО когда готов
-                if (shooter.isReady()) {
-                    shooter.fire();
-                }
-
-                // Когда полностью завершил цикл
-                if (shooter.isFinished()) {
-                    state = State.DONE;
-                }
-
-                break;
-
-            // ==========================================
-            case DONE:
-
-                shooter.stop();  // дополнительная защита
-                break;
-        }
-
-        telemetry.addData("State", state);
-        telemetry.addData("Follower Busy", follower.isBusy());
-        telemetry.addData("Shooter Busy", shooter.isBusy());
-        telemetry.addData("Shooter Ready", shooter.isReady());
-        telemetry.addData("Shooter Finished", shooter.isFinished());
-        telemetry.update();
+        telemetry.addData("path state", pathState.toString());
+        telemetry.addData("x", follower.getPose().getX());
+        telemetry.addData("y", follower.getPose().getY());
+        telemetry.addData("heading", follower.getPose().getHeading());
+        telemetry.addData("Path time", pathTimer.getElapsedTimeSeconds());
     }
 }

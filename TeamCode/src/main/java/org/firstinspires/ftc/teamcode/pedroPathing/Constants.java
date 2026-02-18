@@ -46,8 +46,8 @@ public class Constants {
 
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(116.5/2.54)
-            .strafePodX(-86.5/2.54)
+            .forwardPodY(136/2.54)
+            .strafePodX(-58/2.54)
             .distanceUnit(DistanceUnit.MM)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
@@ -68,12 +68,9 @@ public class Constants {
     public static PathConstraints slowConstraints =
             new PathConstraints(0.5, 100, 1.5, 1);
 
-    public static final String intake = "intake";
-    public static final String shooter = "shooter";
+
     public static final double intake_power = 1;
     public static final double shooter_power = -0.75;
-    public static final String servoL = "left_servo";
-    public static final String servoR = "right_servo";
     public static final double servo_init = 0.0;
     public static final double servo_shoot = 0.45;
 }

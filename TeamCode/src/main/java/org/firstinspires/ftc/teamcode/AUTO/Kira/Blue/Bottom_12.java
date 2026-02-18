@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 
-@Autonomous(name = "Pedro Pathing Autonomous", group = "Autonomous")
+@Autonomous(name = "Blue_Bottom_12", group = "Autonomous")
 @Configurable // Panels
 public class Bottom_12 extends OpMode {
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance

@@ -67,10 +67,4 @@ public class Constants {
     }
     public static PathConstraints slowConstraints =
             new PathConstraints(0.5, 100, 1.5, 1);
-
-
-    public static final double intake_power = 1;
-    public static final double shooter_power = -0.75;
-    public static final double servo_init = 0.0;
-    public static final double servo_shoot = 0.45;
 }

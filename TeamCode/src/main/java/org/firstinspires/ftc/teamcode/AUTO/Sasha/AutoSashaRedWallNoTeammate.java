@@ -130,8 +130,6 @@ public class AutoSashaRedWallNoTeammate extends LinearOpMode {
         forward(0.4,10);
 
 
-
-
     }
     public void forward( double speed, double distance){
 

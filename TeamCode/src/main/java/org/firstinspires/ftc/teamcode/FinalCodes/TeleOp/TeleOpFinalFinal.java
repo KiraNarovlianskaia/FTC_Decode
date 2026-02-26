@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.FinalCodes.TeleOp;
 import com.bylazar.configurables.annotations.Configurable;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
-
 @Configurable
 @TeleOp(name="TeleOpFinal")
 
@@ -105,7 +105,7 @@ public class TeleOpFinalFinal extends LinearOpMode {
 
 
             forward = gamepad1.left_stick_y;
-            side = gamepad1.left_stick_x;
+            side = gamepad1.right_trigger-gamepad1.left_trigger;
             rotation = gamepad1.right_stick_x;
             intakeR = gamepad2.right_trigger;
             intakeL = gamepad2.left_trigger;

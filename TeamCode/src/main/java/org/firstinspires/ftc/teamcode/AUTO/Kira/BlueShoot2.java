@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.subsystems.ShooterNew;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 
 @Autonomous(name = "BlueShoot2", group = "Paths")
@@ -19,7 +19,7 @@ public class BlueShoot2 extends OpMode {
     private Follower follower;
     private Timer pathTimer, opModeTimer;
 
-    private ShooterNew shooter = new ShooterNew();
+    private Shooter shooter = new Shooter();
     private boolean shotsTriggered = false;
 
     public enum PathState {

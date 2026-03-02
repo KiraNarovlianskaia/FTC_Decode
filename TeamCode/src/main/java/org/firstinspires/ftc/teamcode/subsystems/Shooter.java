@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Shooter {
 
-    private DcMotor shooter;
-    private Servo servoL, servoR;
+    private DcMotor shooterL, shooterM, shooterR;
+    private Servo servoL, servoM, servoR;
     private ElapsedTime stateTimer = new ElapsedTime();
 
     private enum ShooterState {
@@ -34,24 +34,36 @@ public class Shooter {
     private double cooldown_vel = -0.5;
 
     public void init(HardwareMap hwMap) {
-        servoL = hwMap.get(Servo.class, "left_servo");
-        servoR = hwMap.get(Servo.class, "right_servo");
-        shooter = hwMap.get(DcMotor.class, "shooter");
+        servoL = hwMap.get(Servo.class, "servo_left");
+        servoM = hwMap.get(Servo.class, "servo_mid");
+        servoR = hwMap.get(Servo.class, "servo_right");
 
-        shooter.setDirection(DcMotor.Direction.REVERSE);
+        shooterL = hwMap.get(DcMotor.class, "shooter_left");
+        shooterM = hwMap.get(DcMotor.class, "shooter_mid");
+        shooterR = hwMap.get(DcMotor.class, "shooter_right");
+
+        shooterL.setDirection(DcMotor.Direction.REVERSE);
+        shooterM.setDirection(DcMotor.Direction.REVERSE);
+        shooterR.setDirection(DcMotor.Direction.REVERSE);
 
         shooterState = ShooterState.IDLE;
 
         servoL.setPosition(servo_init);
+        servoM.setPosition(servo_init);
         servoR.setPosition(servo_init);
-        shooter.setPower(0);
+
+        shooterL.setPower(0);
+        shooterM.setPower(0);
+        shooterR.setPower(0);
     }
 
     public void shoot() {
         if (shooterState == ShooterState.IDLE) {
             shooterState = ShooterState.SPIN_UP;
             stateTimer.reset();
-            shooter.setPower(flywheelVelocity);
+            shooterL.setPower(flywheelVelocity);
+            shooterM.setPower(flywheelVelocity);
+            shooterR.setPower(flywheelVelocity);
         }
     }
 
@@ -60,12 +72,15 @@ public class Shooter {
         switch (shooterState) {
 
             case IDLE:
-                shooter.setPower(0); // защита
+                shooterL.setPower(0); // защита
+                shooterM.setPower(0);
+                shooterR.setPower(0);
                 break;
 
             case SPIN_UP:
                 if (stateTimer.seconds() > flywheel_max_spinup_time) {
                     servoL.setPosition(servo_shoot);
+                    servoM.setPosition(servo_shoot);
                     servoR.setPosition(servo_shoot);
                     stateTimer.reset();
                     shooterState = ShooterState.LAUNCH;
@@ -75,9 +90,12 @@ public class Shooter {
             case LAUNCH:
                 if (stateTimer.seconds() > servo_open_time) {
                     servoL.setPosition(servo_init);
+                    servoM.setPosition(servo_init);
                     servoR.setPosition(servo_init);
 
-                    shooter.setPower(cooldown_vel);
+                    shooterL.setPower(cooldown_vel);
+                    shooterM.setPower(cooldown_vel);
+                    shooterR.setPower(cooldown_vel);
                     stateTimer.reset();
                     shooterState = ShooterState.COOLDOWN;
                 }
@@ -85,7 +103,9 @@ public class Shooter {
 
             case COOLDOWN:
                 if (stateTimer.seconds() > cooldown_time) {
-                    shooter.setPower(0);
+                    shooterL.setPower(0);
+                    shooterM.setPower(0);
+                    shooterR.setPower(0);
                     shooterState = ShooterState.IDLE;
                 }
                 break;

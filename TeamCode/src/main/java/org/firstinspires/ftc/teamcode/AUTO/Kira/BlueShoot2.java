@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
-
+@Disabled
 @Autonomous(name = "BlueShoot2", group = "Paths")
 public class BlueShoot2 extends OpMode {
 

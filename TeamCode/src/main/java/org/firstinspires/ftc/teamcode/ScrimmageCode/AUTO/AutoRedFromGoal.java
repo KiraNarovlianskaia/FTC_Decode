@@ -1,4 +1,5 @@
-package org.firstinspires.ftc.teamcode.FinalCodes.AUTO;
+package org.firstinspires.ftc.teamcode.ScrimmageCode.AUTO;
+
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -6,13 +7,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 @Disabled
-@Autonomous (name="AutoBlueFromGoal")
-public class AutoBlueFromGoal extends LinearOpMode {
+@Autonomous (name="AutoRedFromGoal")
+public class AutoRedFromGoal extends LinearOpMode {
 
 
     DcMotor leftFront;
@@ -21,6 +22,7 @@ public class AutoBlueFromGoal extends LinearOpMode {
     DcMotor rightBack;
     DcMotor intake;
     DcMotor shooter;
+
     static final double PI = 3.14159265;
     static final double WHEEL_DIAMETER = 10.4;
     static final double PULSES = 537.7;
@@ -34,15 +36,13 @@ public class AutoBlueFromGoal extends LinearOpMode {
         leftBack = hardwareMap.get(DcMotor.class, "left_back");
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
-
         intake = hardwareMap.get(DcMotor.class, "intake");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
 
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
-
         intake.setDirection(DcMotor.Direction.FORWARD);
         shooter.setDirection(DcMotor.Direction.FORWARD);
 
@@ -61,22 +61,22 @@ public class AutoBlueFromGoal extends LinearOpMode {
         moveForward(-0.3, 95);
         shoot();
 
-        moveRotate(-0.3, 135);
+        moveRotate(0.3, 135);
         intakeStart();
         moveForward(0.3, 60); //collect
         intakeStop();
         moveForward(-0.3, 60);
-        moveRotate(0.3, 135);
+        moveRotate(-0.3, 135);
         shoot();
 
-        moveRotate(-0.3, 135);
+        moveRotate(0.3, 135);
         moveSide(0.3, 50);
         intakeStart();
         moveForward(0.3, 60); //collect
         intakeStop();
         moveForward(-0.3, 60);
         moveSide(-0.3, 50);
-        moveRotate(0.3, 135);
+        moveRotate(-0.3, 135);
         shoot();
 
 
@@ -138,7 +138,7 @@ public class AutoBlueFromGoal extends LinearOpMode {
 
     public void shoot() {
         shooter.setPower(0.7);
-        sleep(5000);
+        sleep(1000);
         shooter.setPower(0);
     }
 

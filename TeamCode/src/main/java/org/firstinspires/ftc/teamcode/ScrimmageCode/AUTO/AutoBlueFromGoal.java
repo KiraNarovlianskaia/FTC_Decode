@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.FinalCodes.AUTO;
+package org.firstinspires.ftc.teamcode.ScrimmageCode.AUTO;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -6,14 +6,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
-
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 @Disabled
-@Autonomous (name="Auto Red From Wall")
-public class AutoRedFromWall extends LinearOpMode {
+@Autonomous (name="AutoBlueFromGoal")
+public class AutoBlueFromGoal extends LinearOpMode {
 
 
     DcMotor leftFront;
@@ -22,8 +21,6 @@ public class AutoRedFromWall extends LinearOpMode {
     DcMotor rightBack;
     DcMotor intake;
     DcMotor shooter;
-    Servo servoL;
-    Servo servoR;
     static final double PI = 3.14159265;
     static final double WHEEL_DIAMETER = 10.4;
     static final double PULSES = 537.7;
@@ -33,22 +30,18 @@ public class AutoRedFromWall extends LinearOpMode {
 
     public void runOpMode() {
 
-
         leftFront = hardwareMap.get(DcMotor.class, "left_front");
         leftBack = hardwareMap.get(DcMotor.class, "left_back");
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
+
         intake = hardwareMap.get(DcMotor.class, "intake");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
-        servoL = hardwareMap.get(Servo.class, "left_servo");
-        servoR = hardwareMap.get(Servo.class, "right_servo");
-
-
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
 
         intake.setDirection(DcMotor.Direction.FORWARD);
         shooter.setDirection(DcMotor.Direction.FORWARD);
@@ -65,37 +58,26 @@ public class AutoRedFromWall extends LinearOpMode {
 
         waitForStart();
 
-        shooterStart();
-        sleep(1000);
-        pushBalls();
-        sleep(1500);
-        shooterStop();
+        moveForward(-0.3, 95);
+        shoot();
 
-        moveRotate(0.35, 15);
-        moveForward(0.35, 40);
+        moveRotate(-0.3, 135);
         intakeStart();
-        moveRotate(0.35, 90);
-        moveForward(-0.25, 45);
+        moveForward(0.3, 60); //collect
         intakeStop();
-        moveForward(0.35, 45);
-        moveRotate(-0.35, 90);
-        shooterStart();
-        moveForward(-0.35, 40);
-        moveRotate(-0.35, 15);
-        // pushBall();
-        sleep(2000);
-        shooterStop();
+        moveForward(-0.3, 60);
+        moveRotate(0.3, 135);
+        shoot();
 
-        moveRotate(0.35, 15);
-        moveForward(0.35, 115);
-        moveRotate(0.35, 90);
+        moveRotate(-0.3, 135);
+        moveSide(0.3, 50);
         intakeStart();
-        moveForward(-0.25, 50);
+        moveForward(0.3, 60); //collect
         intakeStop();
-        moveForward(0.35, 50);
-        moveRotate(-0.35, 90);
-        moveForward(-0.35, 115);
-        moveRotate(-0.35, 15);
+        moveForward(-0.3, 60);
+        moveSide(-0.3, 50);
+        moveRotate(0.3, 135);
+        shoot();
 
 
     }
@@ -111,7 +93,6 @@ public class AutoRedFromWall extends LinearOpMode {
         while (opModeIsActive() && Math.abs(leftFront.getCurrentPosition()) < PULSES_PER_CM * distance) ;
 
         leftFront.setPower(0);
-
         leftBack.setPower(0);
         rightFront.setPower(0);
         rightBack.setPower(0);
@@ -137,27 +118,32 @@ public class AutoRedFromWall extends LinearOpMode {
         rightBack.setPower(0);
         sleep(500);
     }
+    public void moveSide(double speed, double distance) {
 
-    public void pushBalls() {
-        servoL.setPosition(0.45);
-        servoR.setPosition(0.45);
-        sleep(400);
-        servoL.setPosition(0.);
-        servoR.setPosition(0);
+        resetEncoders();
 
+        leftFront.setPower(speed);
+        leftBack.setPower(-speed);
+        rightFront.setPower(-speed);
+        rightBack.setPower(speed);
+
+        while (opModeIsActive() && Math.abs(leftFront.getCurrentPosition()) < PULSES_PER_CM * distance) ;
+
+        leftFront.setPower(0);
+        leftBack.setPower(0);
+        rightFront.setPower(0);
+        rightBack.setPower(0);
+        sleep(500);
     }
 
-
-    public void shooterStart() {
-        shooter.setPower(0.85);
-    }
-
-    public void shooterStop() {
+    public void shoot() {
+        shooter.setPower(0.7);
+        sleep(5000);
         shooter.setPower(0);
     }
 
     public void intakeStart() {
-        intake.setPower(0.9);
+        intake.setPower(0.6);
     }
 
     public void intakeStop() {

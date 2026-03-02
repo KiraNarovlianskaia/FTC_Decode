@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.FinalCodes.AUTO;
+package org.firstinspires.ftc.teamcode.ScrimmageCode.AUTO;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;

@@ -22,13 +22,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(5.8)
-            .forwardZeroPowerAcceleration(-29.659)
-            .lateralZeroPowerAcceleration(-51.811)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.013, 0.025))
-            .headingPIDFCoefficients(new PIDFCoefficients(1.1,0,0.1,0.025))
+            .mass(12.5)
+            .forwardZeroPowerAcceleration(-33.119)
+            .lateralZeroPowerAcceleration(-71.002)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0.025))
+            .headingPIDFCoefficients(new PIDFCoefficients(1,0,0.1,0.02))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.009,0,0.00035,0.6,0.025))
-            .centripetalScaling(0.00024)
+            .centripetalScaling(0.0002)
             ;
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
@@ -40,14 +40,14 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(79.753)
-            .yVelocity(67.569)
+            .xVelocity(82.244)
+            .yVelocity(66.622)
             ;
 
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(136/2.54)
-            .strafePodX(-58/2.54)
+            .forwardPodY(188/2.54)
+            .strafePodX(3/2.54)
             .distanceUnit(DistanceUnit.MM)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
@@ -65,6 +65,5 @@ public class Constants {
                 .mecanumDrivetrain(driveConstants)
                 .build();
     }
-    public static PathConstraints slowConstraints =
-            new PathConstraints(0.5, 100, 1.5, 1);
+
 }

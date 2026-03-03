@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-
+@Disabled
 @Autonomous(name = "Movements9", group = "Paths")
 public class movements_9 extends OpMode {
 

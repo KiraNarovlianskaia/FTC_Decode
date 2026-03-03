@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-@Disabled
+
 @Autonomous(name = "Straight Line", group = "Tests")
 public class StraightLine extends OpMode {
     private Follower follower;
@@ -72,6 +72,9 @@ public class StraightLine extends OpMode {
 
         buildPaths();
         follower.setPose(startPose);
+        telemetry.addData("REAL HEADING DEG",
+                Math.toDegrees(follower.getPose().getHeading()));
+        telemetry.update();
 
     }
 

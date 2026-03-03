@@ -238,13 +238,15 @@ public class TeleOpPatternImproved extends LinearOpMode {
         // Keep track of which balls have been shot
         boolean[] shot = {false, false, false};
 
+        // Activate all shooters
+        shooterL.setPower(shootingSpeed);
+        shooterM.setPower(shootingSpeed);
+        shooterR.setPower(shootingSpeed);
+        sleep(3000);
+
         // Loop through motif pattern
         for (String s : PATTERN) {
             // Find the ball that matches the current motif color
-            shooterL.setPower(shootingSpeed);
-            shooterM.setPower(shootingSpeed);
-            shooterR.setPower(shootingSpeed);
-            sleep(3000);
             for (int j = 0; j < balls.length; j++) {
                 if (!shot[j] && balls[j].equals(s)) {
                     servos[j].setPosition(servoPush);

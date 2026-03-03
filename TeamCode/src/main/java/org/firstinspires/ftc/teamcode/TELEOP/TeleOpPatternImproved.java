@@ -115,11 +115,11 @@ public class TeleOpPatternImproved extends LinearOpMode {
 
             // Left trigger moves robot left, right trigger is right
             if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0) {
-                side = gamepad1.left_trigger - gamepad1.right_trigger;
+                side = gamepad1.right_trigger - gamepad1.left_trigger;
             } else if (gamepad1.left_trigger > 0) {
-                side = gamepad1.left_trigger;
+                side = -gamepad1.left_trigger;
             } else if (gamepad1.right_trigger > 0) {
-                side = -gamepad1.right_trigger;
+                side = gamepad1.right_trigger;
             }
 
             // -------------------- MANUAL SERVO PUSH --------------------

@@ -86,21 +86,21 @@ public class AutoAnnaRed extends LinearOpMode {
         sleep(1000);
         stopShoot();
         servoOpen();
-        moveRotate(-0.2, 35);
+        moveRotate(0.2, 35);
         moveSide(0.3, 40);
         startIntake();
         moveForward(-0.3, 15);
         moveForward(0.3, 15);
         stopIntake();
         moveSide(-0.3, 40);
-        moveRotate(0.2, 35); //it works! :)
+        moveRotate(-0.2, 35); //it works! :)
         startShoot();
         servoClosed();
         sleep(1000);
         stopShoot();
         servoOpen();
 
-        moveRotate(-0.2, 35);
+        moveRotate(0.2, 35);
         moveForward(-0.3, 30);
         moveSide(0.3, 40);
         startIntake();
@@ -108,7 +108,7 @@ public class AutoAnnaRed extends LinearOpMode {
         moveForward(0.3, 40);
         stopIntake();
         moveSide(-0.3, 40);
-        moveRotate(0.2, 35); //works too! :D
+        moveRotate(-0.2, 35); //works too! :D
         startShoot();
         servoClosed();
         sleep(1000);

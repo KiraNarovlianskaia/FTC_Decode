@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.AUTO.Kira.Blue;
+package org.firstinspires.ftc.teamcode.AUTO.Kira.Blue.Base6;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -9,15 +9,18 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Servos;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-
-@Autonomous(name = "Blue_Base_6", group = "Autonomous")
+@Disabled
+@Autonomous(name = "Blue_Base_6_Servos", group = "Autonomous")
 @Configurable
-public class Blue_Base_6 extends OpMode {
+public class Blue_Base_6_Servos extends OpMode {
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
@@ -25,6 +28,9 @@ public class Blue_Base_6 extends OpMode {
     private Paths paths;
     private Intake intake = new Intake();
     private Shooter shooter = new Shooter();
+    private Servos servos = new Servos();
+    ElapsedTime timer = new ElapsedTime();
+    boolean waitStarted = false;
 
     @Override
     public void init() {
@@ -37,6 +43,7 @@ public class Blue_Base_6 extends OpMode {
 
         intake.init(hardwareMap);
         shooter.init(hardwareMap);
+        servos.init(hardwareMap);
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
@@ -115,23 +122,39 @@ public class Blue_Base_6 extends OpMode {
 
             case 1:
                 if (!follower.isBusy()) {
-                    intake.start();
-                    follower.followPath(paths.Path2, 0.5, true);
+                    servos.servos_shoot();
+                    timer.reset();
                     pathState = 2;
                 }
                 break;
 
             case 2:
-                if (!follower.isBusy()) {
-                    follower.followPath(paths.Path3, 0.5, true);
+                if (!follower.isBusy() && timer.seconds() >= 1) {
+                    servos.servos_close();
+                    intake.start();
+                    follower.followPath(paths.Path2, 0.5, true);
                     pathState = 3;
-
                 }
                 break;
+
             case 3:
                 if (!follower.isBusy()) {
-                    follower.followPath(paths.Path4, 0.5, true);
+                    follower.followPath(paths.Path3, 0.5, true);
                     pathState = 4;
+                }
+                break;
+
+            case 4:
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.Path4, 0.5, true);
+                    pathState = 5;
+                }
+                break;
+
+            case 5:
+                if (!follower.isBusy()) {
+                    servos.servos_shoot();
+                    pathState = 6;
                 }
                 break;
 

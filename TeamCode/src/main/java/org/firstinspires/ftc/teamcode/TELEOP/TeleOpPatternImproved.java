@@ -194,7 +194,7 @@ public class TeleOpPatternImproved extends LinearOpMode {
 
             //----ARTIFACT COLOR DETECTION LOGIC----
 
-            // Normalize the colors
+            // Normalize colors
             NormalizedRGBA colors_left = colorSensorL.getNormalizedColors();
             NormalizedRGBA colors_mid = colorSensorM.getNormalizedColors();
             NormalizedRGBA colors_right = colorSensorR.getNormalizedColors();

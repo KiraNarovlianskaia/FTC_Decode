@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
-@Disabled
+
 @TeleOp(name = "Normalized Color Sensor Test")
 public class NormalizedColorSensorTest extends LinearOpMode {
 
@@ -18,8 +18,9 @@ public class NormalizedColorSensorTest extends LinearOpMode {
         String ball3;
 
         // Map the colors sensors on hardware
-        NormalizedColorSensor colorSensor = hardwareMap.get(NormalizedColorSensor.class, "ball_color");
-        NormalizedColorSensor colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "ball_color2");
+        NormalizedColorSensor colorSensor = hardwareMap.get(NormalizedColorSensor.class, "color_left");
+        NormalizedColorSensor colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "color_mid");
+        NormalizedColorSensor colorSensor3 = hardwareMap.get(NormalizedColorSensor.class, "color_right");
 
         waitForStart();
 
@@ -27,6 +28,7 @@ public class NormalizedColorSensorTest extends LinearOpMode {
             // Normalize the colors
             NormalizedRGBA colors = colorSensor.getNormalizedColors();
             NormalizedRGBA colors2 = colorSensor2.getNormalizedColors();
+            NormalizedRGBA colors3 = colorSensor3.getNormalizedColors();
 
             // Ball 1
             if (colors.alpha > colors.blue && colors.alpha > colors.green) {
@@ -47,12 +49,12 @@ public class NormalizedColorSensorTest extends LinearOpMode {
             }
 
             // Ball 3
-            if (ball1.equals("Purple") && ball2.equals("Purple")) {
-                ball3 = "Green";
-            } else if ((ball1.equals("Purple") && ball2.equals("Green")) || (ball1.equals("Green") && ball2.equals("Purple"))) {
+            if (colors3.alpha > colors3.blue && colors3.alpha > colors3.green) {
+                ball3 = "No Color";
+            } else if (colors3.blue > colors3.green) {
                 ball3 = "Purple";
             } else {
-                ball3 = "No Color";
+                ball3 = "Green";
             }
 
             // Print values in telemetry

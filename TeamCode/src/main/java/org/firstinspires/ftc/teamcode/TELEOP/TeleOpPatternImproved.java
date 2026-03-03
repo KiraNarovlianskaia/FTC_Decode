@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
+import java.util.Arrays;
 
 @Configurable
 @TeleOp(name="TeleOpPatternImproved")
@@ -115,11 +116,11 @@ public class TeleOpPatternImproved extends LinearOpMode {
 
             // Left trigger moves robot left, right trigger is right
             if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0) {
-                side = gamepad1.left_trigger - gamepad1.right_trigger;
+                side = gamepad1.right_trigger - gamepad1.left_trigger;
             } else if (gamepad1.left_trigger > 0) {
-                side = gamepad1.left_trigger;
+                side = -gamepad1.left_trigger;
             } else if (gamepad1.right_trigger > 0) {
-                side = -gamepad1.right_trigger;
+                side = gamepad1.right_trigger;
             }
 
             // -------------------- MANUAL SERVO PUSH --------------------
@@ -235,8 +236,8 @@ public class TeleOpPatternImproved extends LinearOpMode {
                 right_ball = "Green";
             }
 
-            telemetry.addData("Pattern: ", PATTERN);
-            telemetry.addData("Shooter mode: ", shootersToPower);
+            telemetry.addData("Pattern: ", Arrays.toString(PATTERN));
+            telemetry.addData("Shooter mode: ", Arrays.toString(shootersToPower));
             telemetry.addData("Left: ", left_ball);
             telemetry.addData("Mid: ", mid_ball);
             telemetry.addData("Right: ", right_ball);

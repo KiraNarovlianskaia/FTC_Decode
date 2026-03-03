@@ -16,26 +16,23 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 @Autonomous (name="Anna Auto Red Goal 3 Artifacts", group = "Anna")
 public class AutoAnnaRed extends LinearOpMode {
 
-
     DcMotor leftFront;
     DcMotor leftBack;
     DcMotor rightFront;
     DcMotor rightBack;
     DcMotor intake;
-    DcMotor shooter;
-    Servo ServoL;
-    Servo ServoR;
+    DcMotor shooterLeft;
+    DcMotor shooterMid;
+    DcMotor shooterRight;
+    Servo servoLeft;
+    Servo servoMid;
+    Servo servoRight;
+
     static final double PI = 3.14159265;
     static final double WHEEL_DIAMETER = 10.4;
     static final double PULSES = 537.7;
     static final double PULSES_PER_CM = PULSES / (PI * WHEEL_DIAMETER);
     private IMU imu = null;
-
-    static final double SERVO_L_OPEN = 0.45;
-    static final double SERVO_L_CLOSED = 0;
-
-    static final double SERVO_R_OPEN = 0.45;
-    static final double SERVO_R_CLOSED = 0;
 
 
     public void runOpMode() {
@@ -45,10 +42,15 @@ public class AutoAnnaRed extends LinearOpMode {
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
 
-        //intake = hardwareMap.get(DcMotor.class, "intake");
-        //shooter = hardwareMap.get(DcMotor.class, "shooter");
-        //ServoL = hardwareMap.get(Servo.class, "left_servo");
-        //ServoR = hardwareMap.get(Servo.class, "right_servo");
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        shooterLeft = hardwareMap.get(DcMotor.class, "shooter_left");
+        shooterMid = hardwareMap.get(DcMotor.class, "shooter_mid");
+        shooterRight = hardwareMap.get(DcMotor.class, "shooter_right");
+
+        servoLeft = hardwareMap.get(Servo.class, "servo_left");
+        servoMid = hardwareMap.get(Servo.class, "servo_mid");
+        servoRight = hardwareMap.get(Servo.class, "servo_right");
+
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
@@ -72,52 +74,74 @@ public class AutoAnnaRed extends LinearOpMode {
         imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(orientationOnRobot));
 
+        servoRight.setPosition(1.0);
+        servoMid.setPosition(1.0);
+        servoLeft.setPosition(1.0);
 
         waitForStart();
 
-        moveForward(-0.4, 100);
-        moveRotate(0.3, 35);
-        moveSide(0.4, 70);
-        moveForward(-0.4, 20);
-        moveForward(0.4, 20);
-        moveSide(-0.4, 70);
-        moveRotate(-0.3, 35); //it works! :)
-
-        moveRotate(0.3, 35);
-        moveForward(-0.4, 30);
-        moveSide(0.4, 70);
-        moveForward(-0.4, 20);
-        moveForward(0.4, 40);
-        moveSide(-0.4, 70);
-        moveRotate(-0.3, 35); //works too! :D
-
-    }
-    public void shoots(){
-        startShooter(0.4);
-        servoOpen();
-        sleep(1000);
-        stopShooter();
+        moveForward(-0.3, 50);
+        startShoot();
         servoClosed();
+        sleep(1000);
+        stopShoot();
+        servoOpen();
+        moveRotate(0.2, 35);
+        moveSide(0.3, 40);
+        startIntake();
+        moveForward(-0.3, 15);
+        moveForward(0.3, 15);
+        stopIntake();
+        moveSide(-0.3, 40);
+        moveRotate(-0.2, 35); //it works! :)
+        startShoot();
+        servoClosed();
+        sleep(1000);
+        stopShoot();
+        servoOpen();
+
+        moveRotate(0.2, 35);
+        moveForward(-0.3, 30);
+        moveSide(0.3, 40);
+        startIntake();
+        moveForward(-0.3, 15);
+        moveForward(0.3, 40);
+        stopIntake();
+        moveSide(-0.3, 40);
+        moveRotate(-0.2, 35); //works too! :D
+        startShoot();
+        servoClosed();
+        sleep(1000);
+        stopShoot();
+        servoOpen();
     }
-    public void startShooter(double power){
-        shooter.setPower(power);
+    public void startShoot(){
+        shooterLeft.setPower(1.0);
+        shooterMid.setPower(1.0);
+        shooterRight.setPower(1.0);
+        sleep(500);
     }
-    public void stopShooter(){
-        shooter.setPower(0);
+    public void stopShoot(){
+        shooterLeft.setPower(0);
+        shooterMid.setPower(0);
+        shooterRight.setPower(0);
     }
-    public void startIntake(double power){
-        intake.setPower(power);
+    public void startIntake(){
+        intake.setPower(1.0);
     }
     public void stopIntake(){
         intake.setPower(0);
     }
+
     public void servoOpen(){
-        ServoL.setPosition(SERVO_L_OPEN);
-        ServoR.setPosition(SERVO_R_OPEN);
+        servoLeft.setPosition(1.0);
+        servoMid.setPosition(1.0);
+        servoRight.setPosition(1.0);
     }
     public void servoClosed(){
-        ServoL.setPosition(SERVO_L_CLOSED);
-        ServoR.setPosition(SERVO_R_CLOSED);
+        servoLeft.setPosition(0);
+        servoMid.setPosition(0);
+        servoRight.setPosition(0);
     }
     public void moveForward(double speed, double distance) {
 

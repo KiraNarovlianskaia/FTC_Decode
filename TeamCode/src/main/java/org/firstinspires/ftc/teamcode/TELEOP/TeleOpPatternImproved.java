@@ -87,7 +87,7 @@ public class TeleOpPatternImproved extends LinearOpMode {
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.FORWARD); // this looks weird but trust me it works, just don't change it
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
 
         shooterM.setDirection(DcMotor.Direction.REVERSE);
 
@@ -226,6 +226,12 @@ public class TeleOpPatternImproved extends LinearOpMode {
                 right_ball = "Green";
             }
 
+            telemetry.addData("Pattern: ", PATTERN);
+            telemetry.addData("Shooter mode: ", shootersToPower);
+            telemetry.addData("Left", left_ball);
+            telemetry.addData("Mid", mid_ball);
+            telemetry.addData("Right", right_ball);
+            telemetry.update();
         }
     }
 
@@ -258,4 +264,4 @@ public class TeleOpPatternImproved extends LinearOpMode {
             }
         }
     }
-}    
+}

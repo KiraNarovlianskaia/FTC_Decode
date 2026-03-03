@@ -72,6 +72,9 @@ public class StraightLine extends OpMode {
 
         buildPaths();
         follower.setPose(startPose);
+        telemetry.addData("REAL HEADING DEG",
+                Math.toDegrees(follower.getPose().getHeading()));
+        telemetry.update();
 
     }
 

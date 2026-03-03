@@ -11,51 +11,85 @@ import java.util.Arrays;
 
 @Configurable
 @TeleOp(name="TeleOpMain")
+
+/*
+ This is the final version of the TeleOp. Any new features are implemented here.
+ Controls:
+   gamepad1:
+     - left stick up/down  =  forward/backward
+     - right stick left/right  =  rotate
+     - left/right triggers  =  side
+     - x, a, b  =  push left, mid, right ball respectively (separate)
+     - y  =  push all 3 balls
+
+   gamepad2:
+     - left stick up/down  =  intake in/out
+     - right stick up  =  shoot
+     - x, a, b  =  select pattern (x = gpp, a = pgp, b = ppg)
+     - y  =  shoot by pattern
+     - dpad (circle thingy with arrows)  =  Shooter selection
+         > left: Left shooter
+         > down: Mid shooter
+         > right: Right shooter
+         > up: All 3 shooters
+*/
+
 public class TeleOpMain extends LinearOpMode {
 
     // -------------------- CONSTANTS --------------------
     static final double servoPush = 0;
     static final double servoOpen = 1;
+
     static final double SPEEDFACTOR = 0.55;
     static final double SPEEDROTATE = 0.35;
     static double shootingSpeed = 0.85;
 
-    // -------------------- CLASS VARIABLES --------------------
-    DcMotor leftFront, leftBack, rightFront, rightBack;
-    DcMotor intake, shooterL, shooterM, shooterR;
-    Servo servoL, servoM, servoR;
-    NormalizedColorSensor colorSensorL, colorSensorM, colorSensorR;
-
     String[] shootersToPower = {"L", "M", "R"}; // Shooter mode
-    String[] PATTERN = {"Purple", "Purple", "Green"}; // Pre-selected Pattern
+    String[] PATTERN = {"Purple,", "Purple", "Green"}; // Pre-selected Pattern (can be changed manually)
+
+    DcMotor shooterL;
+    DcMotor shooterM;
+    DcMotor shooterR;
 
     public void runOpMode() {
 
-        // -------------------- HARDWARE INIT --------------------
-        leftFront = hardwareMap.get(DcMotor.class, "left_front");
-        leftBack = hardwareMap.get(DcMotor.class, "left_back");
-        rightFront = hardwareMap.get(DcMotor.class, "right_front");
-        rightBack = hardwareMap.get(DcMotor.class, "right_back");
+        // Artifact colors
+        String left_ball = "No Color";
+        String mid_ball = "No Color";
+        String right_ball = "No Color";
 
-        intake = hardwareMap.get(DcMotor.class, "intake");
+        double forward;
+        double rotation;
+        double side = 0;
+        double intakeSpeed;
+        double shooterStick;
+
+        // -------------------- HARDWARE INIT --------------------
+        DcMotor leftFront = hardwareMap.get(DcMotor.class, "left_front");
+        DcMotor leftBack = hardwareMap.get(DcMotor.class, "left_back");
+        DcMotor rightFront = hardwareMap.get(DcMotor.class, "right_front");
+        DcMotor rightBack = hardwareMap.get(DcMotor.class, "right_back");
+
+        DcMotor intake = hardwareMap.get(DcMotor.class, "intake");
 
         shooterL = hardwareMap.get(DcMotor.class, "shooter_left");
         shooterM = hardwareMap.get(DcMotor.class, "shooter_mid");
         shooterR = hardwareMap.get(DcMotor.class, "shooter_right");
 
-        servoL = hardwareMap.get(Servo.class, "servo_left");
-        servoM = hardwareMap.get(Servo.class, "servo_mid");
-        servoR = hardwareMap.get(Servo.class, "servo_right");
+        Servo servoL = hardwareMap.get(Servo.class, "servo_left");
+        Servo servoM = hardwareMap.get(Servo.class, "servo_mid");
+        Servo servoR = hardwareMap.get(Servo.class, "servo_right");
 
-        colorSensorL = hardwareMap.get(NormalizedColorSensor.class, "ball_color_left");
-        colorSensorM = hardwareMap.get(NormalizedColorSensor.class, "ball_color_mid");
-        colorSensorR = hardwareMap.get(NormalizedColorSensor.class, "ball_color_right");
+        NormalizedColorSensor colorSensorL = hardwareMap.get(NormalizedColorSensor.class, "ball_color_left");
+        NormalizedColorSensor colorSensorM = hardwareMap.get(NormalizedColorSensor.class, "ball_color_mid");
+        NormalizedColorSensor colorSensorR = hardwareMap.get(NormalizedColorSensor.class, "ball_color_right");
 
         // -------------------- MOTOR DIRECTIONS --------------------
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
+
         shooterM.setDirection(DcMotor.Direction.REVERSE);
 
         waitForStart();
@@ -63,12 +97,6 @@ public class TeleOpMain extends LinearOpMode {
         servoL.setPosition(servoOpen);
         servoM.setPosition(servoOpen);
         servoR.setPosition(servoOpen);
-
-        String left_ball = "No Color";
-        String mid_ball = "No Color";
-        String right_ball = "No Color";
-
-        double forward, rotation, side = 0, intakeSpeed, shooterStick;
 
         // ==================== MAIN LOOP ====================
         while (opModeIsActive()) {
@@ -79,21 +107,39 @@ public class TeleOpMain extends LinearOpMode {
             intakeSpeed = -gamepad2.left_stick_y;
             shooterStick = -gamepad2.right_stick_y;
 
-            // Side movement via triggers
+            // Left trigger moves robot left, right trigger is right
             if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0) {
                 side = gamepad1.right_trigger - gamepad1.left_trigger;
             } else if (gamepad1.left_trigger > 0) {
                 side = -gamepad1.left_trigger;
             } else if (gamepad1.right_trigger > 0) {
                 side = gamepad1.right_trigger;
-            } else {
-                side = 0;
             }
 
-            // -------------------- MANUAL SERVO PUSH -----------------
-            if (gamepad1.x) { servoL.setPosition(servoPush); sleep(500); servoL.setPosition(servoOpen); }
-            if (gamepad1.a) { servoM.setPosition(servoPush); sleep(500); servoM.setPosition(servoOpen); }
-            if (gamepad1.b) { servoR.setPosition(servoPush); sleep(500); servoR.setPosition(servoOpen); }
+            // -------------------- MANUAL SERVO PUSH --------------------
+
+            // Push left ball
+            if (gamepad1.x) {
+                servoL.setPosition(servoPush);
+                sleep(500);
+                servoL.setPosition(servoOpen);
+            }
+
+            // Push middle ball
+            if (gamepad1.a) {
+                servoM.setPosition(servoPush);
+                sleep(500);
+                servoM.setPosition(servoOpen);
+            }
+
+            // Push right ball
+            if (gamepad1.b) {
+                servoR.setPosition(servoPush);
+                sleep(500);
+                servoR.setPosition(servoOpen);
+            }
+
+            // Push all 3 balls
             if (gamepad1.y) {
                 servoL.setPosition(servoPush);
                 servoR.setPosition(servoPush);
@@ -102,50 +148,79 @@ public class TeleOpMain extends LinearOpMode {
                 servoR.setPosition(servoOpen);
             }
 
-            // -------------------- SHOOTER MODE SELECTION -----------------
-            if (gamepad2.dpad_left) shootersToPower = new String[]{"L"};
-            else if (gamepad2.dpad_down) shootersToPower = new String[]{"M"};
-            else if (gamepad2.dpad_right) shootersToPower = new String[]{"R"};
-            else if (gamepad2.dpad_up) shootersToPower = new String[]{"L","M","R"};
-
-            // -------------------- PATTERN SELECTION -----------------
-            if (gamepad2.xWasPressed()) PATTERN = new String[]{"Green", "Purple", "Purple"};
-            else if (gamepad2.aWasPressed()) PATTERN = new String[]{"Purple", "Green", "Purple"};
-            else if (gamepad2.bWasPressed()) PATTERN = new String[]{"Purple", "Purple", "Green"};
-
-            // -------------------- SHOOT BY PATTERN -----------------
-            if (gamepad2.yWasPressed()) {
-                shootByPattern(left_ball, mid_ball, right_ball);
+            // -------------------- SHOOTER MODE SELECTION --------------------
+            if (gamepad2.dpad_left) {
+                shootersToPower = new String[]{"L"};
+            } else if (gamepad2.dpad_down) {
+                shootersToPower = new String[]{"M"};
+            } else if (gamepad2.dpad_right) {
+                shootersToPower = new String[]{"R"};
+            } else if (gamepad2.dpad_up) {
+                shootersToPower = new String[]{"L", "M", "R"};
             }
 
-            // -------------------- SHOOTER POWER -----------------
-            double powerL = 0, powerM = 0, powerR = 0;
+            // -------------------- PATTERN SELECTION --------------------
+            if (gamepad2.xWasPressed()) {
+                PATTERN = new String[]{"Green", "Purple", "Purple"};
+            } else if (gamepad2.aWasPressed()) {
+                PATTERN = new String[]{"Purple", "Green", "Purple"};
+            } else if (gamepad2.bWasPressed()) {
+                PATTERN = new String[]{"Purple", "Purple", "Green"};
+            }
+
+            // Shoot by pattern
+            if (gamepad2.yWasPressed()) {
+                shootByPattern(left_ball, mid_ball, right_ball, servoL, servoM, servoR);
+            }
+
+            // -------------------- SHOOTER POWER LOGIC --------------------
+            double powerL = 0;
+            double powerM = 0;
+            double powerR = 0;
+
             for (String s : shootersToPower) {
                 if (s.equals("L")) powerL = shooterStick;
                 if (s.equals("M")) powerM = -shooterStick;
                 if (s.equals("R")) powerR = -shooterStick;
             }
 
-            // -------------------- DRIVETRAIN -----------------
-            leftFront.setPower((forward*SPEEDFACTOR)-(rotation*SPEEDROTATE)-(side*SPEEDFACTOR));
-            leftBack.setPower((forward*SPEEDFACTOR)-(rotation*SPEEDROTATE)+(side*SPEEDFACTOR));
-            rightFront.setPower((forward*SPEEDFACTOR)+(rotation*SPEEDROTATE)+(side*SPEEDFACTOR));
-            rightBack.setPower((forward*SPEEDFACTOR)+(rotation*SPEEDROTATE)-(side*SPEEDFACTOR));
+            // -------------------- DRIVETRAIN --------------------
+            leftFront.setPower((forward * SPEEDFACTOR) - (rotation * SPEEDROTATE) - (side * SPEEDFACTOR));
+            leftBack.setPower((forward * SPEEDFACTOR) - (rotation * SPEEDROTATE) + (side * SPEEDFACTOR));
+            rightFront.setPower((forward * SPEEDFACTOR) + (rotation * SPEEDROTATE) + (side * SPEEDFACTOR));
+            rightBack.setPower((forward * SPEEDFACTOR) + (rotation * SPEEDROTATE) - (side * SPEEDFACTOR));
 
-            // -------------------- MECHANISMS -----------------
+            // -------------------- MECHANISMS --------------------
             intake.setPower(intakeSpeed);
-            shooterL.setPower(powerL*shootingSpeed);
-            shooterM.setPower(powerM*shootingSpeed);
-            shooterR.setPower(powerR*shootingSpeed);
+            shooterL.setPower(powerL * shootingSpeed);
+            shooterM.setPower(powerM * shootingSpeed);
+            shooterR.setPower(powerR * shootingSpeed);
 
-            // -------------------- COLOR DETECTION -----------------
+            // -------------------- ARTIFACT COLOR DETECTION LOGIC --------------------
             NormalizedRGBA colors_left = colorSensorL.getNormalizedColors();
             NormalizedRGBA colors_mid = colorSensorM.getNormalizedColors();
             NormalizedRGBA colors_right = colorSensorR.getNormalizedColors();
 
-            left_ball = (colors_left.blue > colors_left.green) ? "Purple" : "Green";
-            mid_ball  = (colors_mid.blue > colors_mid.green) ? "Purple" : "Green";
-            right_ball = (colors_right.blue > colors_right.green) ? "Purple" : "Green";
+            // ---------------- Ball 1 ----------------
+            if (colors_left.blue > colors_left.green) { // Purple detection (works at correct distance)
+                left_ball = "Purple";
+            } else { // anything else with enough brightness is green
+                left_ball = "Green";
+            }
+
+            // ---------------- Ball 2 ----------------
+            if (colors_mid.blue > colors_mid.green) { // Purple detection
+                mid_ball = "Purple";
+            } else { // anything else is green
+                mid_ball = "Green";
+            }
+
+            // ---------------- Ball 3 ----------------
+            if (colors_right.blue > colors_right.green) { // Purple detection
+                right_ball = "Purple";
+            } else { // anything else is green
+                right_ball = "Green";
+            }
 
             telemetry.addData("Pattern: ", Arrays.toString(PATTERN));
             telemetry.addData("Shooter mode: ", Arrays.toString(shootersToPower));
@@ -156,8 +231,7 @@ public class TeleOpMain extends LinearOpMode {
         }
     }
 
-    // -------------------- SHOOT BY PATTERN METHOD --------------------
-    public void shootByPattern(String left, String middle, String right) {
+    public void shootByPattern(String left, String middle, String right, Servo servoL, Servo servoM, Servo servoR) {
 
         String[] balls = {left, middle, right};
         Servo[] servos = {servoL, servoM, servoR};

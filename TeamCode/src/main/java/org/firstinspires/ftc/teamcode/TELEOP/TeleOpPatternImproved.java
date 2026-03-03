@@ -10,6 +10,28 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Configurable
 @TeleOp(name="TeleOpPatternImproved")
+/*
+ This is the final version of the TeleOp. Any new features are implemented here.
+ Controls:
+   gamepad1:
+     - left stick up/down  =  forward/backward
+     - right stick left/right  =  rotate
+     - left/right triggers  =  side
+     - x, a, b  =  push left, mid, right ball respectively (separate)
+     - y  =  push all 3 balls
+
+   gamepad2:
+     - left stick up/down  =  intake in/out
+     - right stick up  =  shoot
+     - x, a, b  =  select pattern (x = gpp, a = pgp, b = ppg)
+     - y  =  shoot by pattern
+     - dpad (circle thingy with arrows)  =  Shooter selection
+         > left: Left shooter
+         > down: Mid shooter
+         > right: Right shooter
+         > up: All 3 shooters
+
+*/
 
 public class TeleOpPatternImproved extends LinearOpMode {
 
@@ -21,19 +43,14 @@ public class TeleOpPatternImproved extends LinearOpMode {
     Servo servoM;
     Servo servoR;
 
-    static final double servoPush = 0.45;
-    static final double servoOpen = 0;
-    static final double servoReady = 0.18;
+    static final double servoPush = 0;
+    static final double servoOpen = 1;
 
     static final double SPEEDFACTOR = 0.55;
     static final double SPEEDROTATE = 0.35;
     static double shootingSpeed = 0.85;
 
-    String ball_left = "None";
-    String ball_mid = "None";
-    String ball_right = "None";
-
-    String[] shootersToPower = {"L", "M", "R"};
+    String[] shootersToPower = {"L", "M", "R"}; // Shooter mode
     String[] PATTERN = {"Purple,", "Purple", "Green"};
 
     public void runOpMode() {
@@ -70,8 +87,9 @@ public class TeleOpPatternImproved extends LinearOpMode {
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.FORWARD); // this looks weird but trust it works, dont change it
+        rightBack.setDirection(DcMotor.Direction.FORWARD); // this looks weird but trust me it works, just don't change it
 
+        shooterM.setDirection(DcMotor.Direction.REVERSE);
 
         waitForStart();
         servoL.setPosition(servoOpen);
@@ -80,26 +98,24 @@ public class TeleOpPatternImproved extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            side = 0;
-
             // Push left ball
             if (gamepad1.x) {
                 servoL.setPosition(servoPush);
-                sleep(400);
+                sleep(500);
                 servoL.setPosition(servoOpen);
             }
 
             // Push middle ball
             if (gamepad1.a) {
                 servoM.setPosition(servoPush);
-                sleep(400);
+                sleep(500);
                 servoM.setPosition(servoOpen);
             }
 
             // Push right ball
             if (gamepad1.b) {
                 servoR.setPosition(servoPush);
-                sleep(400);
+                sleep(500);
                 servoR.setPosition(servoOpen);
             }
 
@@ -149,13 +165,22 @@ public class TeleOpPatternImproved extends LinearOpMode {
                 side = -gamepad1.right_trigger;
             }
 
-            // Shoot by pattern
+            // Select pattern
             if (gamepad2.xWasPressed()) {
+                PATTERN = new String[]{"Green", "Purple", "Purple"};
+            } else if (gamepad2.aWasPressed()) {
+                PATTERN = new String[]{"Purple", "Green", "Purple"};
+            } else if (gamepad2.bWasPressed()) {
+                PATTERN = new String[]{"Purple", "Purple", "Green"};
+            }
+
+            // Shoot by pattern
+            if (gamepad2.yWasPressed()) {
                 shootByPattern(left_ball, mid_ball, right_ball);
             }
 
 
-
+            // Set motor movement speeds
             leftFront.setPower((forward * SPEEDFACTOR) - (rotation * SPEEDROTATE) - (side * SPEEDFACTOR));
             leftBack.setPower((forward * SPEEDFACTOR) - (rotation * SPEEDROTATE) + (side * SPEEDFACTOR));
             rightFront.setPower((forward * SPEEDFACTOR) + (rotation * SPEEDROTATE) + (side * SPEEDFACTOR));
@@ -167,21 +192,23 @@ public class TeleOpPatternImproved extends LinearOpMode {
             shooterR.setPower(powerR * shootingSpeed);
 
 
+            //----ARTIFACT COLOR DETECTION LOGIC----
+
             // Normalize the colors
             NormalizedRGBA colors_left = colorSensorL.getNormalizedColors();
             NormalizedRGBA colors_mid = colorSensorM.getNormalizedColors();
             NormalizedRGBA colors_right = colorSensorR.getNormalizedColors();
 
-            // Ball 1
+            // Left ball
             if (colors_left.alpha > colors_left.blue && colors_left.alpha > colors_left.green) {
-                right_ball = "No Color";
+                left_ball = "No Color";
             } else if (colors_left.blue > colors_left.green) {
-                right_ball = "Purple";
+                left_ball = "Purple";
             } else {
-                right_ball = "Green";
+                left_ball = "Green";
             }
 
-            // Ball 2
+            // Mid ball
             if (colors_mid.alpha > colors_mid.blue && colors_mid.alpha > colors_mid.green) {
                 mid_ball = "No Color";
             } else if (colors_mid.blue > colors_mid.green) {
@@ -190,6 +217,7 @@ public class TeleOpPatternImproved extends LinearOpMode {
                 mid_ball = "Green";
             }
 
+            // Right ball
             if (colors_right.alpha > colors_right.blue && colors_right.alpha > colors_right.green) {
                 right_ball = "No Color";
             } else if (colors_right.blue > colors_right.green) {
@@ -205,7 +233,7 @@ public class TeleOpPatternImproved extends LinearOpMode {
 
         // Map balls and servos to arrays
         String[] balls = {left, middle, right};
-        //Servo[] servos = {servoL, servoM, servoR};
+        Servo[] servos = {servoL, servoM, servoR};
 
         // Keep track of which balls have been shot
         boolean[] shot = {false, false, false};
@@ -213,11 +241,15 @@ public class TeleOpPatternImproved extends LinearOpMode {
         // Loop through motif pattern
         for (String s : PATTERN) {
             // Find the ball that matches the current motif color
+            shooterL.setPower(shootingSpeed);
+            shooterM.setPower(shootingSpeed);
+            shooterR.setPower(shootingSpeed);
+            sleep(3000);
             for (int j = 0; j < balls.length; j++) {
                 if (!shot[j] && balls[j].equals(s)) {
-                    //servos[j].setPosition(servoPush);
-                    sleep(1000);
-                    //servos[j].setPosition(servoOpen);
+                    servos[j].setPosition(servoPush);
+                    sleep(800);
+                    servos[j].setPosition(servoOpen);
                     shot[j] = true;
                     break; // Move to next motif color
                 }

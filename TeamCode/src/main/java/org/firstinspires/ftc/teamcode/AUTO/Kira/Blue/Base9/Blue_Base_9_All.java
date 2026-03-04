@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.AUTO.Kira.Blue.Base6;
+package org.firstinspires.ftc.teamcode.AUTO.Kira.Blue.Base9;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -8,29 +8,30 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Servos_Pattern;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
+import org.firstinspires.ftc.teamcode.subsystems.Servos_Pattern;
+
 import java.util.List;
 
-@Autonomous(name = "Blue_Base_6_Camera", group = "Autonomous")
+@Autonomous(name = "Blue_Base_9_All", group = "Autonomous")
 @Configurable
-public class Blue_Base_6_Camera extends OpMode {
+public class Blue_Base_9_All extends OpMode {
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
     private int pathState;
     private Paths paths;
     private Intake intake = new Intake();
-    //private Shooter shooter = new Shooter();
+    private Shooter shooter = new Shooter();
     private Servos_Pattern servos = new Servos_Pattern();
     ElapsedTime timer = new ElapsedTime();
     boolean waitStarted = false;
@@ -50,7 +51,7 @@ public class Blue_Base_6_Camera extends OpMode {
         paths = new Paths(follower);
 
         intake.init(hardwareMap);
-        //shooter.init(hardwareMap);
+        shooter.init(hardwareMap);
         servos.init(hardwareMap);
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -124,6 +125,9 @@ public class Blue_Base_6_Camera extends OpMode {
         public PathChain Path2;
         public PathChain Path3;
         public PathChain Path4;
+        public PathChain Path5;
+        public PathChain Path6;
+        public PathChain Path7;
 
         public Paths(Follower follower) {
 
@@ -165,6 +169,36 @@ public class Blue_Base_6_Camera extends OpMode {
                     ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
 
                     .build();
+            Path5 = follower.pathBuilder().addPath(
+                            new BezierCurve(
+                                    new Pose(48.594, 94.576),
+                                    new Pose(25.869, 84.504),
+                                    new Pose(24.894, 74.719)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
+
+                    .build();
+
+            Path6 = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(24.894, 74.719),
+
+                                    new Pose(24.894, 65.848)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-90))
+
+                    .build();
+
+            Path7 = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(24.894, 65.848),
+
+                                    new Pose(48.594, 94.576)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
+
+                    .build();
+
         }
     }
 
@@ -216,10 +250,38 @@ public class Blue_Base_6_Camera extends OpMode {
                     int shootId = 2; // пример, можешь выбрать динамически
                     int variant = getVariant(shootId); // получаем вариант
                     servos.startShooting(shootId, variant);
+                    timer.reset();
                     pathState = 6;
                 }
                 break;
-
+            case 6:
+                if (!follower.isBusy() && timer.seconds() >= 1.5) {
+                    servos.closeAll();
+                    follower.followPath(paths.Path5, 0.5, true);
+                    pathState = 7;
+                }
+                break;
+            case 7:
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.Path6, 0.5, true);
+                    pathState = 8;
+                }
+                break;
+            case 8:
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.Path7, 0.5, true);
+                    pathState = 9;
+                }
+                break;
+            case 9:
+                if (!follower.isBusy()) {
+                    int shootId = 3; // пример, можешь выбрать динамически
+                    int variant = getVariant(shootId); // получаем вариант
+                    servos.startShooting(shootId, variant);
+                    timer.reset();
+                    pathState = 10;
+                }
+                break;
         }
 
         return pathState;

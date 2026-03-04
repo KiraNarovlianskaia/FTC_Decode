@@ -27,7 +27,7 @@ public class Servos_Pattern {
 
         servoL.setPosition(servoOpen);
         servoM.setPosition(servoOpen);
-        servoR.setPosition(servoOpen);
+        servoR.setPosition(servoPush);
     }
 
     // 🔥 Запуск последовательной стрельбы
@@ -64,8 +64,13 @@ public class Servos_Pattern {
         // если shootState меньше длины массива, продолжаем стрелять
         if (shootState < shootOrder.length) {
             // либо первый шаг, либо таймер прошёл
-            if (shootState == 0 || timer.milliseconds() >= 200) {
-                shootOrder[shootState].setPosition(servoPush); // поднимаем текущий серво
+            if (shootState == 0 || timer.milliseconds() >= 500) {
+                if (shootOrder[shootState] == servoR){
+                    shootOrder[shootState].setPosition(servoOpen);
+                }
+                else {
+                    shootOrder[shootState].setPosition(servoPush);
+                }// поднимаем текущий серво
                 timer.reset();
                 shootState++; // переходим к следующему
             }
@@ -78,6 +83,6 @@ public class Servos_Pattern {
     public void closeAll() {
         servoL.setPosition(servoOpen);
         servoM.setPosition(servoOpen);
-        servoR.setPosition(servoOpen);
+        servoR.setPosition(servoPush);
     }
 }

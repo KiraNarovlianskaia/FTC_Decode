@@ -26,7 +26,7 @@ public class Servos {
         servoL.setPosition(servoPush);
         servoM.setPosition(servoPush);
         servoR.setPosition(servoPush);
-    }
+    }   
 
     //Close servos
     public void servos_close() {

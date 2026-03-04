@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.AUTO.Kira.Blue.Base6;
+package org.firstinspires.ftc.teamcode.AUTO.Kira.Red;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -8,29 +8,30 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Servos_Pattern;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
+import org.firstinspires.ftc.teamcode.subsystems.Servos_Pattern;
+
 import java.util.List;
 
-@Autonomous(name = "Blue_Base_6_Camera", group = "Autonomous")
+@Autonomous(name = "Red_Base_12_All", group = "Autonomous")
 @Configurable
-public class Blue_Base_6_Camera extends OpMode {
+public class Red_Base_12 extends OpMode {
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
     private int pathState;
     private Paths paths;
     private Intake intake = new Intake();
-    //private Shooter shooter = new Shooter();
+    private Shooter shooter = new Shooter();
     private Servos_Pattern servos = new Servos_Pattern();
     ElapsedTime timer = new ElapsedTime();
     boolean waitStarted = false;
@@ -50,7 +51,7 @@ public class Blue_Base_6_Camera extends OpMode {
         paths = new Paths(follower);
 
         intake.init(hardwareMap);
-        //shooter.init(hardwareMap);
+        shooter.init(hardwareMap);
         servos.init(hardwareMap);
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -119,19 +120,26 @@ public class Blue_Base_6_Camera extends OpMode {
         return 1;
     }
 
+
     public static class Paths {
         public PathChain Path1;
         public PathChain Path2;
         public PathChain Path3;
         public PathChain Path4;
+        public PathChain Path5;
+        public PathChain Path6;
+        public PathChain Path7;
+        public PathChain Path8;
+        public PathChain Path9;
+        public PathChain Path10;
+        public PathChain Path11;
 
         public Paths(Follower follower) {
-
             Path1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(23.573, 119.218),
+                                    new Pose(120.427, 119.218),
 
-                                    new Pose(48.594, 94.576)
+                                    new Pose(95.406, 94.576)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
 
@@ -139,9 +147,9 @@ public class Blue_Base_6_Camera extends OpMode {
 
             Path2 = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(48.594, 94.576),
-                                    new Pose(24.560, 118.989),
-                                    new Pose(22.901, 89.033)
+                                    new Pose(95.406, 94.576),
+                                    new Pose(119.440, 118.989),
+                                    new Pose(121.098, 89.033)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
 
@@ -149,24 +157,96 @@ public class Blue_Base_6_Camera extends OpMode {
 
             Path3 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(22.901, 89.033),
+                                    new Pose(121.098, 89.033),
 
-                                    new Pose(22.901, 80.847)
+                                    new Pose(121.098, 80.847)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-90))
 
                     .build();
+
             Path4 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(22.901, 80.847),
+                                    new Pose(121.098, 80.847),
 
-                                    new Pose(48.594, 94.576)
+                                    new Pose(95.406, 94.576)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
 
                     .build();
+
+            Path5 = follower.pathBuilder().addPath(
+                            new BezierCurve(
+                                    new Pose(95.406, 94.576),
+                                    new Pose(118.131, 84.504),
+                                    new Pose(119.392, 70.138)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
+
+                    .build();
+
+            Path6 = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(119.392, 70.138),
+
+                                    new Pose(119.392, 56.973)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-90))
+
+                    .build();
+
+            Path7 = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(119.392, 56.973),
+
+                                    new Pose(95.406, 94.576)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
+
+                    .build();
+
+            Path8 = follower.pathBuilder().addPath(
+                            new BezierCurve(
+                                    new Pose(95.406, 94.576),
+                                    new Pose(113.698, 78.164),
+                                    new Pose(119.955, 49.170)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
+
+                    .build();
+
+            Path9 = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(119.955, 49.170),
+
+                                    new Pose(119.955, 35.079)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-90))
+
+                    .build();
+
+            Path10 = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(119.955, 35.079),
+
+                                    new Pose(95.406, 94.576)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
+
+                    .build();
+
+            Path11 = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(95.406, 94.576),
+
+                                    new Pose(95.406, 69.648)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(0))
+
+                    .build();
         }
     }
+
 
     public int autonomousPathUpdate() {
 
@@ -216,10 +296,38 @@ public class Blue_Base_6_Camera extends OpMode {
                     int shootId = 2; // пример, можешь выбрать динамически
                     int variant = getVariant(shootId); // получаем вариант
                     servos.startShooting(shootId, variant);
+                    timer.reset();
                     pathState = 6;
                 }
                 break;
-
+            case 6:
+                if (!follower.isBusy() && timer.seconds() >= 1.5) {
+                    servos.closeAll();
+                    follower.followPath(paths.Path5, 0.5, true);
+                    pathState = 7;
+                }
+                break;
+            case 7:
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.Path6, 0.5, true);
+                    pathState = 8;
+                }
+                break;
+            case 8:
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.Path7, 0.5, true);
+                    pathState = 9;
+                }
+                break;
+            case 9:
+                if (!follower.isBusy()) {
+                    int shootId = 3; // пример, можешь выбрать динамически
+                    int variant = getVariant(shootId); // получаем вариант
+                    servos.startShooting(shootId, variant);
+                    timer.reset();
+                    pathState = 10;
+                }
+                break;
         }
 
         return pathState;

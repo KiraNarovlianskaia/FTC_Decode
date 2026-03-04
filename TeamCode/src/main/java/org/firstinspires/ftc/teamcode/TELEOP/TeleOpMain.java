@@ -37,8 +37,9 @@ import java.util.Arrays;
 public class TeleOpMain extends LinearOpMode {
 
     // -------------------- CONSTANTS --------------------
-    static final double servoPush = 0;
+
     static final double servoOpen = 1;
+    static final double servoPush = 0;
 
     static final double SPEEDFACTOR = 0.55;
     static final double SPEEDROTATE = 0.35;
@@ -90,6 +91,7 @@ public class TeleOpMain extends LinearOpMode {
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
 
+        servoR.setDirection(Servo.Direction.REVERSE); // right servo is mirrored to the other 2 in the robot
         shooterM.setDirection(DcMotor.Direction.REVERSE);
 
         waitForStart();
@@ -142,9 +144,11 @@ public class TeleOpMain extends LinearOpMode {
             // Push all 3 balls
             if (gamepad1.y) {
                 servoL.setPosition(servoPush);
+                servoM.setPosition(servoPush);
                 servoR.setPosition(servoPush);
                 sleep(400);
                 servoL.setPosition(servoOpen);
+                servoM.setPosition(servoOpen);
                 servoR.setPosition(servoOpen);
             }
 

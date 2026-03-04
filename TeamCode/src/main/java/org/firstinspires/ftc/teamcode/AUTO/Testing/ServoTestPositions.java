@@ -12,6 +12,8 @@ public class ServoTestPositions extends LinearOpMode {
         Servo servoM = hardwareMap.get(Servo.class, "servo_mid");
         Servo servoR = hardwareMap.get(Servo.class, "servo_right");
 
+        servoR.setDirection(Servo.Direction.REVERSE);
+
         waitForStart();
 
         while (opModeIsActive()) {

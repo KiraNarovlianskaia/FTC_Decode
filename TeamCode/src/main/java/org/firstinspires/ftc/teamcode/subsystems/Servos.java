@@ -18,20 +18,20 @@ public class Servos {
 
         servoL.setPosition(servoOpen);
         servoM.setPosition(servoOpen);
-        servoR.setPosition(servoOpen);
+        servoR.setPosition(servoPush);
     }
 
     // Shoot servos
     public void servos_shoot() {
         servoL.setPosition(servoPush);
         servoM.setPosition(servoPush);
-        servoR.setPosition(servoPush);
+        servoR.setPosition(servoOpen);
     }   
 
     //Close servos
     public void servos_close() {
         servoL.setPosition(servoOpen);
         servoM.setPosition(servoOpen);
-        servoR.setPosition(servoOpen);
+        servoR.setPosition(servoPush);
     }
 }

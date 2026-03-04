@@ -9,7 +9,6 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -17,7 +16,11 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Servos;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-@Disabled
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import java.util.List;
+
 @Autonomous(name = "Blue_Base_6_Servos", group = "Autonomous")
 @Configurable
 public class Blue_Base_6_Servos extends OpMode {
@@ -116,7 +119,7 @@ public class Blue_Base_6_Servos extends OpMode {
 
             case 0:
                 shooter.start();
-                follower.followPath(paths.Path1,0.5,true);
+                follower.followPath(paths.Path1,0.7,true);
                 pathState = 1;
                 break;
 
@@ -132,21 +135,21 @@ public class Blue_Base_6_Servos extends OpMode {
                 if (!follower.isBusy() && timer.seconds() >= 1) {
                     servos.servos_close();
                     intake.start();
-                    follower.followPath(paths.Path2, 0.5, true);
+                    follower.followPath(paths.Path2, 0.7, true);
                     pathState = 3;
                 }
                 break;
 
             case 3:
                 if (!follower.isBusy()) {
-                    follower.followPath(paths.Path3, 0.5, true);
+                    follower.followPath(paths.Path3, 0.7, true);
                     pathState = 4;
                 }
                 break;
 
             case 4:
                 if (!follower.isBusy()) {
-                    follower.followPath(paths.Path4, 0.5, true);
+                    follower.followPath(paths.Path4, 0.7, true);
                     pathState = 5;
                 }
                 break;

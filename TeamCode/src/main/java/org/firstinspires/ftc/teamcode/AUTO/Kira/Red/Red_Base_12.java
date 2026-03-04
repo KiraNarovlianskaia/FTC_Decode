@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.subsystems.Servos_Pattern;
+import org.firstinspires.ftc.teamcode.subsystems.Servos_Pattern_Red;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class Red_Base_12 extends OpMode {
     private Paths paths;
     private Intake intake = new Intake();
     private Shooter shooter = new Shooter();
-    private Servos_Pattern servos = new Servos_Pattern();
+    private Servos_Pattern_Red servos = new Servos_Pattern_Red();
     ElapsedTime timer = new ElapsedTime();
     boolean waitStarted = false;
 
@@ -46,7 +46,7 @@ public class Red_Base_12 extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(23.573, 119.218, Math.toRadians(-90)));
+        follower.setStartingPose(new Pose(120.427, 119.218, Math.toRadians(-90)));
 
         paths = new Paths(follower);
 
@@ -100,20 +100,20 @@ public class Red_Base_12 extends OpMode {
     private int getVariant(int shootId) {
         switch (finalTagId) {
             case 21:
-                if (shootId == 1) return 1;
+                if (shootId == 1 || shootId == 2) return 1;
                 if (shootId == 3) return 2;
                 if (shootId == 4) return 3;
-                if (shootId == 2) return 4;
                 break;
             case 22:
-                if (shootId == 1 || shootId == 2) return 2;
-                if (shootId == 3) return 1;
-                if (shootId == 4) return 4;
+                if (shootId == 1 || shootId == 2) return 4;
+                if (shootId == 3) return 3;
+                if (shootId == 4) return 2;
                 break;
             case 23:
-                if (shootId == 1 || shootId == 2) return 3;
-                if (shootId == 3) return 4;
-                if (shootId == 4) return 1;
+                if (shootId == 1) return 2;
+                if (shootId == 2) return 3;
+                if (shootId == 3) return 1;
+                if (shootId == 4) return 4;
                 break;
         }
         // по умолчанию, если не попало под первый вариант
@@ -141,7 +141,7 @@ public class Red_Base_12 extends OpMode {
 
                                     new Pose(95.406, 94.576)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(225))
 
                     .build();
 
@@ -151,7 +151,7 @@ public class Red_Base_12 extends OpMode {
                                     new Pose(119.440, 118.989),
                                     new Pose(121.098, 89.033)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
+                    ).setLinearHeadingInterpolation(Math.toRadians(225), Math.toRadians(-90))
 
                     .build();
 
@@ -171,7 +171,7 @@ public class Red_Base_12 extends OpMode {
 
                                     new Pose(95.406, 94.576)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(225))
 
                     .build();
 
@@ -181,7 +181,7 @@ public class Red_Base_12 extends OpMode {
                                     new Pose(118.131, 84.504),
                                     new Pose(119.392, 70.138)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
+                    ).setLinearHeadingInterpolation(Math.toRadians(225), Math.toRadians(-90))
 
                     .build();
 
@@ -201,7 +201,7 @@ public class Red_Base_12 extends OpMode {
 
                                     new Pose(95.406, 94.576)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(225))
 
                     .build();
 
@@ -211,7 +211,7 @@ public class Red_Base_12 extends OpMode {
                                     new Pose(113.698, 78.164),
                                     new Pose(119.955, 49.170)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
+                    ).setLinearHeadingInterpolation(Math.toRadians(225), Math.toRadians(-90))
 
                     .build();
 
@@ -231,7 +231,7 @@ public class Red_Base_12 extends OpMode {
 
                                     new Pose(95.406, 94.576)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(225))
 
                     .build();
 
@@ -241,7 +241,7 @@ public class Red_Base_12 extends OpMode {
 
                                     new Pose(95.406, 69.648)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(0))
+                    ).setLinearHeadingInterpolation(Math.toRadians(225), Math.toRadians(0))
 
                     .build();
         }

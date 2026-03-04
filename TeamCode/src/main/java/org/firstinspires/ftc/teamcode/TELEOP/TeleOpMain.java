@@ -116,7 +116,7 @@ public class TeleOpMain extends LinearOpMode {
             if (gamepad1.b) { servoR.setPosition(servoPush); sleep(1000); servoR.setPosition(servoOpen); }
             if (gamepad1.y) {
                 servoL.setPosition(servoPush); servoM.setPosition(servoPush); servoR.setPosition(servoPush);
-                sleep(400);
+                sleep(1000);
                 servoL.setPosition(servoOpen); servoM.setPosition(servoOpen); servoR.setPosition(servoOpen);
             }
 

@@ -20,6 +20,8 @@ import java.util.Arrays;
      - left/right triggers = side
      - x, a, b = push left, mid, right ball
      - y = push all 3 balls
+     - left bumper = toggle reverse drive
+     - right bumper = toggle fast mode (true by default)
 
    gamepad2:
      - left stick up/down = intake in/out
@@ -35,7 +37,7 @@ public class TeleOpMain extends LinearOpMode {
     // -------------------- CONSTANTS --------------------
     static final double servoOpen = 1;
     static final double servoPush = 0;
-    static final double SPEEDFACTOR = 0.55;
+    double SPEEDFACTOR = 0.55;
     static final double SPEEDROTATE = 0.35;
     static double shootingSpeed = 0.85;
 
@@ -45,12 +47,14 @@ public class TeleOpMain extends LinearOpMode {
     DcMotor shooterL, shooterM, shooterR;
 
     // Bumper tracking
-    boolean rightBumperPrev = false;
-    boolean leftBumperPrev = false;
+    boolean right1BumperPrev = false;
+    boolean left1BumperPrev = false;
 
     // Drive reverse toggle
     boolean driveReversed = false;
-    boolean leftBumperPrevDrive = false;
+    boolean fastDrive = false;
+    boolean leftBumperPrev2 = false;
+    boolean rightBumperPrev2 = false;
 
     // Pattern toggle system
     boolean shootingByPattern = false;
@@ -106,7 +110,7 @@ public class TeleOpMain extends LinearOpMode {
         while (opModeIsActive()) {
 
             // ----------------- DRIVER INPUT -----------------
-            if (!driveReversed) { forward = gamepad1.left_stick_y; }
+            if (!driveReversed) { forward = gamepad1.left_stick_y; } // Reversable forward
             else { forward = -gamepad1.left_stick_y; }
             rotation = gamepad1.right_stick_x;
             intakeSpeed = -gamepad2.left_stick_y;
@@ -114,11 +118,16 @@ public class TeleOpMain extends LinearOpMode {
 
 
             // -------------------- DRIVE REVERSE TOGGLE --------------------
-            if (gamepad1.left_bumper && !leftBumperPrevDrive) {
+            if (gamepad1.left_bumper && !left1BumperPrev) {
                 driveReversed = !driveReversed;
             }
-            leftBumperPrevDrive = gamepad1.left_bumper;
+            left1BumperPrev = gamepad1.left_bumper;
 
+            // -------------------- SPEED MODE TOGGLE ----------------------
+            if (gamepad1.right_bumper && !right1BumperPrev) {
+                fastDrive = !fastDrive;
+            }
+            right1BumperPrev = gamepad1.right_bumper;
 
             // -------------------- CALCULATE SIDE --------------------
             if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0) {
@@ -151,17 +160,17 @@ public class TeleOpMain extends LinearOpMode {
             else if (gamepad2.bWasPressed()) PATTERN = new String[]{"Purple", "Purple", "Green"};
 
             // -------------------- ADJUST SHOOTING SPEED --------------------
-            if (gamepad2.right_bumper && !rightBumperPrev) {
+            if (gamepad2.right_bumper && !rightBumperPrev2) {
                 shootingSpeed += 0.05;
                 if (shootingSpeed > 1.0) shootingSpeed = 1.0;
             }
-            rightBumperPrev = gamepad2.right_bumper;
+            rightBumperPrev2 = gamepad2.right_bumper;
 
-            if (gamepad2.left_bumper && !leftBumperPrev) {
+            if (gamepad2.left_bumper && !leftBumperPrev2) {
                 shootingSpeed -= 0.05;
                 if (shootingSpeed < 0.0) shootingSpeed = 0.0;
             }
-            leftBumperPrev = gamepad2.left_bumper;
+            leftBumperPrev2 = gamepad2.left_bumper;
 
             // -------------------- TOGGLE SHOOT BY PATTERN --------------------
             if (gamepad2.y && !yPrev) {
@@ -224,6 +233,11 @@ public class TeleOpMain extends LinearOpMode {
                 if (s.equals("M")) powerM = -shooterStick;
                 if (s.equals("R")) powerR = -shooterStick;
             }
+
+            // ----------------- APPLY FAST MODE IF ENABLED -----------------
+            if (fastDrive) { SPEEDFACTOR = 0.55; }
+            else { SPEEDFACTOR = 0.3; }
+
 
             leftFront.setPower(forward*SPEEDFACTOR - rotation*SPEEDROTATE - side*SPEEDFACTOR);
             leftBack.setPower(forward*SPEEDFACTOR - rotation*SPEEDROTATE + side*SPEEDFACTOR);

@@ -111,24 +111,6 @@ public class TeleOpMain extends LinearOpMode {
             intakeSpeed = -gamepad2.left_stick_y;
             shooterStick = -gamepad2.right_stick_y;
 
-            // -------------------- DRIVE REVERSE TOGGLE --------------------
-            if (gamepad1.left_bumper && !leftBumperPrevDrive) {
-                driveReversed = !driveReversed;
-            }
-            leftBumperPrevDrive = gamepad1.left_bumper;
-
-            if (driveReversed) {
-                SPEEDFACTOR *= -1;
-            }
-
-            // -------------------- CALCULATE SIDE --------------------
-            if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0) {
-                side = gamepad1.right_trigger - gamepad1.left_trigger;
-            } else if (gamepad1.left_trigger > 0) {
-                side = -gamepad1.left_trigger;
-            } else if (gamepad1.right_trigger > 0) {
-                side = gamepad1.right_trigger;
-            }
 
             // -------------------- DRIVE REVERSE TOGGLE --------------------
             if (gamepad1.left_bumper && !leftBumperPrevDrive) {
@@ -138,6 +120,15 @@ public class TeleOpMain extends LinearOpMode {
 
             if (driveReversed) {
                 SPEEDFACTOR = -SPEEDFACTOR;
+            }
+
+            // -------------------- CALCULATE SIDE --------------------
+            if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0) {
+                side = gamepad1.right_trigger - gamepad1.left_trigger;
+            } else if (gamepad1.left_trigger > 0) {
+                side = -gamepad1.left_trigger;
+            } else if (gamepad1.right_trigger > 0) {
+                side = gamepad1.right_trigger;
             }
 
             // -------------------- MANUAL SERVO PUSH --------------------

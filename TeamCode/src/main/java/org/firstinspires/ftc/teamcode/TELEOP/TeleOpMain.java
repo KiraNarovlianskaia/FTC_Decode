@@ -35,7 +35,7 @@ public class TeleOpMain extends LinearOpMode {
     // -------------------- CONSTANTS --------------------
     static final double servoOpen = 1;
     static final double servoPush = 0;
-    static final double SPEEDFACTOR = 0.55;
+    double SPEEDFACTOR = 0.55;
     static final double SPEEDROTATE = 0.35;
     static double shootingSpeed = 0.85;
 
@@ -118,8 +118,7 @@ public class TeleOpMain extends LinearOpMode {
             leftBumperPrevDrive = gamepad1.left_bumper;
 
             if (driveReversed) {
-                forward = -forward;
-                side = -side;
+                SPEEDFACTOR *= -1;
             }
 
             // -------------------- CALCULATE SIDE --------------------
@@ -138,8 +137,7 @@ public class TeleOpMain extends LinearOpMode {
             leftBumperPrevDrive = gamepad1.left_bumper;
 
             if (driveReversed) {
-                forward = -forward;
-                side = -side;
+                SPEEDFACTOR = -SPEEDFACTOR;
             }
 
             // -------------------- MANUAL SERVO PUSH --------------------

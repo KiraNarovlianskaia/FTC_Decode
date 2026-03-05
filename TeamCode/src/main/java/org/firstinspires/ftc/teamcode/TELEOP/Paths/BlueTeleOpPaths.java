@@ -17,12 +17,13 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import java.util.function.Supplier;
 @Disabled
 @Configurable
-@TeleOp(name="TeleOP Paths")
-public class TeleOpPaths extends OpMode {
+@TeleOp(name="Blue TeleOP Paths")
+public class BlueTeleOpPaths extends OpMode {
     private Follower follower;
     public static Pose startingPose; //See ExampleAuto to understand how to use this
     private boolean automatedDrive;
-    private Supplier<PathChain> pathChain;
+    private Supplier<PathChain> pathChainBase;
+    private Supplier<PathChain> pathChainShoot;
     private TelemetryManager telemetryM;
     private boolean slowMode = false;
     private double slowModeMultiplier = 0.5;
@@ -30,13 +31,17 @@ public class TeleOpPaths extends OpMode {
     @Override
     public void init() {
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(10, 10, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(22.813, 83.163, Math.toRadians(-90)));
         follower.update();
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
-        pathChain = () -> follower.pathBuilder() //Lazy Curve Generation
-                .addPath(new Path(new BezierLine(follower::getPose, new Pose(38, 33))))
-                .setHeadingInterpolation(HeadingInterpolator.linearFromPoint(follower::getHeading, Math.toRadians(90), 0.8))
+        pathChainBase = () -> follower.pathBuilder() //Lazy Curve Generation
+                .addPath(new Path(new BezierLine(follower::getPose, new Pose(38.65, 33.31))))
+                .setHeadingInterpolation(HeadingInterpolator.linearFromPoint(follower::getHeading, Math.toRadians(-90), 0.8))
+                .build();
+        pathChainShoot = () -> follower.pathBuilder() //Lazy Curve Generation
+                .addPath(new Path(new BezierLine(follower::getPose, new Pose(59.835, 83.696))))
+                .setHeadingInterpolation(HeadingInterpolator.linearFromPoint(follower::getHeading, Math.toRadians(315), 0.8))
                 .build();
     }
 
@@ -77,7 +82,12 @@ public class TeleOpPaths extends OpMode {
 
         //Automated PathFollowing
         if (gamepad1.aWasPressed()) {
-            follower.followPath(pathChain.get());
+            follower.followPath(pathChainBase.get());
+            automatedDrive = true;
+        }
+
+        if (gamepad1.xWasPressed()) {
+            follower.followPath(pathChainShoot.get());
             automatedDrive = true;
         }
 

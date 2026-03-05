@@ -25,7 +25,7 @@ import java.util.Arrays;
      - left stick up/down = intake in/out
      - right stick up = shoot
      - x, a, b = select pattern
-     - y = shoot by pattern
+     - y = shoot by pattern (press again to cancel)
      - dpad = shooter selection
      - bumpers = adjust shooting speed (+- 0.1)
 */
@@ -35,18 +35,29 @@ public class TeleOpMain extends LinearOpMode {
     // -------------------- CONSTANTS --------------------
     static final double servoOpen = 1;
     static final double servoPush = 0;
-    static final double SPEEDFACTOR = 0.55;
+    double SPEEDFACTOR = 0.55;
     static final double SPEEDROTATE = 0.35;
     static double shootingSpeed = 0.85;
 
-    String[] shootersToPower = {"L", "M", "R"}; // Shooter mode
-    String[] PATTERN = {"Purple,", "Purple", "Green"}; // Pre-selected Pattern
+    String[] shootersToPower = {"L", "M", "R"};
+    String[] PATTERN = {"Purple,", "Purple", "Green"};
 
     DcMotor shooterL, shooterM, shooterR;
 
-    // Track bumpers for single press
+    // Bumper tracking
     boolean rightBumperPrev = false;
     boolean leftBumperPrev = false;
+
+    // Drive reverse toggle
+    boolean driveReversed = false;
+    boolean leftBumperPrevDrive = false;
+
+    // Pattern toggle system
+    boolean shootingByPattern = false;
+    boolean yPrev = false;
+    int patternIndex = 0;
+    boolean shooterSpunUp = false;
+    long spinUpStartTime = 0;
 
     public void runOpMode() {
 
@@ -76,7 +87,7 @@ public class TeleOpMain extends LinearOpMode {
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
 
-        servoR.setDirection(Servo.Direction.REVERSE); // right servo is mirrored
+        servoR.setDirection(Servo.Direction.REVERSE);
         shooterM.setDirection(DcMotor.Direction.REVERSE);
 
         waitForStart();
@@ -85,7 +96,6 @@ public class TeleOpMain extends LinearOpMode {
         servoM.setPosition(servoOpen);
         servoR.setPosition(servoOpen);
 
-        // Artifact colors
         String left_ball = "No Color";
         String mid_ball = "No Color";
         String right_ball = "No Color";
@@ -101,7 +111,18 @@ public class TeleOpMain extends LinearOpMode {
             intakeSpeed = -gamepad2.left_stick_y;
             shooterStick = -gamepad2.right_stick_y;
 
-            // Side movement
+
+            // -------------------- DRIVE REVERSE TOGGLE --------------------
+            if (gamepad1.left_bumper && !leftBumperPrevDrive) {
+                driveReversed = !driveReversed;
+            }
+            leftBumperPrevDrive = gamepad1.left_bumper;
+
+            if (driveReversed) {
+                SPEEDFACTOR = -SPEEDFACTOR;
+            }
+
+            // -------------------- CALCULATE SIDE --------------------
             if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0) {
                 side = gamepad1.right_trigger - gamepad1.left_trigger;
             } else if (gamepad1.left_trigger > 0) {
@@ -116,7 +137,7 @@ public class TeleOpMain extends LinearOpMode {
             if (gamepad1.b) { servoR.setPosition(servoPush); sleep(1000); servoR.setPosition(servoOpen); }
             if (gamepad1.y) {
                 servoL.setPosition(servoPush); servoM.setPosition(servoPush); servoR.setPosition(servoPush);
-                sleep(400);
+                sleep(1000);
                 servoL.setPosition(servoOpen); servoM.setPosition(servoOpen); servoR.setPosition(servoOpen);
             }
 
@@ -133,19 +154,70 @@ public class TeleOpMain extends LinearOpMode {
 
             // -------------------- ADJUST SHOOTING SPEED --------------------
             if (gamepad2.right_bumper && !rightBumperPrev) {
-                shootingSpeed += 0.1;
+                shootingSpeed += 0.05;
                 if (shootingSpeed > 1.0) shootingSpeed = 1.0;
             }
             rightBumperPrev = gamepad2.right_bumper;
 
             if (gamepad2.left_bumper && !leftBumperPrev) {
-                shootingSpeed -= 0.1;
+                shootingSpeed -= 0.05;
                 if (shootingSpeed < 0.0) shootingSpeed = 0.0;
             }
             leftBumperPrev = gamepad2.left_bumper;
 
-            // -------------------- SHOOT BY PATTERN --------------------
-            if (gamepad2.yWasPressed()) shootByPattern(left_ball, mid_ball, right_ball, servoL, servoM, servoR);
+            // -------------------- TOGGLE SHOOT BY PATTERN --------------------
+            if (gamepad2.y && !yPrev) {
+                shootingByPattern = !shootingByPattern;
+
+                if (!shootingByPattern) {
+                    shooterL.setPower(0);
+                    shooterM.setPower(0);
+                    shooterR.setPower(0);
+                } else {
+                    patternIndex = 0;
+                    shooterSpunUp = false;
+                    spinUpStartTime = 0;
+                }
+            }
+            yPrev = gamepad2.y;
+
+            // -------------------- SHOOT BY PATTERN LOGIC --------------------
+            if (shootingByPattern) {
+
+                String[] balls = {left_ball, mid_ball, right_ball};
+                Servo[] servos = {servoL, servoM, servoR};
+
+                if (!shooterSpunUp) {
+
+                    shooterL.setPower(shootingSpeed);
+                    shooterM.setPower(-shootingSpeed);
+                    shooterR.setPower(-shootingSpeed);
+
+                    if (spinUpStartTime == 0)
+                        spinUpStartTime = System.currentTimeMillis();
+
+                    if (System.currentTimeMillis() - spinUpStartTime > 3000)
+                        shooterSpunUp = true;
+
+                } else if (patternIndex < PATTERN.length) {
+
+                    for (int j = 0; j < balls.length; j++) {
+                        if (balls[j].equals(PATTERN[patternIndex])) {
+                            servos[j].setPosition(servoPush);
+                            sleep(800);
+                            servos[j].setPosition(servoOpen);
+                            patternIndex++;
+                            break;
+                        }
+                    }
+
+                } else {
+                    shootingByPattern = false;
+                    shooterL.setPower(0);
+                    shooterM.setPower(0);
+                    shooterR.setPower(0);
+                }
+            }
 
             // -------------------- SHOOTER POWER LOGIC --------------------
             double powerL = 0, powerM = 0, powerR = 0;
@@ -155,19 +227,19 @@ public class TeleOpMain extends LinearOpMode {
                 if (s.equals("R")) powerR = -shooterStick;
             }
 
-            // -------------------- DRIVETRAIN --------------------
             leftFront.setPower(forward*SPEEDFACTOR - rotation*SPEEDROTATE - side*SPEEDFACTOR);
             leftBack.setPower(forward*SPEEDFACTOR - rotation*SPEEDROTATE + side*SPEEDFACTOR);
             rightFront.setPower(forward*SPEEDFACTOR + rotation*SPEEDROTATE + side*SPEEDFACTOR);
             rightBack.setPower(forward*SPEEDFACTOR + rotation*SPEEDROTATE - side*SPEEDFACTOR);
 
-            // -------------------- MECHANISMS --------------------
             intake.setPower(intakeSpeed);
-            shooterL.setPower(powerL * shootingSpeed);
-            shooterM.setPower(powerM * shootingSpeed);
-            shooterR.setPower(powerR * shootingSpeed);
 
-            // -------------------- ARTIFACT COLOR DETECTION --------------------
+            if (!shootingByPattern) {
+                shooterL.setPower(powerL * shootingSpeed);
+                shooterM.setPower(powerM * shootingSpeed);
+                shooterR.setPower(powerR * shootingSpeed);
+            }
+
             NormalizedRGBA colors_left = colorSensorL.getNormalizedColors();
             NormalizedRGBA colors_mid = colorSensorM.getNormalizedColors();
             NormalizedRGBA colors_right = colorSensorR.getNormalizedColors();
@@ -182,30 +254,9 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Mid: ", mid_ball);
             telemetry.addData("Right: ", right_ball);
             telemetry.addData("Shooting Speed: ", shootingSpeed);
+            telemetry.addData("Pattern Active: ", shootingByPattern);
+            telemetry.addData("Drive Reversed:", driveReversed);
             telemetry.update();
-        }
-    }
-
-    public void shootByPattern(String left, String middle, String right, Servo servoL, Servo servoM, Servo servoR) {
-        String[] balls = {left, middle, right};
-        Servo[] servos = {servoL, servoM, servoR};
-        boolean[] shot = {false, false, false};
-
-        shooterL.setPower(shootingSpeed);
-        shooterM.setPower(shootingSpeed);
-        shooterR.setPower(shootingSpeed);
-        sleep(3000);
-
-        for (String s : PATTERN) {
-            for (int j = 0; j < balls.length; j++) {
-                if (!shot[j] && balls[j].equals(s)) {
-                    servos[j].setPosition(servoPush);
-                    sleep(800);
-                    servos[j].setPosition(servoOpen);
-                    shot[j] = true;
-                    break;
-                }
-            }
         }
     }
 }

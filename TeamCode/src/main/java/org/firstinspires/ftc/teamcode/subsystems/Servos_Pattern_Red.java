@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class Servos_Pattern {
+public class Servos_Pattern_Red {
 
     private Servo servoL, servoM, servoR;
 
@@ -40,19 +40,19 @@ public class Servos_Pattern {
         // пример: определяем порядок серв в зависимости от варианта
         switch (variant) {
             case 1:
-                shootOrder = new Servo[]{servoL, servoM, servoR};
+                shootOrder = new Servo[]{servoR, servoM, servoL};
                 break;
             case 2:
                 shootOrder = new Servo[]{servoM, servoL, servoR};
                 break;
             case 3:
-                shootOrder = new Servo[]{servoR, servoM, servoL};
+                shootOrder = new Servo[]{servoL, servoM, servoR};
                 break;
             case 4:
-                shootOrder = new Servo[]{servoL, servoR, servoM};
+                shootOrder = new Servo[]{servoM, servoR, servoL};
                 break;
             default:
-                shootOrder = new Servo[]{servoL, servoM, servoR};
+                shootOrder = new Servo[]{servoR, servoM, servoL};
                 break;
         }
     }

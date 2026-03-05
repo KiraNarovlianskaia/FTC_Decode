@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+@Disabled
 @Autonomous(name = "2 Lines + Rotation", group = "Tests")
 public class Lines2Rotation extends OpMode {
     private Follower follower;

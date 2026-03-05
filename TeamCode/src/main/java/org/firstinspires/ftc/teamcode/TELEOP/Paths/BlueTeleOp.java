@@ -36,6 +36,7 @@ public class BlueTeleOp extends LinearOpMode {
     static final double servoPush = 0;
 
     static double shootingSpeed = 0.85;
+    static double shootingSpeedM = shootingSpeed + 0.1;
     static double speed_factor = 0.8;
 
     String[] shootersToPower = {"L","M","R"};
@@ -146,12 +147,12 @@ public class BlueTeleOp extends LinearOpMode {
             }
 
             if (gamepad1.right_bumper && !rbBefore) {
-                speed_factor = -speed_factor;
+                speed_factor = (speed_factor == 0.4) ? 0.8 : 0.4;
             }
             rbBefore = gamepad1.right_bumper;
 
             if (gamepad1.left_bumper && !lbBefore) {
-                speed_factor = (speed_factor == 0.4) ? 0.8 : 0.4;
+                speed_factor = -speed_factor;
             }
             lbBefore = gamepad1.left_bumper;
 
@@ -207,7 +208,7 @@ public class BlueTeleOp extends LinearOpMode {
             if(!shootingByPattern){
 
                 shooterL.setPower(powerL*shootingSpeed);
-                shooterM.setPower(powerM*shootingSpeed+0.1);
+                shooterM.setPower(powerM*shootingSpeedM);
                 shooterR.setPower(powerR*shootingSpeed);
 
             }
@@ -285,7 +286,7 @@ public class BlueTeleOp extends LinearOpMode {
                 if(!shooterSpunUp){
 
                     shooterL.setPower(shootingSpeed);
-                    shooterM.setPower(-shootingSpeed);
+                    shooterM.setPower(-shootingSpeedM);
                     shooterR.setPower(-shootingSpeed);
 
                     if(spinUpStart==0)

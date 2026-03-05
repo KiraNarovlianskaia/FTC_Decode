@@ -10,6 +10,7 @@ import com.pedropathing.ftc.localization.Encoder;
 import com.pedropathing.ftc.localization.constants.PinpointConstants;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -18,7 +19,6 @@ import com.pedropathing.ftc.localization.constants.TwoWheelConstants;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()

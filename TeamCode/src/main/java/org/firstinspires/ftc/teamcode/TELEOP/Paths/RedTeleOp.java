@@ -111,7 +111,7 @@ public class RedTeleOp extends LinearOpMode {
                 .build();
 
         pathChainShoot = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose,new Pose(95.406,94.576))))
+                .addPath(new Path(new BezierLine(follower::getPose,new Pose(85.695,83.719))))
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,

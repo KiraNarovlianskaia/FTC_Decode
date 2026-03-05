@@ -48,7 +48,7 @@ public class Blue_Base_9_Pattern extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(30.730, 129.238, Math.toRadians(180)));
+        follower.setStartingPose(new Pose(31.04, 113.746, Math.toRadians(180)));
 
         paths = new Paths(follower);
 
@@ -139,7 +139,7 @@ public class Blue_Base_9_Pattern extends OpMode {
         public Paths(Follower follower) {
             Path1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(30.730, 129.238),
+                                    new Pose(31.04, 113.746),
 
                                     new Pose(48.594, 94.576)
                             )

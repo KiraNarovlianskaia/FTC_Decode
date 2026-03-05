@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-@Disabled
+
 @Autonomous (name="Anna Auto Red Goal 3 Artifacts", group = "Anna")
 public class AutoAnnaRed extends LinearOpMode {
 

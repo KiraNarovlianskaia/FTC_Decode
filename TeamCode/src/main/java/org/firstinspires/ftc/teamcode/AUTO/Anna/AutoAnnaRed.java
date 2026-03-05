@@ -74,7 +74,7 @@ public class AutoAnnaRed extends LinearOpMode {
         imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(orientationOnRobot));
 
-        servoRight.setPosition(1.0);
+        servoRight.setPosition(0);
         servoMid.setPosition(1.0);
         servoLeft.setPosition(1.0);
 
@@ -136,12 +136,12 @@ public class AutoAnnaRed extends LinearOpMode {
     public void servoOpen(){
         servoLeft.setPosition(1.0);
         servoMid.setPosition(1.0);
-        servoRight.setPosition(1.0);
+        servoRight.setPosition(0);
     }
     public void servoClosed(){
         servoLeft.setPosition(0);
         servoMid.setPosition(0);
-        servoRight.setPosition(0);
+        servoRight.setPosition(1.0);
     }
     public void moveForward(double speed, double distance) {
 

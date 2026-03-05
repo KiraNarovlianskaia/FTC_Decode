@@ -48,6 +48,10 @@ public class TeleOpMain extends LinearOpMode {
     boolean rightBumperPrev = false;
     boolean leftBumperPrev = false;
 
+    // Drive reverse toggle
+    boolean driveReversed = false;
+    boolean leftBumperPrevDrive = false;
+
     // Pattern toggle system
     boolean shootingByPattern = false;
     boolean yPrev = false;
@@ -106,6 +110,17 @@ public class TeleOpMain extends LinearOpMode {
             rotation = gamepad1.right_stick_x;
             intakeSpeed = -gamepad2.left_stick_y;
             shooterStick = -gamepad2.right_stick_y;
+
+            // -------------------- DRIVE REVERSE TOGGLE --------------------
+            if (gamepad1.left_bumper && !leftBumperPrevDrive) {
+                driveReversed = !driveReversed;
+            }
+            leftBumperPrevDrive = gamepad1.left_bumper;
+
+            if (driveReversed) {
+                forward = -forward;
+                side = -side;
+            }
 
             if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0) {
                 side = gamepad1.right_trigger - gamepad1.left_trigger;
@@ -224,12 +239,6 @@ public class TeleOpMain extends LinearOpMode {
                 shooterR.setPower(powerR * shootingSpeed);
             }
 
-            // Reverse DRIVETRAIN movement
-            if (gamepad1.dpad_left) {
-                forward = -forward;
-                side = -side;
-            }
-
             NormalizedRGBA colors_left = colorSensorL.getNormalizedColors();
             NormalizedRGBA colors_mid = colorSensorM.getNormalizedColors();
             NormalizedRGBA colors_right = colorSensorR.getNormalizedColors();
@@ -245,6 +254,7 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Right: ", right_ball);
             telemetry.addData("Shooting Speed: ", shootingSpeed);
             telemetry.addData("Pattern Active: ", shootingByPattern);
+            telemetry.addData("Drive Reversed:", driveReversed);
             telemetry.update();
         }
     }

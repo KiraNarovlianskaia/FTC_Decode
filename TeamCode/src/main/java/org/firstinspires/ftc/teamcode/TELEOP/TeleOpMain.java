@@ -122,12 +122,24 @@ public class TeleOpMain extends LinearOpMode {
                 side = -side;
             }
 
+            // -------------------- CALCULATE SIDE --------------------
             if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0) {
                 side = gamepad1.right_trigger - gamepad1.left_trigger;
             } else if (gamepad1.left_trigger > 0) {
                 side = -gamepad1.left_trigger;
             } else if (gamepad1.right_trigger > 0) {
                 side = gamepad1.right_trigger;
+            }
+
+            // -------------------- DRIVE REVERSE TOGGLE --------------------
+            if (gamepad1.left_bumper && !leftBumperPrevDrive) {
+                driveReversed = !driveReversed;
+            }
+            leftBumperPrevDrive = gamepad1.left_bumper;
+
+            if (driveReversed) {
+                forward = -forward;
+                side = -side;
             }
 
             // -------------------- MANUAL SERVO PUSH --------------------
@@ -153,13 +165,13 @@ public class TeleOpMain extends LinearOpMode {
 
             // -------------------- ADJUST SHOOTING SPEED --------------------
             if (gamepad2.right_bumper && !rightBumperPrev) {
-                shootingSpeed += 0.1;
+                shootingSpeed += 0.05;
                 if (shootingSpeed > 1.0) shootingSpeed = 1.0;
             }
             rightBumperPrev = gamepad2.right_bumper;
 
             if (gamepad2.left_bumper && !leftBumperPrev) {
-                shootingSpeed -= 0.1;
+                shootingSpeed -= 0.05;
                 if (shootingSpeed < 0.0) shootingSpeed = 0.0;
             }
             leftBumperPrev = gamepad2.left_bumper;

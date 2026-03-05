@@ -9,6 +9,7 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -20,7 +21,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import java.util.List;
-
+@Disabled
 @Autonomous(name = "Blue_Base_6_Camera", group = "Autonomous")
 @Configurable
 public class Blue_Base_6_Camera extends OpMode {
@@ -34,6 +35,7 @@ public class Blue_Base_6_Camera extends OpMode {
     private Servos_Pattern servos = new Servos_Pattern();
     ElapsedTime timer = new ElapsedTime();
     boolean waitStarted = false;
+    private final double wheel_speed = 0.5;
 
     private Limelight3A limelight;
     private int detectedTagId = -1;      // последнее увиденное
@@ -174,7 +176,7 @@ public class Blue_Base_6_Camera extends OpMode {
 
             case 0:
                 shooter.start();
-                follower.followPath(paths.Path1,0.7,true);
+                follower.followPath(paths.Path1,wheel_speed,true);
                 pathState = 1;
                 break;
 
@@ -192,21 +194,21 @@ public class Blue_Base_6_Camera extends OpMode {
                 if (!follower.isBusy() && timer.seconds() >= 2.1) {
                     servos.closeAll();
                     intake.start();
-                    follower.followPath(paths.Path2, 0.7, true);
+                    follower.followPath(paths.Path2, wheel_speed, true);
                     pathState = 3;
                 }
                 break;
 
             case 3:
                 if (!follower.isBusy()) {
-                    follower.followPath(paths.Path3, 0.7, true);
+                    follower.followPath(paths.Path3, wheel_speed, true);
                     pathState = 4;
                 }
                 break;
 
             case 4:
                 if (!follower.isBusy()) {
-                    follower.followPath(paths.Path4, 0.7, true);
+                    follower.followPath(paths.Path4, wheel_speed, true);
                     pathState = 5;
                 }
                 break;

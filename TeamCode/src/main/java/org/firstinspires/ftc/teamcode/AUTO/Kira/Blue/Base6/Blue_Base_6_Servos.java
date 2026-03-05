@@ -9,6 +9,7 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -20,7 +21,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import java.util.List;
-
+@Disabled
 @Autonomous(name = "Blue_Base_6_Servos", group = "Autonomous")
 @Configurable
 public class Blue_Base_6_Servos extends OpMode {
@@ -34,6 +35,7 @@ public class Blue_Base_6_Servos extends OpMode {
     private Servos servos = new Servos();
     ElapsedTime timer = new ElapsedTime();
     boolean waitStarted = false;
+    private final double speed_wheels = 0.5;
 
     @Override
     public void init() {
@@ -119,7 +121,7 @@ public class Blue_Base_6_Servos extends OpMode {
 
             case 0:
                 shooter.start();
-                follower.followPath(paths.Path1,0.7,true);
+                follower.followPath(paths.Path1,speed_wheels,true);
                 pathState = 1;
                 break;
 
@@ -135,7 +137,7 @@ public class Blue_Base_6_Servos extends OpMode {
                 if (!follower.isBusy() && timer.seconds() >= 1) {
                     servos.servos_close();
                     intake.start();
-                    follower.followPath(paths.Path2, 0.7, true);
+                    follower.followPath(paths.Path2, speed_wheels, true);
                     pathState = 3;
                 }
                 break;

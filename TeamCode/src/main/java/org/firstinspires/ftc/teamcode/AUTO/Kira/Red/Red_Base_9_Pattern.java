@@ -51,7 +51,7 @@ public class Red_Base_9_Pattern extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(112.983, 129.238, Math.toRadians(0)));
+        follower.setStartingPose(new Pose(114.907, 127.875, Math.toRadians(0)));
 
         paths = new Paths(follower);
 
@@ -142,7 +142,7 @@ public class Red_Base_9_Pattern extends OpMode {
         public Paths(Follower follower) {
             Path1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(112.983, 129.238),
+                                    new Pose(114.907, 129.875),
 
                                     new Pose(95.406, 94.576)
                             )

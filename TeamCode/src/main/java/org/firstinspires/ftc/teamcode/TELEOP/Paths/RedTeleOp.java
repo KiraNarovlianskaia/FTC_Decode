@@ -36,6 +36,7 @@ public class RedTeleOp extends LinearOpMode {
     static final double servoPush = 0;
 
     static double shootingSpeed = 0.85;
+    static double shootingSpeedM = shootingSpeed + 0.1;
     static double speed_factor = 0.8;
 
     String[] shootersToPower = {"L","M","R"};
@@ -110,7 +111,7 @@ public class RedTeleOp extends LinearOpMode {
                 .build();
 
         pathChainShoot = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose,new Pose(95.406,94.576))))
+                .addPath(new Path(new BezierLine(follower::getPose,new Pose(85.695,83.719))))
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,
@@ -207,7 +208,7 @@ public class RedTeleOp extends LinearOpMode {
             if(!shootingByPattern){
 
                 shooterL.setPower(powerL*shootingSpeed);
-                shooterM.setPower(powerM*shootingSpeed+0.1);
+                shooterM.setPower(powerM*shootingSpeedM);
                 shooterR.setPower(powerR*shootingSpeed);
 
             }
@@ -285,7 +286,7 @@ public class RedTeleOp extends LinearOpMode {
                 if(!shooterSpunUp){
 
                     shooterL.setPower(shootingSpeed);
-                    shooterM.setPower(-shootingSpeed);
+                    shooterM.setPower(-shootingSpeedM);
                     shooterR.setPower(-shootingSpeed);
 
                     if(spinUpStart==0)

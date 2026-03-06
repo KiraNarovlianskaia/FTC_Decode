@@ -12,19 +12,17 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-<<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/archive/AUTO/Kira/Red/Red_Base_12.java
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-========
 import org.firstinspires.ftc.teamcode.subsystems.Servos_Pattern_Red;
->>>>>>>> origin/master:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/archive/AUTO/Kira/Red/Red_Base_9_Pattern.java
 
 import java.util.List;
-
+@Disabled
 @Autonomous(name = "Red_Base_9", group = "Autonomous")
 @Configurable
 public class Red_Base_9_Pattern extends OpMode {

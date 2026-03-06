@@ -22,9 +22,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 import java.util.List;
 
-@Autonomous(name = "Blue_Base_9_New", group = "Autonomous")
+@Autonomous(name = "Blue_Base_9", group = "Autonomous")
 @Configurable
-public class Blue_Base_9_New extends OpMode {
+public class Blue_Base_9 extends OpMode {
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
@@ -37,8 +37,8 @@ public class Blue_Base_9_New extends OpMode {
     boolean waitStarted = false;
 
     private Limelight3A limelight;
-    private int detectedTagId = 21;      // последнее увиденное
-    private int finalTagId = 21;         // зафиксированное перед стартом
+    private int detectedTagId = -1;      // последнее увиденное
+    private int finalTagId = -1;         // зафиксированное перед стартом
     private int shoot_id = 1;
 
     private final double wheel_speed = 0.5;
@@ -119,6 +119,9 @@ public class Blue_Base_9_New extends OpMode {
                 if (shootId == 3) return 4;
                 if (shootId == 4) return 1;
                 break;
+            case -1:
+                return 1;
+
         }
         // по умолчанию, если не попало под первый вариант
         // сделать свитч 1 или 2 или 3
@@ -247,7 +250,7 @@ public class Blue_Base_9_New extends OpMode {
                 break;
 
             case 2:
-                if (!follower.isBusy() && timer.seconds() >= 2.1) {
+                if (!follower.isBusy() && timer.seconds() >= 2.5) {
                     servos.closeAll();
                     intake.start();
                     follower.followPath(paths.Path2, wheel_speed, true);
@@ -280,7 +283,7 @@ public class Blue_Base_9_New extends OpMode {
                 break;
 
             case 6:
-                if (!follower.isBusy() && timer.seconds() >= 2.1) {
+                if (!follower.isBusy() && timer.seconds() >= 2.5) {
                     servos.closeAll();
                     follower.followPath(paths.Path5, wheel_speed, true);
                     pathState = 7;
@@ -310,7 +313,7 @@ public class Blue_Base_9_New extends OpMode {
                 break;
 
             case 10:
-                if (!follower.isBusy() && timer.seconds() >= 2.1) {
+                if (!follower.isBusy() && timer.seconds() >= 2.5) {
                     servos.closeAll();
                     follower.followPath(paths.Path8, wheel_speed, true);
                     pathState = 11;

@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 @Configurable
-@TeleOp(name="RED Paths TeleOpNew")
+@TeleOp(name="RED TeleOp")
 
 public class RedTeleOp extends LinearOpMode {
 
@@ -99,10 +99,10 @@ public class RedTeleOp extends LinearOpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setStartingPose(new Pose(121.187,83.163,Math.toRadians(-90)));
+        follower.setStartingPose(new Pose(123.445,79.563,Math.toRadians(-90)));
 
         pathChainBase = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose,new Pose(105.163,33.047))))
+                .addPath(new Path(new BezierLine(follower::getPose,new Pose(32.250,28.708))))
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,
@@ -111,7 +111,7 @@ public class RedTeleOp extends LinearOpMode {
                 .build();
 
         pathChainShoot = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose,new Pose(85.695,83.719))))
+                .addPath(new Path(new BezierLine(follower::getPose,new Pose(89.196,78.073))))
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,
@@ -147,12 +147,13 @@ public class RedTeleOp extends LinearOpMode {
             }
 
             if (gamepad1.right_bumper && !rbBefore) {
-                speed_factor = -speed_factor;
+                speed_factor = (speed_factor == 0.4) ? 0.8 : 0.4;
+
             }
             rbBefore = gamepad1.right_bumper;
 
             if (gamepad1.left_bumper && !lbBefore) {
-                speed_factor = (speed_factor == 0.4) ? 0.8 : 0.4;
+                speed_factor = -speed_factor;
             }
             lbBefore = gamepad1.left_bumper;
 

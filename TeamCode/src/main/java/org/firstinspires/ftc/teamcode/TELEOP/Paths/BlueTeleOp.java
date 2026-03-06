@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 @Configurable
-@TeleOp(name="BLUE Paths TeleOpNew")
+@TeleOp(name="BLUE TeleOp")
 
 public class BlueTeleOp extends LinearOpMode {
 
@@ -39,8 +39,8 @@ public class BlueTeleOp extends LinearOpMode {
     static double shootingSpeedM = shootingSpeed + 0.1;
     static double speed_factor = 0.8;
 
-    String[] shootersToPower = {"L","M","R"};
-    String[] PATTERN = {"Purple","Purple","Green"};
+    String[] shootersToPower = {"L", "M", "R"};
+    String[] PATTERN = {"Purple", "Purple", "Green"};
 
     // ---------------- HARDWARE ----------------
     DcMotor intake;
@@ -66,27 +66,27 @@ public class BlueTeleOp extends LinearOpMode {
     long servoTimer = 0;
     boolean servoActive = false;
 
-    boolean rightBumperPrev=false;
-    boolean leftBumperPrev=false;
+    boolean rightBumperPrev = false;
+    boolean leftBumperPrev = false;
 
     @Override
     public void runOpMode() {
 
         // ---------------- HARDWARE ----------------
 
-        intake = hardwareMap.get(DcMotor.class,"intake");
+        intake = hardwareMap.get(DcMotor.class, "intake");
 
-        shooterL = hardwareMap.get(DcMotor.class,"shooter_left");
-        shooterM = hardwareMap.get(DcMotor.class,"shooter_mid");
-        shooterR = hardwareMap.get(DcMotor.class,"shooter_right");
+        shooterL = hardwareMap.get(DcMotor.class, "shooter_left");
+        shooterM = hardwareMap.get(DcMotor.class, "shooter_mid");
+        shooterR = hardwareMap.get(DcMotor.class, "shooter_right");
 
-        servoL = hardwareMap.get(Servo.class,"servo_left");
-        servoM = hardwareMap.get(Servo.class,"servo_mid");
-        servoR = hardwareMap.get(Servo.class,"servo_right");
+        servoL = hardwareMap.get(Servo.class, "servo_left");
+        servoM = hardwareMap.get(Servo.class, "servo_mid");
+        servoR = hardwareMap.get(Servo.class, "servo_right");
 
-        colorSensorL = hardwareMap.get(NormalizedColorSensor.class,"ball_color_left");
-        colorSensorM = hardwareMap.get(NormalizedColorSensor.class,"ball_color_mid");
-        colorSensorR = hardwareMap.get(NormalizedColorSensor.class,"ball_color_right");
+        colorSensorL = hardwareMap.get(NormalizedColorSensor.class, "ball_color_left");
+        colorSensorM = hardwareMap.get(NormalizedColorSensor.class, "ball_color_mid");
+        colorSensorR = hardwareMap.get(NormalizedColorSensor.class, "ball_color_right");
 
         shooterM.setDirection(DcMotor.Direction.REVERSE);
         servoR.setDirection(Servo.Direction.REVERSE);
@@ -99,10 +99,10 @@ public class BlueTeleOp extends LinearOpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setStartingPose(new Pose(22.813,83.163,Math.toRadians(-90)));
+        follower.setStartingPose(new Pose(25.930, 78.934, Math.toRadians(-90)));
 
         pathChainBase = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose,new Pose(38.65,33.31))))
+                .addPath(new Path(new BezierLine(follower::getPose, new Pose(99.268, 28.366))))
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,
@@ -111,7 +111,7 @@ public class BlueTeleOp extends LinearOpMode {
                 .build();
 
         pathChainShoot = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose,new Pose(59.835,83.696))))
+                .addPath(new Path(new BezierLine(follower::getPose, new Pose(59.835, 83.696))))
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,
@@ -123,24 +123,24 @@ public class BlueTeleOp extends LinearOpMode {
 
         follower.startTeleopDrive();
 
-        String left_ball="No Color";
-        String mid_ball="No Color";
-        String right_ball="No Color";
+        String left_ball = "No Color";
+        String mid_ball = "No Color";
+        String right_ball = "No Color";
 
         // ================= MAIN LOOP =================
 
-        while(opModeIsActive()) {
+        while (opModeIsActive()) {
 
             follower.update();
 
             // ---------------- DRIVE ----------------
 
-            if(!automatedDrive) {
+            if (!automatedDrive) {
 
                 follower.setTeleOpDrive(
-                        -gamepad1.left_stick_y*speed_factor,
-                        (gamepad1.left_trigger - gamepad1.right_trigger)*speed_factor,
-                        -gamepad1.right_stick_x*speed_factor,
+                        -gamepad1.left_stick_y * speed_factor,
+                        (gamepad1.left_trigger - gamepad1.right_trigger) * speed_factor,
+                        -gamepad1.right_stick_x * speed_factor,
                         true
                 );
 
@@ -157,31 +157,47 @@ public class BlueTeleOp extends LinearOpMode {
             lbBefore = gamepad1.left_bumper;
 
 
-            if(gamepad1.dpad_down){
+            if (gamepad1.dpad_down) {
                 follower.followPath(pathChainBase.get());
-                automatedDrive=true;
+                automatedDrive = true;
             }
 
-            if(gamepad1.dpad_up){
+            if (gamepad1.dpad_up) {
 
                 follower.followPath(pathChainShoot.get());
-                automatedDrive=true;
+                automatedDrive = true;
 
             }
 
-            if (gamepad1.x) { servoL.setPosition(servoPush); sleep(1000); servoL.setPosition(servoOpen); }
-            if (gamepad1.a) { servoM.setPosition(servoPush); sleep(1000); servoM.setPosition(servoOpen); }
-            if (gamepad1.b) { servoR.setPosition(servoPush); sleep(1000); servoR.setPosition(servoOpen); }
-            if (gamepad1.y) {
-                servoL.setPosition(servoPush); servoM.setPosition(servoPush); servoR.setPosition(servoPush);
+            if (gamepad1.x) {
+                servoL.setPosition(servoPush);
                 sleep(1000);
-                servoL.setPosition(servoOpen); servoM.setPosition(servoOpen); servoR.setPosition(servoOpen);
+                servoL.setPosition(servoOpen);
+            }
+            if (gamepad1.a) {
+                servoM.setPosition(servoPush);
+                sleep(1000);
+                servoM.setPosition(servoOpen);
+            }
+            if (gamepad1.b) {
+                servoR.setPosition(servoPush);
+                sleep(1000);
+                servoR.setPosition(servoOpen);
+            }
+            if (gamepad1.y) {
+                servoL.setPosition(servoPush);
+                servoM.setPosition(servoPush);
+                servoR.setPosition(servoPush);
+                sleep(1000);
+                servoL.setPosition(servoOpen);
+                servoM.setPosition(servoOpen);
+                servoR.setPosition(servoOpen);
             }
 
-            if(automatedDrive && (gamepad1.dpad_left || !follower.isBusy())){
+            if (automatedDrive && (gamepad1.dpad_left || !follower.isBusy())) {
 
                 follower.startTeleopDrive();
-                automatedDrive=false;
+                automatedDrive = false;
 
             }
 
@@ -193,68 +209,69 @@ public class BlueTeleOp extends LinearOpMode {
 
             double shooterStick = -gamepad2.right_stick_y;
 
-            double powerL=0;
-            double powerM=0;
-            double powerR=0;
+            double powerL = 0;
+            double powerM = 0;
+            double powerR = 0;
 
-            for(String s:shootersToPower){
+            for (String s : shootersToPower) {
 
-                if(s.equals("L")) powerL=shooterStick;
-                if(s.equals("M")) powerM=-shooterStick;
-                if(s.equals("R")) powerR=-shooterStick;
+                if (s.equals("L")) powerL = shooterStick;
+                if (s.equals("M")) powerM = -shooterStick;
+                if (s.equals("R")) powerR = -shooterStick;
 
             }
 
-            if(!shootingByPattern){
+            if (!shootingByPattern) {
 
-                shooterL.setPower(powerL*shootingSpeed);
-                shooterM.setPower(powerM*shootingSpeed);
-                shooterR.setPower(powerR*shootingSpeed);
+                shooterL.setPower(powerL * shootingSpeed);
+                shooterM.setPower(powerM * shootingSpeed);
+                shooterR.setPower(powerR * shootingSpeed);
 
             }
 
             // ---------------- SPEED ADJUST ----------------
 
-            if(gamepad2.right_bumper && !rightBumperPrev){
+            if (gamepad2.right_bumper && !rightBumperPrev) {
 
-                shootingSpeed+=0.05;
-                if(shootingSpeed>1) shootingSpeed=1;
-
-            }
-
-            rightBumperPrev=gamepad2.right_bumper;
-
-            if(gamepad2.left_bumper && !leftBumperPrev){
-
-                shootingSpeed-=0.05;
-                if(shootingSpeed<0) shootingSpeed=0;
+                shootingSpeed += 0.05;
+                if (shootingSpeed > 1) shootingSpeed = 1;
 
             }
 
-            leftBumperPrev=gamepad2.left_bumper;
+            rightBumperPrev = gamepad2.right_bumper;
+
+            if (gamepad2.left_bumper && !leftBumperPrev) {
+
+                shootingSpeed -= 0.05;
+                if (shootingSpeed < 0) shootingSpeed = 0;
+
+            }
+
+            leftBumperPrev = gamepad2.left_bumper;
 
             // ---------------- PATTERN SELECT ----------------
 
-            if(gamepad2.xWasPressed())
-                PATTERN=new String[]{"Green","Purple","Purple"};
+            if (gamepad2.xWasPressed())
+                PATTERN = new String[]{"Green", "Purple", "Purple"};
 
-            if(gamepad2.aWasPressed())
-                PATTERN=new String[]{"Purple","Green","Purple"};
+            if (gamepad2.aWasPressed())
+                PATTERN = new String[]{"Purple", "Green", "Purple"};
 
-            if(gamepad2.bWasPressed())
-                PATTERN=new String[]{"Purple","Purple","Green"};
+            if (gamepad2.bWasPressed())
+                PATTERN = new String[]{"Purple", "Purple", "Green"};
 
             // ---------------- SHOOT MODE ----------------
 
-            if(gamepad2.y && !yPrev){
+            if (gamepad2.y && !yPrev) {
 
-                shootingByPattern=!shootingByPattern;
+                shootingByPattern = !shootingByPattern;
 
-                patternIndex=0;
-                shooterSpunUp=false;
-                spinUpStart=0;
+                patternIndex = 0;
+                shooterSpunUp = false;
+                spinUpStart = 0;
+                servoActive = false;
 
-                if(!shootingByPattern){
+                if (!shootingByPattern) {
 
                     shooterL.setPower(0);
                     shooterM.setPower(0);
@@ -264,7 +281,7 @@ public class BlueTeleOp extends LinearOpMode {
 
             }
 
-            yPrev=gamepad2.y;
+            yPrev = gamepad2.y;
 
             // ---------------- COLOR DETECTION ----------------
 
@@ -272,68 +289,81 @@ public class BlueTeleOp extends LinearOpMode {
             NormalizedRGBA colors_mid = colorSensorM.getNormalizedColors();
             NormalizedRGBA colors_right = colorSensorR.getNormalizedColors();
 
-            left_ball  = (colors_left.blue>colors_left.green) ? "Purple":"Green";
-            mid_ball   = (colors_mid.blue>colors_mid.green) ? "Purple":"Green";
-            right_ball = (colors_right.blue>colors_right.green) ? "Purple":"Green";
+            left_ball = (colors_left.blue > colors_left.green) ? "Purple" : "Green";
+            mid_ball = (colors_mid.blue > colors_mid.green) ? "Purple" : "Green";
+            right_ball = (colors_right.blue > colors_right.green) ? "Purple" : "Green";
 
             // ---------------- PATTERN SHOOT ----------------
 
-            if(shootingByPattern){
+            if (shootingByPattern) {
 
-                String[] balls = {left_ball,mid_ball,right_ball};
-                Servo[] servos = {servoL,servoM,servoR};
+                String[] balls = {left_ball, mid_ball, right_ball};
+                Servo[] servos = {servoL, servoM, servoR};
 
-                if(!shooterSpunUp){
+                // ---------- SPIN UP ----------
+
+                if (!shooterSpunUp) {
 
                     shooterL.setPower(shootingSpeed);
                     shooterM.setPower(-shootingSpeed);
                     shooterR.setPower(-shootingSpeed);
 
-                    if(spinUpStart==0)
-                        spinUpStart=System.currentTimeMillis();
+                    if (spinUpStart == 0)
+                        spinUpStart = System.currentTimeMillis();
 
-                    if(System.currentTimeMillis()-spinUpStart>2500)
-                        shooterSpunUp=true;
+                    if (System.currentTimeMillis() - spinUpStart > 2500)
+                        shooterSpunUp = true;
 
                 }
 
-                else if(patternIndex<PATTERN.length){
+                // ---------- SHOOT PATTERN ----------
 
-                    if(!servoActive){
+                else if (patternIndex < PATTERN.length) {
 
-                        for(int i=0;i<balls.length;i++){
+                    int targetIndex = -1;
 
-                            if(balls[i].equals(PATTERN[patternIndex])){
+                    for (int i = 0; i < balls.length; i++) {
 
-                                servos[i].setPosition(servoPush);
+                        if (PATTERN[patternIndex].equalsIgnoreCase(balls[i])) {
 
-                                servoTimer=System.currentTimeMillis();
-                                servoActive=true;
-
-                                break;
-
-                            }
+                            targetIndex = i;
+                            break;
 
                         }
 
                     }
 
-                    else if(System.currentTimeMillis()-servoTimer>600){
+                    if (targetIndex == -1) {
 
-                        servoL.setPosition(servoOpen);
-                        servoM.setPosition(servoOpen);
-                        servoR.setPosition(servoOpen);
-
-                        servoActive=false;
                         patternIndex++;
+
+                    } else {
+
+                        if (!servoActive) {
+
+                            servos[targetIndex].setPosition(servoPush);
+
+                            servoTimer = System.currentTimeMillis();
+                            servoActive = true;
+
+                        } else if (System.currentTimeMillis() - servoTimer > 800) {
+
+                            servos[targetIndex].setPosition(servoOpen);
+
+                            servoActive = false;
+                            patternIndex++;
+
+                        }
 
                     }
 
                 }
 
-                else{
+                // ---------- FINISH ----------
 
-                    shootingByPattern=false;
+                else {
+
+                    shootingByPattern = false;
 
                     shooterL.setPower(0);
                     shooterM.setPower(0);
@@ -343,20 +373,20 @@ public class BlueTeleOp extends LinearOpMode {
 
             }
 
+
             // ---------------- TELEMETRY ----------------
 
-            telemetry.addData("Pose",follower.getPose());
+            telemetry.addData("Pose", follower.getPose());
             telemetry.addData("Pattern", Arrays.toString(PATTERN));
-            telemetry.addData("Left",left_ball);
-            telemetry.addData("Mid",mid_ball);
-            telemetry.addData("Right",right_ball);
-            telemetry.addData("ShootSpeed",shootingSpeed);
-            telemetry.addData("AutoDrive",automatedDrive);
+            telemetry.addData("Left", left_ball);
+            telemetry.addData("Mid", mid_ball);
+            telemetry.addData("Right", right_ball);
+            telemetry.addData("ShootSpeed", shootingSpeed);
+            telemetry.addData("AutoDrive", automatedDrive);
 
             telemetry.update();
 
         }
 
     }
-
 }

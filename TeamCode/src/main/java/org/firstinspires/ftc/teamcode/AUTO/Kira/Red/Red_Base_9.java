@@ -15,19 +15,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-<<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/archive/AUTO/Kira/Red/Red_Base_12.java
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-========
 import org.firstinspires.ftc.teamcode.subsystems.Servos_Pattern_Red;
->>>>>>>> origin/master:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/archive/AUTO/Kira/Red/Red_Base_9_Pattern.java
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 import java.util.List;
 
 @Autonomous(name = "Red_Base_9", group = "Autonomous")
 @Configurable
-public class Red_Base_9_Pattern extends OpMode {
+public class Red_Base_9 extends OpMode {
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
@@ -45,13 +42,14 @@ public class Red_Base_9_Pattern extends OpMode {
     private int shoot_id = 1;
 
     private final double wheel_speed = 0.5;
+    boolean autoFinished = false;
 
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(112.983, 129.238, Math.toRadians(0)));
+        follower.setStartingPose(new Pose(109.425, 131.069, Math.toRadians(0)));
 
         paths = new Paths(follower);
 
@@ -92,6 +90,8 @@ public class Red_Base_9_Pattern extends OpMode {
 
     @Override
     public void loop() {
+        if (autoFinished) return;
+
         follower.update();
         servos.update();
         pathState = autonomousPathUpdate();
@@ -119,6 +119,8 @@ public class Red_Base_9_Pattern extends OpMode {
                 if (shootId == 3) return 1;
                 if (shootId == 4) return 4;
                 break;
+            case -1:
+                return 1;
         }
         // по умолчанию, если не попало под первый вариант
         // сделать свитч 1 или 2 или 3
@@ -142,7 +144,7 @@ public class Red_Base_9_Pattern extends OpMode {
         public Paths(Follower follower) {
             Path1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(112.983, 129.238),
+                                    new Pose(109.425, 131.069),
 
                                     new Pose(95.406, 94.576)
                             )
@@ -247,7 +249,7 @@ public class Red_Base_9_Pattern extends OpMode {
                 break;
 
             case 2:
-                if (!follower.isBusy() && timer.seconds() >= 2.1) {
+                if (!follower.isBusy() && timer.seconds() >= 2.5) {
                     servos.closeAll();
                     intake.start();
                     follower.followPath(paths.Path2, wheel_speed, true);
@@ -280,7 +282,7 @@ public class Red_Base_9_Pattern extends OpMode {
                 break;
 
             case 6:
-                if (!follower.isBusy() && timer.seconds() >= 2.1) {
+                if (!follower.isBusy() && timer.seconds() >= 2.5) {
                     servos.closeAll();
                     follower.followPath(paths.Path5, wheel_speed, true);
                     pathState = 7;
@@ -309,10 +311,21 @@ public class Red_Base_9_Pattern extends OpMode {
                 }
                 break;
             case 10:
-                if (!follower.isBusy() && timer.seconds() >= 2.1) {
+                if (!follower.isBusy() && timer.seconds() >= 2.5) {
                     servos.closeAll();
                     follower.followPath(paths.Path8, wheel_speed, true);
                     pathState = 11;
+                }
+                break;
+
+            case 11:
+                if (!follower.isBusy()) {
+                    follower.breakFollowing();
+                    intake.stop();
+                    shooter.stop();
+                    servos.closeAll();
+
+                    autoFinished = true;
                 }
                 break;
 

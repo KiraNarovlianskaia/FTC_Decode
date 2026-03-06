@@ -17,10 +17,6 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Servos;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
-import java.util.List;
 @Disabled
 @Autonomous(name = "Blue_Base_6_Servos", group = "Autonomous")
 @Configurable
@@ -35,7 +31,6 @@ public class Blue_Base_6_Servos extends OpMode {
     private Servos servos = new Servos();
     ElapsedTime timer = new ElapsedTime();
     boolean waitStarted = false;
-    private final double speed_wheels = 0.5;
 
     @Override
     public void init() {
@@ -121,7 +116,7 @@ public class Blue_Base_6_Servos extends OpMode {
 
             case 0:
                 shooter.start();
-                follower.followPath(paths.Path1,speed_wheels,true);
+                follower.followPath(paths.Path1,0.5,true);
                 pathState = 1;
                 break;
 
@@ -137,21 +132,21 @@ public class Blue_Base_6_Servos extends OpMode {
                 if (!follower.isBusy() && timer.seconds() >= 1) {
                     servos.servos_close();
                     intake.start();
-                    follower.followPath(paths.Path2, speed_wheels, true);
+                    follower.followPath(paths.Path2, 0.5, true);
                     pathState = 3;
                 }
                 break;
 
             case 3:
                 if (!follower.isBusy()) {
-                    follower.followPath(paths.Path3, 0.7, true);
+                    follower.followPath(paths.Path3, 0.5, true);
                     pathState = 4;
                 }
                 break;
 
             case 4:
                 if (!follower.isBusy()) {
-                    follower.followPath(paths.Path4, 0.7, true);
+                    follower.followPath(paths.Path4, 0.5, true);
                     pathState = 5;
                 }
                 break;

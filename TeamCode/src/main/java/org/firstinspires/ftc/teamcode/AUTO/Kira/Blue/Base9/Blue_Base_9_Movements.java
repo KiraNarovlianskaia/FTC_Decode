@@ -25,6 +25,9 @@ public class Blue_Base_9_Movements extends OpMode {
     public Follower follower;
     private int pathState;
     private Paths paths;
+    private Intake intake = new Intake();
+    private Shooter shooter = new Shooter();
+    private Servos servos = new Servos();
 
     @Override
     public void init() {
@@ -34,6 +37,10 @@ public class Blue_Base_9_Movements extends OpMode {
         follower.setStartingPose(new Pose(30.297, 127.028, Math.toRadians(-90)));
 
         paths = new Paths(follower);
+
+        intake.init(hardwareMap);
+        shooter.init(hardwareMap);
+        servos.init(hardwareMap);
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
@@ -51,8 +58,6 @@ public class Blue_Base_9_Movements extends OpMode {
         panelsTelemetry.update(telemetry);
     }
 
-
-
     public static class Paths {
         public PathChain Path1;
         public PathChain Path2;
@@ -61,9 +66,9 @@ public class Blue_Base_9_Movements extends OpMode {
         public PathChain Path5;
         public PathChain Path6;
         public PathChain Path7;
-        public PathChain Path8;
 
         public Paths(Follower follower) {
+
             Path1 = follower.pathBuilder().addPath(
                             new BezierLine(
                                     new Pose(30.297, 127.028),
@@ -78,7 +83,7 @@ public class Blue_Base_9_Movements extends OpMode {
                             new BezierCurve(
                                     new Pose(48.594, 94.576),
                                     new Pose(24.560, 118.989),
-                                    new Pose(23.000, 101.331)
+                                    new Pose(22.901, 89.033)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
 
@@ -86,29 +91,27 @@ public class Blue_Base_9_Movements extends OpMode {
 
             Path3 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(23.000, 101.331),
+                                    new Pose(22.901, 89.033),
 
-                                    new Pose(23.000, 80.847)
+                                    new Pose(22.901, 80.847)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-90))
 
                     .build();
-
             Path4 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(23.000, 80.847),
+                                    new Pose(22.901, 80.847),
 
                                     new Pose(48.594, 94.576)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
 
                     .build();
-
             Path5 = follower.pathBuilder().addPath(
-                            new BezierLine(
+                            new BezierCurve(
                                     new Pose(48.594, 94.576),
-
-                                    new Pose(23.000, 80.719)
+                                    new Pose(25.869, 84.504),
+                                    new Pose(24.894, 74.719)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
 
@@ -116,9 +119,9 @@ public class Blue_Base_9_Movements extends OpMode {
 
             Path6 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(23.000, 80.719),
+                                    new Pose(24.894, 74.719),
 
-                                    new Pose(23.000, 57.699)
+                                    new Pose(24.894, 65.848)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-90))
 
@@ -126,38 +129,30 @@ public class Blue_Base_9_Movements extends OpMode {
 
             Path7 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(23.000, 57.699),
+                                    new Pose(24.894, 65.848),
 
                                     new Pose(48.594, 94.576)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
 
                     .build();
-
-            Path8 = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(48.594, 94.576),
-
-                                    new Pose(22.813, 83.163)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
-
-                    .build();
         }
     }
-
 
     public int autonomousPathUpdate() {
 
         switch (pathState) {
 
             case 0:
+                shooter.start();
                 follower.followPath(paths.Path1,0.5,true);
                 pathState = 1;
                 break;
 
             case 1:
                 if (!follower.isBusy()) {
+
+                    intake.start();
                     follower.followPath(paths.Path2, 0.5, true);
                     pathState = 2;
                 }
@@ -167,6 +162,7 @@ public class Blue_Base_9_Movements extends OpMode {
                 if (!follower.isBusy()) {
                     follower.followPath(paths.Path3, 0.5, true);
                     pathState = 3;
+
                 }
                 break;
             case 3:
@@ -191,12 +187,6 @@ public class Blue_Base_9_Movements extends OpMode {
                 if (!follower.isBusy()) {
                     follower.followPath(paths.Path7, 0.5, true);
                     pathState = 7;
-                }
-                break;
-            case 7:
-                if (!follower.isBusy()) {
-                    follower.followPath(paths.Path8, 0.5, true);
-                    pathState = 8;
                 }
                 break;
         }

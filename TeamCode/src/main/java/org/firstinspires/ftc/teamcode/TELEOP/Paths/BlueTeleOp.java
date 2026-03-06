@@ -208,7 +208,7 @@ public class BlueTeleOp extends LinearOpMode {
             if(!shootingByPattern){
 
                 shooterL.setPower(powerL*shootingSpeed);
-                shooterM.setPower(powerM*shootingSpeedM);
+                shooterM.setPower(powerM*shootingSpeed);
                 shooterR.setPower(powerR*shootingSpeed);
 
             }
@@ -286,7 +286,7 @@ public class BlueTeleOp extends LinearOpMode {
                 if(!shooterSpunUp){
 
                     shooterL.setPower(shootingSpeed);
-                    shooterM.setPower(-shootingSpeedM);
+                    shooterM.setPower(-shootingSpeed);
                     shooterR.setPower(-shootingSpeed);
 
                     if(spinUpStart==0)

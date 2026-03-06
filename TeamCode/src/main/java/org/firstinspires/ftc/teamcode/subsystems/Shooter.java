@@ -30,7 +30,7 @@ public class Shooter {
     // Запуск мотора
     public void start() {
         shooterMotorL.setPower(shooterPower);
-        shooterMotorM.setPower(shooterPower + 0.1);
+        shooterMotorM.setPower(shooterPower);
         shooterMotorR.setPower(shooterPower);
     }
 

@@ -22,9 +22,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 import java.util.List;
 
-@Autonomous(name = "Red_Base_9", group = "Autonomous")
+@Autonomous(name = "Red_Base_9_New", group = "Autonomous")
 @Configurable
-public class Red_Base_9_Pattern extends OpMode {
+public class Red_Base_9_New extends OpMode {
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
@@ -42,13 +42,14 @@ public class Red_Base_9_Pattern extends OpMode {
     private int shoot_id = 1;
 
     private final double wheel_speed = 0.5;
+    boolean autoFinished = false;
 
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(112.983, 129.238, Math.toRadians(0)));
+        follower.setStartingPose(new Pose(109.425, 131.069, Math.toRadians(0)));
 
         paths = new Paths(follower);
 
@@ -89,6 +90,8 @@ public class Red_Base_9_Pattern extends OpMode {
 
     @Override
     public void loop() {
+        if (autoFinished) return;
+
         follower.update();
         servos.update();
         pathState = autonomousPathUpdate();
@@ -139,11 +142,11 @@ public class Red_Base_9_Pattern extends OpMode {
         public Paths(Follower follower) {
             Path1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(120.427, 119.218),
+                                    new Pose(109.425, 131.069),
 
                                     new Pose(95.406, 94.576)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(225))
+                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(225))
 
                     .build();
 
@@ -310,6 +313,17 @@ public class Red_Base_9_Pattern extends OpMode {
                     servos.closeAll();
                     follower.followPath(paths.Path8, wheel_speed, true);
                     pathState = 11;
+                }
+                break;
+
+            case 11:
+                if (!follower.isBusy()) {
+                    follower.breakFollowing();
+                    intake.stop();
+                    shooter.stop();
+                    servos.closeAll();
+
+                    autoFinished = true;
                 }
                 break;
 

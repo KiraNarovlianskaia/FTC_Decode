@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-@Disabled
 @Autonomous(name = "Straight Line", group = "Tests")
 public class StraightLine extends OpMode {
     private Follower follower;
@@ -25,8 +24,8 @@ public class StraightLine extends OpMode {
     }
     PathState pathState;
 
-    private final Pose startPose = new Pose(24.5,118.79, Math.toRadians(-90));
-    private final Pose shootPose = new Pose(24.5, 84.09, Math.toRadians(-90));
+    private final Pose startPose = new Pose(39.036,135.0236, Math.toRadians(-90));
+    private final Pose shootPose = new Pose(39.036, 104.9764, Math.toRadians(-90));
 
     private PathChain driveStartPosShootPos;
     public void buildPaths() {

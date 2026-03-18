@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.AUTO.Kira.Blue.Base9;
+package org.firstinspires.ftc.teamcode.AUTO.Kira.Example;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -22,24 +22,16 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 import java.util.List;
 
-@Autonomous(name = "Blue_Base_9", group = "Autonomous")
+@Autonomous(name = "LineFromGoal", group = "Autonomous")
 @Configurable
-public class Blue_Base_9 extends OpMode {
+public class LineFromGoal extends OpMode {
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
     private int pathState;
     private Paths paths;
-    private Intake intake = new Intake();
-    private Shooter shooter = new Shooter();
-    private Servos_Pattern servos = new Servos_Pattern();
     ElapsedTime timer = new ElapsedTime();
     boolean waitStarted = false;
-
-    private Limelight3A limelight;
-    private int detectedTagId = -1;      // последнее увиденное
-    private int finalTagId = -1;         // зафиксированное перед стартом
-    private int shoot_id = 1;
 
     private final double wheel_speed = 0.5;
     boolean autoFinished = false;
@@ -49,46 +41,11 @@ public class Blue_Base_9 extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(12.38, 108.536, Math.toRadians(180)));
-        //-3.081
-        //        //+3,73
-        //19.461
-        //104.806
+        follower.setStartingPose(new Pose(12.38, 108.536, Math.toRadians(-90)));
         paths = new Paths(follower);
-
-        intake.init(hardwareMap);
-        shooter.init(hardwareMap);
-        servos.init(hardwareMap);
-
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(8);   // pipeline AprilTag
-        limelight.setPollRateHz(30);
-        limelight.start();
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
-    }
-    @Override
-    public void init_loop() {
-
-        LLResult result = limelight.getLatestResult();
-
-        if (result != null && result.isValid()) {
-
-            List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-
-            if (!fiducials.isEmpty()) {
-                detectedTagId = fiducials.get(0).getFiducialId();
-            }
-        }
-
-        panelsTelemetry.debug("Last Seen Tag", detectedTagId);
-        panelsTelemetry.update(telemetry);
-    }
-
-    @Override
-    public void start() {
-        finalTagId = detectedTagId;  // фиксируем последний увиденный
     }
 
     @Override
@@ -96,7 +53,6 @@ public class Blue_Base_9 extends OpMode {
         if (autoFinished) return;
 
         follower.update();
-        servos.update();
         pathState = autonomousPathUpdate();
 
         panelsTelemetry.debug("Path State", pathState);
@@ -105,31 +61,7 @@ public class Blue_Base_9 extends OpMode {
         panelsTelemetry.debug("Heading", follower.getPose().getHeading());
         panelsTelemetry.update(telemetry);
     }
-    private int getVariant(int shootId) {
-        switch (finalTagId) {
-            case 21:
-                if (shootId == 1 || shootId == 2) return 1;
-                if (shootId == 3) return 2;
-                if (shootId == 4) return 3;
-                break;
-            case 22:
-                if (shootId == 1 || shootId == 2) return 2;
-                if (shootId == 3) return 1;
-                if (shootId == 4) return 4;
-                break;
-            case 23:
-                if (shootId == 1 || shootId == 2) return 3;
-                if (shootId == 3) return 4;
-                if (shootId == 4) return 1;
-                break;
-            case -1:
-                return 1;
 
-        }
-        // по умолчанию, если не попало под первый вариант
-        // сделать свитч 1 или 2 или 3
-        return 1;
-    }
 
 
 
@@ -228,109 +160,19 @@ public class Blue_Base_9 extends OpMode {
         }
     }
 
-
-
-
-
     public int autonomousPathUpdate() {
 
         switch (pathState) {
 
             case 0:
-                shooter.start();
                 follower.followPath(paths.Path1,wheel_speed,true);
                 pathState = 1;
                 break;
 
             case 1:
                 if (!follower.isBusy()) {
-                    int shootId = 1; // пример, можешь выбрать динамически
-                    int variant = getVariant(shootId); // получаем вариант
-                    servos.startShooting(shootId, variant);
-                    timer.reset();
-                    pathState = 2;
-                }
-                break;
-
-            case 2:
-                if (!follower.isBusy() && timer.seconds() >= 3) {
-                    servos.closeAll();
-                    intake.start();
                     follower.followPath(paths.Path2, wheel_speed, true);
-                    pathState = 3;
-                }
-                break;
-
-            case 3:
-                if (!follower.isBusy()) {
-                    follower.followPath(paths.Path3, wheel_speed, true);
-                    pathState = 4;
-                }
-                break;
-
-            case 4:
-                if (!follower.isBusy()) {
-                    follower.followPath(paths.Path4, wheel_speed, true);
-                    pathState = 5;
-                }
-                break;
-
-            case 5:
-                if (!follower.isBusy()) {
-                    int shootId = 2; // пример, можешь выбрать динамически
-                    int variant = getVariant(shootId); // получаем вариант
-                    timer.reset();
-                    servos.startShooting(shootId, variant);
-                    pathState = 6;
-                }
-                break;
-
-            case 6:
-                if (!follower.isBusy() && timer.seconds() >= 3) {
-                    servos.closeAll();
-                    follower.followPath(paths.Path5, wheel_speed, true);
-                    pathState = 7;
-                }
-                break;
-
-            case 7:
-                if (!follower.isBusy()) {
-                    follower.followPath(paths.Path6, wheel_speed, true);
-                    pathState = 8;
-                }
-                break;
-            case 8:
-                if (!follower.isBusy()) {
-                    follower.followPath(paths.Path7, wheel_speed, true);
-                    pathState = 9;
-                }
-                break;
-            case 9:
-                if (!follower.isBusy()) {
-                    int shootId = 3; // пример, можешь выбрать динамически
-                    int variant = getVariant(shootId); // получаем вариант
-                    timer.reset();
-                    servos.startShooting(shootId, variant);
-                    pathState = 10;
-                }
-                break;
-
-            case 10:
-                if (!follower.isBusy() && timer.seconds() >= 3) {
-                    servos.closeAll();
-                    follower.followPath(paths.Path8, wheel_speed, true);
-                    pathState = 11;
-                }
-                break;
-
-            case 11:
-                if (!follower.isBusy()) {
-                    follower.breakFollowing();
-                    intake.stop();
-                    shooter.stop();
-                    servos.closeAll();
-
-                    autoFinished = true;
+                    pathState = 2;
                 }
                 break;
 

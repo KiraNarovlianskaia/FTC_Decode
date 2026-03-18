@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Servos;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-@Disabled
+
 @Autonomous(name = "Blue_Base_9_Movements", group = "Autonomous")
 @Configurable
 public class Blue_Base_9_Movements extends OpMode {
@@ -25,22 +25,15 @@ public class Blue_Base_9_Movements extends OpMode {
     public Follower follower;
     private int pathState;
     private Paths paths;
-    private Intake intake = new Intake();
-    private Shooter shooter = new Shooter();
-    private Servos servos = new Servos();
 
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(30.297, 127.028, Math.toRadians(-90)));
+        follower.setStartingPose(new Pose(28.796, 128.976, Math.toRadians(180)));
 
         paths = new Paths(follower);
-
-        intake.init(hardwareMap);
-        shooter.init(hardwareMap);
-        servos.init(hardwareMap);
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
@@ -58,6 +51,8 @@ public class Blue_Base_9_Movements extends OpMode {
         panelsTelemetry.update(telemetry);
     }
 
+
+
     public static class Paths {
         public PathChain Path1;
         public PathChain Path2;
@@ -66,16 +61,16 @@ public class Blue_Base_9_Movements extends OpMode {
         public PathChain Path5;
         public PathChain Path6;
         public PathChain Path7;
+        public PathChain Path8;
 
         public Paths(Follower follower) {
-
             Path1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(30.297, 127.028),
+                                    new Pose(28.796, 128.976),
 
                                     new Pose(48.594, 94.576)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(315))
 
                     .build();
 
@@ -83,7 +78,7 @@ public class Blue_Base_9_Movements extends OpMode {
                             new BezierCurve(
                                     new Pose(48.594, 94.576),
                                     new Pose(24.560, 118.989),
-                                    new Pose(22.901, 89.033)
+                                    new Pose(23.000, 101.331)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
 
@@ -91,27 +86,29 @@ public class Blue_Base_9_Movements extends OpMode {
 
             Path3 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(22.901, 89.033),
+                                    new Pose(23.000, 101.331),
 
-                                    new Pose(22.901, 80.847)
+                                    new Pose(23.000, 80.847)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-90))
 
                     .build();
+
             Path4 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(22.901, 80.847),
+                                    new Pose(23.000, 80.847),
 
                                     new Pose(48.594, 94.576)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
 
                     .build();
+
             Path5 = follower.pathBuilder().addPath(
-                            new BezierCurve(
+                            new BezierLine(
                                     new Pose(48.594, 94.576),
-                                    new Pose(25.869, 84.504),
-                                    new Pose(24.894, 74.719)
+
+                                    new Pose(23.000, 80.719)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
 
@@ -119,9 +116,9 @@ public class Blue_Base_9_Movements extends OpMode {
 
             Path6 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(24.894, 74.719),
+                                    new Pose(23.000, 80.719),
 
-                                    new Pose(24.894, 65.848)
+                                    new Pose(23.000, 57.699)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-90))
 
@@ -129,30 +126,39 @@ public class Blue_Base_9_Movements extends OpMode {
 
             Path7 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(24.894, 65.848),
+                                    new Pose(23.000, 57.699),
 
                                     new Pose(48.594, 94.576)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
 
                     .build();
+
+            Path8 = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(48.594, 94.576),
+
+                                    new Pose(22.813, 83.163)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
+
+                    .build();
         }
     }
+
+
 
     public int autonomousPathUpdate() {
 
         switch (pathState) {
 
             case 0:
-                shooter.start();
                 follower.followPath(paths.Path1,0.5,true);
                 pathState = 1;
                 break;
 
             case 1:
                 if (!follower.isBusy()) {
-
-                    intake.start();
                     follower.followPath(paths.Path2, 0.5, true);
                     pathState = 2;
                 }

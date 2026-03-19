@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.AUTO.Testing;
+package org.firstinspires.ftc.teamcode.Testing;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;

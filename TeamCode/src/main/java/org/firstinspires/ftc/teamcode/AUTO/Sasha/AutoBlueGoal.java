@@ -77,6 +77,7 @@ public class AutoBlueGoal extends LinearOpMode {
         stopshoot();
         servoClose();
         moveRotate(0.3, 135);
+        
         intakeStart();
         moveForward(0.3, 60);
         intakeStop();

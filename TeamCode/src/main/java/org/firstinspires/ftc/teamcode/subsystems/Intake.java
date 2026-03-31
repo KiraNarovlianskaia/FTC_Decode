@@ -1,32 +1,29 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Intake {
 
-    private DcMotor intake;
+    private DcMotor intakeMotor;
 
-    public Intake(DcMotor intake) {
-        this.intake = intake;
-        intake.setPower(0);
+    // --------- CONSTANTS ----------
+    private double intakePower = 1;   // мощность всасывания
+
+    public void init(HardwareMap hwMap) {
+        intakeMotor = hwMap.get(DcMotor.class, "intake");
+
+        intakeMotor.setDirection(DcMotor.Direction.FORWARD);
+        intakeMotor.setPower(0); // безопасность
     }
 
-    // Запуск — крутится постоянно
+    // Запуск мотора
     public void start() {
-        intake.setPower(Constants.intake_power);
+        intakeMotor.setPower(intakePower);
     }
 
-    // Теперь ничего не делает
-    public void update() {
-        // пусто
-    }
-
+    // Остановка мотора
     public void stop() {
-        intake.setPower(0);
-    }
-
-    public boolean isBusy() {
-        return false;
+        intakeMotor.setPower(0);
     }
 }

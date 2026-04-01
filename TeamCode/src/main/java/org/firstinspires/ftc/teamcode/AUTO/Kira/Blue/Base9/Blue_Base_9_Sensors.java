@@ -32,7 +32,8 @@ public class Blue_Base_9_Sensors extends OpMode {
     private int pathState;
     private Paths paths;
 
-    //private Intake intake = new Intake();
+    private Intake intake = new Intake();
+
     private Shooter shooter = new Shooter();
     private Servos servos = new Servos();
 

@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode.AUTO.Kira.Blue.Base6;
 
 import com.bylazar.configurables.annotations.Configurable;
@@ -162,4 +163,4 @@ public class Blue_Base_6_Servos extends OpMode {
 
         return pathState;
     }
-}
+}*/

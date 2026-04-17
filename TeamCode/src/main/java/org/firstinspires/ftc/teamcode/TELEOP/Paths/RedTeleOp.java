@@ -32,8 +32,8 @@ public class RedTeleOp extends LinearOpMode {
     private Supplier<PathChain> pathChainShoot;
 
     // ---------------- CONSTANTS ----------------
-    static final double servoOpen = 1;
-    static final double servoPush = 0;
+    static final double servoOpen = 0;
+    static final double servoPush = 0.5;
 
     static double shootingSpeed = 0.85;
     static double shootingSpeedM = shootingSpeed + 0.1;

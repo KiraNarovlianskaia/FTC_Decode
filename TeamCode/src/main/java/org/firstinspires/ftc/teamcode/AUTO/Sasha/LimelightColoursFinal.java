@@ -106,7 +106,7 @@ public class LimelightColoursFinal extends LinearOpMode {
             idle();
         }
 
-        leftFront.setPower(0.01);
+        leftFront.setPower(0);
         leftBack.setPower(0);
         rightFront.setPower(0);
         rightBack.setPower(0);

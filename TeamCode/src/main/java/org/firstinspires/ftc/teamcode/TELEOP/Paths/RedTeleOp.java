@@ -32,8 +32,8 @@ public class RedTeleOp extends LinearOpMode {
     private Supplier<PathChain> pathChainShoot;
 
     // ---------------- CONSTANTS ----------------
-    static final double servoOpen = 0;
-    static final double servoPush = 0.5;
+    static final double servoOpen = 1;
+    static final double servoPush = 0;
 
     static double shootingSpeed = 0.85;
     static double shootingSpeedM = shootingSpeed + 0.1;
@@ -92,7 +92,7 @@ public class RedTeleOp extends LinearOpMode {
         servoR.setDirection(Servo.Direction.REVERSE);
 
         servoL.setPosition(servoOpen);
-        servoM.setPosition(servoPush);
+        servoM.setPosition(servoOpen);
         servoR.setPosition(servoOpen);
 
         // ---------------- PEDRO INIT ----------------
@@ -171,12 +171,12 @@ public class RedTeleOp extends LinearOpMode {
             }
 
             if (gamepad1.x) { servoL.setPosition(servoPush); sleep(1000); servoL.setPosition(servoOpen); }
-            if (gamepad1.a) { servoM.setPosition(servoOpen); sleep(1000); servoM.setPosition(servoPush); }
+            if (gamepad1.a) { servoM.setPosition(servoPush); sleep(1000); servoM.setPosition(servoOpen); }
             if (gamepad1.b) { servoR.setPosition(servoPush); sleep(1000); servoR.setPosition(servoOpen); }
             if (gamepad1.y) {
-                servoL.setPosition(servoPush); servoM.setPosition(servoOpen); servoR.setPosition(servoOpen);
+                servoL.setPosition(servoPush); servoM.setPosition(servoPush); servoR.setPosition(servoPush);
                 sleep(1000);
-                servoL.setPosition(servoOpen); servoM.setPosition(servoPush); servoR.setPosition(servoPush);
+                servoL.setPosition(servoOpen); servoM.setPosition(servoOpen); servoR.setPosition(servoOpen);
             }
 
             if(automatedDrive && (gamepad1.dpad_left || !follower.isBusy())){

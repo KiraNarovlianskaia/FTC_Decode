@@ -23,7 +23,7 @@ public class LimelightTx extends LinearOpMode {
     DcMotor leftBack;
     DcMotor rightFront;
     DcMotor rightBack;
-    static final double PI = 3.14159265;
+    static final double PI = 3.1415926;
     static final double WHEEL_DIAMETER = 10.4;
     static final double PULSES = 537.7;
     static final double PULSES_PER_CM = PULSES / (PI * WHEEL_DIAMETER);

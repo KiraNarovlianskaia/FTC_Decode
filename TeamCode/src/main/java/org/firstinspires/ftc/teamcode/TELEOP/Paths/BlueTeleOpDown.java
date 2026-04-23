@@ -37,6 +37,8 @@ public class BlueTeleOpDown extends LinearOpMode {
     static final double servoOpen = 1;
     static final double servoPush = 0;
 
+    static double shootingdown = 0.8;
+    static double shootingup = 0.6;
     static double shootingSpeed = 0.85;
     static double shootingSpeedM = shootingSpeed + 0.1;
     static double speed_factor = 0.8;
@@ -175,14 +177,16 @@ public class BlueTeleOpDown extends LinearOpMode {
             lbBefore = gamepad1.left_bumper;
 
 
-            if (gamepad1.dpad_down) {
+            if (gamepad1.dpad_right) {
                 follower.followPath(pathChainBase.get());
                 automatedDrive = true;
+                speed_factor = shootingup;
             }
 
-            if (gamepad1.dpad_right) {
+            if (gamepad1.dpad_down) {
                 follower.followPath(pathChainShootDown.get());
                 automatedDrive = true;
+                speed_factor = shootingdown;
             }
             if (gamepad1.dpad_left) {
                 follower.followPath(pathChainHuman.get());

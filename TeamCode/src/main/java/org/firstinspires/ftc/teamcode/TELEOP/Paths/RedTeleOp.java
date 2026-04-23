@@ -93,7 +93,7 @@ public class RedTeleOp extends LinearOpMode {
 
         servoL.setPosition(servoOpen);
         servoM.setPosition(servoOpen);
-        servoR.setPosition(servoPush);
+        servoR.setPosition(servoOpen);
 
         // ---------------- PEDRO INIT ----------------
 

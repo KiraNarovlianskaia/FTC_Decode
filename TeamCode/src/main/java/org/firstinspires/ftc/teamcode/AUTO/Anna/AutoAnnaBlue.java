@@ -80,20 +80,20 @@ public class AutoAnnaBlue extends LinearOpMode {
 
         waitForStart();
 
-        moveForward(-0.3, 50);
+        moveForward(-0.3, 40);
         startShoot();
         servoClosed();
         sleep(1000);
         stopShoot();
         servoOpen();
         moveRotate(-0.2, 35);
-        moveSide(-0.3, 40);
+        moveSide(-0.3, 70);
         startIntake();
         moveForward(-0.3, 15);
         moveForward(0.3, 15);
         stopIntake();
-        moveSide(0.3, 40);
-        moveRotate(0.2, 35); //it works! :)
+        moveSide(0.3, 70);
+        moveRotate(0.2, 35);
         startShoot();
         servoClosed();
         sleep(1000);
@@ -108,7 +108,7 @@ public class AutoAnnaBlue extends LinearOpMode {
         moveForward(0.3, 40);
         stopIntake();
         moveSide(0.3, 40);
-        moveRotate(0.2, 35); //works too! :D
+        moveRotate(0.2, 35);
         startShoot();
         servoClosed();
         sleep(1000);

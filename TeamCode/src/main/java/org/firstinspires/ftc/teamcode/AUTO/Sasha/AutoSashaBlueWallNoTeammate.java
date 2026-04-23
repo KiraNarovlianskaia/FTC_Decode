@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.AUTO.Sasha;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -14,7 +13,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 
 
-@Disabled
 @Autonomous (name="Auto Sasha Blue Wall No Teammate")
 public class AutoSashaBlueWallNoTeammate extends LinearOpMode {
 
@@ -62,10 +60,10 @@ public class AutoSashaBlueWallNoTeammate extends LinearOpMode {
         imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(orientationOnRobot));
 
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         imu.resetYaw();
@@ -88,45 +86,23 @@ public class AutoSashaBlueWallNoTeammate extends LinearOpMode {
 
         waitForStart();
 
-        shooter();
-        servoClose();
-        sleep(500);
-        servoOpen();
-        sleep(1000);
-        stopshoot();
-        servoClose();
+
         rotate(0.4,25);
         forward(-0.4,40);
         rotate(0.4,90);
-        intaker();
         forward(0.4,90);
-        sleep(500);
         forward(-0.4,-90);
-        stopintake();
-        shooter();
         rotate(-0.4,90);
         forward(0.4,40);
         rotate(-0.4,25);
-        servoOpen();
-        sleep(1000);
-        stopshoot();
-        servoClose();
         rotate(0.4,25);
         forward(0.4,105);
         rotate(0.4,90);
-        intaker();
         forward(0.4,90);
-        sleep(500);
         forward(-0.4,90);
-        stopintake();
-        shooter();
         rotate(-0.4,90);
         forward(0.4,45);
         rotate(-0.4,45);
-        servoOpen();
-        sleep(1000);
-        stopshoot();
-        servoClose();
         forward(0.4,5);
 
 

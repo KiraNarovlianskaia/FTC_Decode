@@ -121,7 +121,7 @@ public class BlueTeleOpDown extends LinearOpMode {
                                 0.8))
                 .build();
         pathChainShootDown = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose, new Pose(72.104, 21.931))))
+                .addPath(new Path(new BezierLine(follower::getPose, new Pose(72.104, 21.931))))//new shoot down
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,
@@ -129,7 +129,7 @@ public class BlueTeleOpDown extends LinearOpMode {
                                 0.8))
                 .build();
         pathChainHuman = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose, new Pose(110.994, 11.824))))
+                .addPath(new Path(new BezierLine(follower::getPose, new Pose(110.994, 11.824))))//new go to human player
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,

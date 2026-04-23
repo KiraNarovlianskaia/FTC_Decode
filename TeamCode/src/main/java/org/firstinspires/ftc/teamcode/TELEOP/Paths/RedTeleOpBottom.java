@@ -102,7 +102,7 @@ public class RedTeleOpBottom extends LinearOpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setStartingPose(new Pose(86.534, 8.720, Math.toRadians(-90))); //not decided yet
+        follower.setStartingPose(new Pose(84.551, 33.213, Math.toRadians(270))); //not decided yet
 
         pathChainBase = () -> follower.pathBuilder()
                 .addPath(new Path(new BezierLine(follower::getPose, new Pose(38.559, 33.490))))

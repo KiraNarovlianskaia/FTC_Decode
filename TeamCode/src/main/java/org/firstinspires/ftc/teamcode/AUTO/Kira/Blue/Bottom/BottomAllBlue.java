@@ -22,9 +22,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import java.util.List;
 
 
-@Autonomous(name = "BottomAll", group = "Autonomous")
+@Autonomous(name = "BottomAll Blue", group = "Autonomous")
 @Configurable
-public class BottomAll extends OpMode {
+public class BottomAllBlue extends OpMode {
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;

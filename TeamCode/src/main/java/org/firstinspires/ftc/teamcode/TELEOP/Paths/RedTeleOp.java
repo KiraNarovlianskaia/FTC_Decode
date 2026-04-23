@@ -174,9 +174,9 @@ public class RedTeleOp extends LinearOpMode {
             if (gamepad1.a) { servoM.setPosition(servoOpen); sleep(1000); servoM.setPosition(servoPush); }
             if (gamepad1.b) { servoR.setPosition(servoPush); sleep(1000); servoR.setPosition(servoOpen); }
             if (gamepad1.y) {
-                servoL.setPosition(servoPush); servoM.setPosition(servoOpen); servoR.setPosition(servoOpen);
+                servoL.setPosition(servoPush); servoM.setPosition(servoOpen); servoR.setPosition(servoPush);
                 sleep(1000);
-                servoL.setPosition(servoOpen); servoM.setPosition(servoPush); servoR.setPosition(servoPush);
+                servoL.setPosition(servoOpen); servoM.setPosition(servoPush); servoR.setPosition(servoOpen);
             }
 
             if(automatedDrive && (gamepad1.dpad_left || !follower.isBusy())){
@@ -209,7 +209,7 @@ public class RedTeleOp extends LinearOpMode {
             if(!shootingByPattern){
 
                 shooterL.setPower(powerL*shootingSpeed);
-                shooterM.setPower(powerM*shootingSpeed);
+                shooterM.setPower(-powerM*shootingSpeed);
                 shooterR.setPower(powerR*shootingSpeed);
 
             }

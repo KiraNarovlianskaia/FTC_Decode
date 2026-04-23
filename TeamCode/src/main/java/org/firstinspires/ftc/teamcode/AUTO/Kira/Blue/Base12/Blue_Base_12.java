@@ -18,12 +18,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Servos_Pattern;
+import org.firstinspires.ftc.teamcode.subsystems.Servos;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
+import java.util.ArrayList;
 import java.util.List;
-
-
+@Disabled
 @Autonomous(name = "Blue_Base_12", group = "Autonomous")
 @Configurable
 public class Blue_Base_12 extends OpMode {
@@ -32,26 +32,33 @@ public class Blue_Base_12 extends OpMode {
     public Follower follower;
     private int pathState;
     private Paths paths;
+
     private Intake intake = new Intake();
+
     private Shooter shooter = new Shooter();
-    private Servos_Pattern servos = new Servos_Pattern();
+    private Servos servos = new Servos();
+
     ElapsedTime timer = new ElapsedTime();
-    boolean waitStarted = false;
 
     private Limelight3A limelight;
-    private int detectedTagId = -1;      // последнее увиденное
-    private int finalTagId = -1;         // зафиксированное перед стартом
-    private int shoot_id = 1;
+    private int detectedTagId = -1;
+    private int finalTagId = -1;
 
     private final double wheel_speed = 0.5;
     boolean autoFinished = false;
 
+    // 🔥 ПАТТЕРН
+    private List<Servos.BallColor> pattern = new ArrayList<>();
+    private ElapsedTime pathTimer = new ElapsedTime(); // Добавлено
+
+    // ================= INIT =================
     @Override
     public void init() {
+
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(21.661, 123.280, Math.toRadians(-37)));
+        follower.setStartingPose(new Pose(30.822, 129.292, Math.toRadians(180)));
 
         paths = new Paths(follower);
 
@@ -60,13 +67,15 @@ public class Blue_Base_12 extends OpMode {
         servos.init(hardwareMap);
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(8);   // pipeline AprilTag
+        limelight.pipelineSwitch(8);
         limelight.setPollRateHz(30);
         limelight.start();
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
     }
+
+    // ================= INIT LOOP =================
     @Override
     public void init_loop() {
 
@@ -85,55 +94,72 @@ public class Blue_Base_12 extends OpMode {
         panelsTelemetry.update(telemetry);
     }
 
+    // ================= START =================
     @Override
     public void start() {
-        finalTagId = detectedTagId;  // фиксируем последний увиденный
+
+        finalTagId = detectedTagId;
+
+        // 🔥 формируем паттерн
+        pattern = getPatternFromTag(finalTagId);
     }
 
+    // ================= LOOP =================
     @Override
     public void loop() {
         if (autoFinished) return;
 
         follower.update();
         servos.update();
+
         pathState = autonomousPathUpdate();
 
-        panelsTelemetry.debug("Path State", pathState);
-        panelsTelemetry.debug("X", follower.getPose().getX());
-        panelsTelemetry.debug("Y", follower.getPose().getY());
-        panelsTelemetry.debug("Heading", follower.getPose().getHeading());
+        // --- Твоя старая телеметрия ---
+        panelsTelemetry.debug("State", pathState);
+        panelsTelemetry.debug("Tag", finalTagId);
+
+        // --- НОВАЯ ТЕЛЕМЕТРИЯ ДЛЯ ДАТЧИКОВ ---
+        servos.addTelemetryData(gamepad1, telemetry);
+
         panelsTelemetry.update(telemetry);
     }
-    private int getVariant(int shootId) {
-        switch (finalTagId) {
-            case 21:
-                if (shootId == 1 || shootId == 2) return 1;
-                if (shootId == 3) return 2;
-                if (shootId == 4) return 3;
-                break;
-            case 22:
-                if (shootId == 1 || shootId == 2) return 2;
-                if (shootId == 3) return 1;
-                if (shootId == 4) return 4;
-                break;
-            case 23:
-                if (shootId == 1 || shootId == 2) return 3;
-                if (shootId == 3) return 4;
-                if (shootId == 4) return 1;
-                break;
-            case -1:
-                return 1;
 
+    // ================= ПАТТЕРН =================
+    private List<Servos.BallColor> getPatternFromTag(int tag) {
+
+        List<Servos.BallColor> p = new ArrayList<>();
+
+        switch (tag) {
+
+            case 21:
+                p.add(Servos.BallColor.GREEN);
+                p.add(Servos.BallColor.PURPLE);
+                p.add(Servos.BallColor.PURPLE);
+                break;
+
+            case 22:
+                p.add(Servos.BallColor.PURPLE);
+                p.add(Servos.BallColor.GREEN);
+                p.add(Servos.BallColor.PURPLE);
+                break;
+
+            case 23:
+                p.add(Servos.BallColor.PURPLE);
+                p.add(Servos.BallColor.PURPLE);
+                p.add(Servos.BallColor.GREEN);
+                break;
+
+            default:
+                p.add(Servos.BallColor.GREEN);
+                p.add(Servos.BallColor.PURPLE);
+                p.add(Servos.BallColor.PURPLE);
+                break;
         }
-        // по умолчанию, если не попало под первый вариант
-        // сделать свитч 1 или 2 или 3
-        return 1;
+
+        return p;
     }
 
-
-
-
-
+    // ================= PATHS (БЕЗ ИЗМЕНЕНИЙ) =================
 
     public static class Paths {
         public PathChain Path1;
@@ -184,7 +210,7 @@ public class Blue_Base_12 extends OpMode {
                             new BezierLine(
                                     new Pose(24.145, 80.847),
 
-                                    new Pose(15.710, 67.885)
+                                    new Pose(13.992, 75.328)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-90))
 
@@ -192,7 +218,7 @@ public class Blue_Base_12 extends OpMode {
 
             Path5 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(15.710, 67.885),
+                                    new Pose(13.992, 75.328),
 
                                     new Pose(48.594, 94.576)
                             )
@@ -272,33 +298,27 @@ public class Blue_Base_12 extends OpMode {
         }
     }
 
-
-
-
-
-
+    // ================= АВТО ЛОГИКА =================
     public int autonomousPathUpdate() {
 
         switch (pathState) {
 
             case 0:
                 shooter.start();
-                follower.followPath(paths.Path1,wheel_speed,true);
+                follower.followPath(paths.Path1, wheel_speed, true);
                 pathState = 1;
                 break;
 
             case 1:
                 if (!follower.isBusy()) {
-                    int shootId = 1; // пример, можешь выбрать динамически
-                    int variant = getVariant(shootId); // получаем вариант
-                    servos.startShooting(shootId, variant);
+                    servos.startShooting(pattern);
                     timer.reset();
                     pathState = 2;
                 }
                 break;
 
             case 2:
-                if (!follower.isBusy() && timer.seconds() >= 3) {
+                if (timer.seconds() >= 3) {
                     servos.closeAll();
                     intake.start();
                     follower.followPath(paths.Path2, wheel_speed, true);
@@ -316,59 +336,92 @@ public class Blue_Base_12 extends OpMode {
             case 4:
                 if (!follower.isBusy()) {
                     follower.followPath(paths.Path4, wheel_speed, true);
+                    pathTimer.reset();
                     pathState = 5;
                 }
                 break;
 
             case 5:
-                if (!follower.isBusy()) {
-                    int shootId = 2; // пример, можешь выбрать динамически
-                    int variant = getVariant(shootId); // получаем вариант
-                    timer.reset();
-                    servos.startShooting(shootId, variant);
+                if (!follower.isBusy() || pathTimer.seconds() > 2) {
+                    follower.followPath(paths.Path5, wheel_speed, true);
+                    pathTimer.reset();
                     pathState = 6;
                 }
                 break;
 
             case 6:
-                if (!follower.isBusy() && timer.seconds() >= 3) {
-                    servos.closeAll();
-                    follower.followPath(paths.Path5, wheel_speed, true);
+                if (!follower.isBusy()) {
+                    servos.startShooting(pattern);
+                    timer.reset();
                     pathState = 7;
                 }
                 break;
 
             case 7:
-                if (!follower.isBusy()) {
+                if (timer.seconds() >= 3) {
+                    servos.closeAll();
                     follower.followPath(paths.Path6, wheel_speed, true);
                     pathState = 8;
                 }
                 break;
+
             case 8:
                 if (!follower.isBusy()) {
                     follower.followPath(paths.Path7, wheel_speed, true);
                     pathState = 9;
                 }
                 break;
+
             case 9:
                 if (!follower.isBusy()) {
-                    int shootId = 3; // пример, можешь выбрать динамически
-                    int variant = getVariant(shootId); // получаем вариант
-                    timer.reset();
-                    servos.startShooting(shootId, variant);
+                    follower.followPath(paths.Path8, wheel_speed, true);
                     pathState = 10;
                 }
                 break;
 
             case 10:
-                if (!follower.isBusy() && timer.seconds() >= 3) {
-                    servos.closeAll();
-                    follower.followPath(paths.Path8, wheel_speed, true);
+                if (!follower.isBusy()) {
+                    servos.startShooting(pattern);
+                    timer.reset();
                     pathState = 11;
                 }
                 break;
 
             case 11:
+                if (timer.seconds() >= 3) {
+                    servos.closeAll();
+                    follower.followPath(paths.Path9, wheel_speed, true);
+                    pathState = 12;
+                }
+                break;
+            case 12:
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.Path10, wheel_speed, true);
+                    pathState = 13;
+                }
+                break;
+
+            case 13:
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.Path11, wheel_speed, true);
+                    pathState = 14;
+                }
+                break;
+
+            case 14:
+                if (!follower.isBusy()) {
+                    servos.startShooting(pattern);
+                    timer.reset();
+                    pathState = 15;
+                }
+                break;
+            case 15:
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.Path12, wheel_speed, true);
+                    pathState = 16;
+                }
+                break;
+            case 16:
                 if (!follower.isBusy()) {
                     follower.breakFollowing();
                     intake.stop();
@@ -378,7 +431,6 @@ public class Blue_Base_12 extends OpMode {
                     autoFinished = true;
                 }
                 break;
-
         }
 
         return pathState;

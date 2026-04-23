@@ -54,7 +54,7 @@ public class BlueTopTeleOp extends LinearOpMode {
     NormalizedColorSensor colorSensorM;
     NormalizedColorSensor colorSensorR;
 
-    // ---------------- STATE ----------------
+    // ---------------- STATE -----------------
     boolean shootingByPattern = false;
     boolean yPrev = false;
     boolean rbBefore = false;

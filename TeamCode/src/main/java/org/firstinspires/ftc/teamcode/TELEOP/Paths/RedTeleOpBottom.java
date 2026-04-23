@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 @Configurable
-@TeleOp(name="BLUE TeleOp")
+@TeleOp(name="RedTeleOpBottom")
 
 public class RedTeleOpBottom extends LinearOpMode {
 

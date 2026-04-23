@@ -179,46 +179,52 @@ public class LimelightTx extends LinearOpMode {
 
     private int countArtifacts(int pipelineIndex) {
         limelight.pipelineSwitch(pipelineIndex);
-        sleep(500);
+
+        // FIX FOR GHOSTING:
+        // We wait and then "poll" the results a few times to clear the old pipeline's cache
+        sleep(600);
+        limelight.getLatestResult();
 
         java.util.ArrayList<RampZone> zones = new java.util.ArrayList<>();
 
-        // Values mapped exactly from your CSV table
+        // Using your PURPLE tx/ty coordinates for BOTH pipelines now
+        // But keeping the GREEN area values for the green pipeline logic
         if (pipelineIndex == GREEN_PIPELINE) {
-            zones.add(new RampZone(-24.0, -3.6, 0.250, 0.270));
-            zones.add(new RampZone(-18.0, -1.8, 0.180, 0.230));
-            zones.add(new RampZone(-12.0,  0.0, 0.210, 0.230));
-            zones.add(new RampZone(-6.2,   1.9, 0.150, 0.180));
-            zones.add(new RampZone(0.4,    3.7, 0.150, 0.160));
-            zones.add(new RampZone(6.4,    5.3, 0.180, 0.210));
-            zones.add(new RampZone(12.2,   7.0, 0.170, 0.190));
-            zones.add(new RampZone(17.3,   8.5, 0.130, 0.150));
-            zones.add(new RampZone(22.5,  10.3, 0.170, 0.190));
-        } else { // PURPLE_PIPELINE
-            zones.add(new RampZone(-24.6, -5.3, 0.240, 0.300));
-            zones.add(new RampZone(-18.0, -3.0, 0.200, 0.230));
-            zones.add(new RampZone(-13.0, -1.3, 0.170, 0.190));
-            zones.add(new RampZone(-7.0,   0.2, 0.190, 0.210));
-            zones.add(new RampZone(-1.0,   1.9, 0.200, 0.230));
-            zones.add(new RampZone(8.5,    5.7, 0.180, 0.230));
-            zones.add(new RampZone(13.8,   7.4, 0.170, 0.180));
-            zones.add(new RampZone(19.4,   9.2, 0.140, 0.160));
-            zones.add(new RampZone(24.5,  11.1, 0.160, 0.190));
+            zones.add(new RampZone(-24.6, -5.3, 0.250, 0.270)); // Pos 1
+            zones.add(new RampZone(-18.0, -3.0, 0.180, 0.230)); // Pos 2
+            zones.add(new RampZone(-13.0, -1.3, 0.210, 0.230)); // Pos 3
+            zones.add(new RampZone(-7.0,   0.2, 0.150, 0.180)); // Pos 4
+            zones.add(new RampZone(-1.0,   1.9, 0.150, 0.160)); // Pos 5
+            zones.add(new RampZone(8.5,    5.7, 0.180, 0.210)); // Pos 6
+            zones.add(new RampZone(13.8,   7.4, 0.170, 0.190)); // Pos 7
+            zones.add(new RampZone(19.4,   9.2, 0.130, 0.150)); // Pos 8
+            zones.add(new RampZone(24.5,  11.1, 0.170, 0.190)); // Pos 9
+        } else { // PURPLE
+            zones.add(new RampZone(-24.6, -5.3, 0.240, 0.300)); // Pos 1
+            zones.add(new RampZone(-18.0, -3.0, 0.200, 0.230)); // Pos 2
+            zones.add(new RampZone(-13.0, -1.3, 0.170, 0.190)); // Pos 3
+            zones.add(new RampZone(-7.0,   0.2, 0.190, 0.210)); // Pos 4
+            zones.add(new RampZone(-1.0,   1.9, 0.200, 0.230)); // Pos 5
+            zones.add(new RampZone(8.5,    5.7, 0.180, 0.230)); // Pos 6
+            zones.add(new RampZone(13.8,   7.4, 0.170, 0.180)); // Pos 7
+            zones.add(new RampZone(19.4,   9.2, 0.140, 0.160)); // Pos 8
+            zones.add(new RampZone(24.5,  11.1, 0.160, 0.190)); // Pos 9
         }
 
         long startTime = System.currentTimeMillis();
         int finalCount = 0;
 
-        // Watch for 1.2 seconds to get the most reliable frame
-        while (opModeIsActive() && (System.currentTimeMillis() - startTime < 1200)) {
+        while (opModeIsActive() && (System.currentTimeMillis() - startTime < 1000)) {
             LLResult result = limelight.getLatestResult();
 
+            // Added check: result.getPipelineIndex() == pipelineIndex
+            // This ensures we ONLY count if the camera confirms it is on the new color
             if (result != null && result.isValid() &&
                     result.getPipelineIndex() == pipelineIndex &&
                     result.getStaleness() < 100) {
 
-                int frameCount = 0;
                 List<ColorResult> blobs = result.getColorResults();
+                int frameCount = 0;
 
                 for (ColorResult cr : blobs) {
                     double tx = cr.getTargetXDegrees();
@@ -233,21 +239,14 @@ public class LimelightTx extends LinearOpMode {
                             break;
                         }
                     }
-
-                    // If the blob didn't perfectly match a zone,
-                    // we still count it as 1 so we don't ignore valid balls.
-                    if (foundCount == 0) foundCount = 1;
                     frameCount += foundCount;
                 }
 
-                // If this frame saw more balls than previous frames, update our total
-                if (frameCount > finalCount) {
-                    finalCount = frameCount;
-                }
+                // If a frame shows a count, we trust it if it's the highest seen
+                if (frameCount > finalCount) finalCount = frameCount;
             }
             sleep(30);
         }
-
         return finalCount;
     }
 }

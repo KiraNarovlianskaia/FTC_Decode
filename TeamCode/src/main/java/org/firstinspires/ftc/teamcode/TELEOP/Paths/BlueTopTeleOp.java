@@ -204,20 +204,18 @@ public class BlueTopTeleOp extends LinearOpMode {
                 speed_factor = speed_normal;
             }
 
-            if (gamepad1.x) { servoL.setPosition(servoPush); sleep(1000); servoL.setPosition(servoOpen); }
-            if (gamepad1.a) { servoM.setPosition(servoPush); sleep(1000); servoM.setPosition(servoOpen); }
-            if (gamepad1.b) { servoR.setPosition(servoOpen); sleep(1000); servoR.setPosition(servoPush); }
-            if (gamepad1.y) {
+            if (gamepad2.x) { servoL.setPosition(servoPush); sleep(1000); servoL.setPosition(servoOpen); }
+            if (gamepad2.a) { servoM.setPosition(servoPush); sleep(1000); servoM.setPosition(servoOpen); }
+            if (gamepad2.b) { servoR.setPosition(servoOpen); sleep(1000); servoR.setPosition(servoPush); }
+            if (gamepad2.y) {
                 servoL.setPosition(servoPush); servoM.setPosition(servoPush); servoR.setPosition(servoOpen);
                 sleep(1000);
                 servoL.setPosition(servoOpen); servoM.setPosition(servoOpen); servoR.setPosition(servoPush);
             }
 
-            if(automatedDrive && (gamepad1.dpad_left || !follower.isBusy())){
-
+            if(automatedDrive && (gamepad1.a || !follower.isBusy())){
                 follower.startTeleopDrive();
                 automatedDrive=false;
-
             }
 
             // ---------------- INTAKE ----------------
@@ -237,19 +235,15 @@ public class BlueTopTeleOp extends LinearOpMode {
                 if(s.equals("L")) powerL=shooterStick;
                 if(s.equals("M")) powerM=-shooterStick;
                 if(s.equals("R")) powerR=-shooterStick;
-
             }
 
             if(!shootingByPattern){
-
                 shooterL.setPower(powerL*shootingSpeed);
                 shooterM.setPower(-powerM*shootingSpeed);
                 shooterR.setPower(powerR*shootingSpeed);
-
             }
 
             // ---------------- SPEED ADJUST ----------------
-
             if(gamepad2.right_bumper && !rightBumperPrev){
 
                 shootingSpeed+=0.05;
@@ -260,10 +254,8 @@ public class BlueTopTeleOp extends LinearOpMode {
             rightBumperPrev=gamepad2.right_bumper;
 
             if(gamepad2.left_bumper && !leftBumperPrev){
-
                 shootingSpeed-=0.05;
                 if(shootingSpeed<0) shootingSpeed=0;
-
             }
 
             leftBumperPrev=gamepad2.left_bumper;

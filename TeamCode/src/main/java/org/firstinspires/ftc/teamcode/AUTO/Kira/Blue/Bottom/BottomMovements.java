@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.AUTO.Kira.Blue.Base9;
+package org.firstinspires.ftc.teamcode.AUTO.Kira.Blue.Bottom;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -9,29 +9,29 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Servos;
-import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
-@Autonomous(name = "Blue_Base_9_Movements", group = "Autonomous")
+@Autonomous(name = "BottomMovements", group = "Autonomous")
 @Configurable
-public class Blue_Base_9_Movements extends OpMode {
+public class BottomMovements extends OpMode {
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
     private int pathState;
     private Paths paths;
 
+    // Таймер для предотвращения застреваний
+    private ElapsedTime pathTimer = new ElapsedTime();
+
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(28.796, 128.976, Math.toRadians(180)));
+        follower.setStartingPose(new Pose(57.474, 8.799, Math.toRadians(-90)));
 
         paths = new Paths(follower);
 
@@ -45,12 +45,12 @@ public class Blue_Base_9_Movements extends OpMode {
         pathState = autonomousPathUpdate();
 
         panelsTelemetry.debug("Path State", pathState);
+        panelsTelemetry.debug("Timer", pathTimer.seconds());
         panelsTelemetry.debug("X", follower.getPose().getX());
         panelsTelemetry.debug("Y", follower.getPose().getY());
         panelsTelemetry.debug("Heading", follower.getPose().getHeading());
         panelsTelemetry.update(telemetry);
     }
-
 
 
 
@@ -62,86 +62,75 @@ public class Blue_Base_9_Movements extends OpMode {
         public PathChain Path5;
         public PathChain Path6;
         public PathChain Path7;
-        public PathChain Path8;
 
         public Paths(Follower follower) {
             Path1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(30.730, 129.238),
+                                    new Pose(57.474, 8.799),
 
-                                    new Pose(48.594, 94.576)
+                                    new Pose(59.318, 12.763)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(315))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-60))
 
                     .build();
 
             Path2 = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(48.594, 94.576),
-                                    new Pose(24.560, 118.989),
-                                    new Pose(24.145, 101.331)
+                                    new Pose(59.318, 12.763),
+                                    new Pose(44.006, 20.321),
+                                    new Pose(19.247, 9.557)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-60), Math.toRadians(-180))
 
                     .build();
 
             Path3 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(24.145, 101.331),
+                                    new Pose(19.247, 9.557),
 
-                                    new Pose(24.145, 80.847)
+                                    new Pose(9.477, 9.517)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-90))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-180), Math.toRadians(-180))
 
                     .build();
 
             Path4 = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(24.145, 80.847),
-
-                                    new Pose(48.594, 94.576)
+                            new BezierCurve(
+                                    new Pose(9.477, 9.517),
+                                    new Pose(37.917, 18.924),
+                                    new Pose(59.495, 12.583)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-180), Math.toRadians(-60))
 
                     .build();
 
             Path5 = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(48.594, 94.576),
-
-                                    new Pose(24.431, 79.574)
+                            new BezierCurve(
+                                    new Pose(59.495, 12.583),
+                                    new Pose(44.006, 20.321),
+                                    new Pose(19.247, 9.557)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-60), Math.toRadians(-180))
 
                     .build();
 
             Path6 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(24.431, 79.574),
+                                    new Pose(19.247, 9.557),
 
-                                    new Pose(23.859, 57.985)
+                                    new Pose(9.477, 9.517)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-90))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-180), Math.toRadians(-180))
 
                     .build();
 
             Path7 = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(23.859, 57.985),
-
-                                    new Pose(48.594, 94.576)
+                            new BezierCurve(
+                                    new Pose(9.477, 9.517),
+                                    new Pose(38.073, 19.207),
+                                    new Pose(59.209, 12.583)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(315))
-
-                    .build();
-
-            Path8 = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(48.594, 94.576),
-
-                                    new Pose(23.958, 80.873)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(-90))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-180), Math.toRadians(-60))
 
                     .build();
         }
@@ -149,57 +138,67 @@ public class Blue_Base_9_Movements extends OpMode {
 
 
 
-
     public int autonomousPathUpdate() {
-
         switch (pathState) {
-
             case 0:
-                follower.followPath(paths.Path1,0.5,true);
+                // Запускаем первый путь и сбрасываем таймер
+                follower.followPath(paths.Path1, 0.5, true);
+                pathTimer.reset();
                 pathState = 1;
                 break;
 
             case 1:
-                if (!follower.isBusy()) {
+                // Если робот доехал ИЛИ прошло больше 3 секунд
+                if (!follower.isBusy() || pathTimer.seconds() > 3.0) {
                     follower.followPath(paths.Path2, 0.5, true);
+                    pathTimer.reset();
                     pathState = 2;
                 }
                 break;
 
             case 2:
-                if (!follower.isBusy()) {
+                if (!follower.isBusy() || pathTimer.seconds() > 4.0) { // Для длинной кривой увеличил до 4с
                     follower.followPath(paths.Path3, 0.5, true);
+                    pathTimer.reset();
                     pathState = 3;
-
                 }
                 break;
+
             case 3:
-                if (!follower.isBusy()) {
+                if (!follower.isBusy() || pathTimer.seconds() > 2.0) {
                     follower.followPath(paths.Path4, 0.5, true);
+                    pathTimer.reset();
                     pathState = 4;
                 }
                 break;
             case 4:
-                if (!follower.isBusy()) {
+                // Если робот доехал ИЛИ прошло больше 3 секунд
+                if (!follower.isBusy() || pathTimer.seconds() > 3.0) {
                     follower.followPath(paths.Path5, 0.5, true);
+                    pathTimer.reset();
                     pathState = 5;
                 }
                 break;
             case 5:
-                if (!follower.isBusy()) {
+                if (!follower.isBusy() || pathTimer.seconds() > 4.0) { // Для длинной кривой увеличил до 4с
                     follower.followPath(paths.Path6, 0.5, true);
+                    pathTimer.reset();
                     pathState = 6;
                 }
                 break;
+
             case 6:
-                if (!follower.isBusy()) {
+                if (!follower.isBusy() || pathTimer.seconds() > 2.0) {
                     follower.followPath(paths.Path7, 0.5, true);
+                    pathTimer.reset();
                     pathState = 7;
                 }
                 break;
+
+
             case 7:
-                if (!follower.isBusy()) {
-                    follower.followPath(paths.Path8, 0.5, true);
+                if (!follower.isBusy() || pathTimer.seconds() > 4.0) {
+                    // Путь завершен, можно добавить состояние ожидания или стоп
                     pathState = 8;
                 }
                 break;

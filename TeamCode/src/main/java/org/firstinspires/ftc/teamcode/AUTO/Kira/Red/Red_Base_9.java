@@ -12,6 +12,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -21,7 +22,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Servos_Pattern_Red;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 import java.util.List;
-
+@Disabled
 @Autonomous(name = "Red_Base_9", group = "Autonomous")
 @Configurable
 public class Red_Base_9 extends OpMode {

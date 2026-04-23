@@ -43,7 +43,7 @@ public class TeleOpMain extends LinearOpMode {
     static double shootingSpeed = 0.85;
 
     String[] shootersToPower = {"L", "M", "R"};
-    String[] PATTERN = {"Purple,", "Purple", "Green"};
+    String[] PATTERN = {"Purple", "Purple", "Green"};
 
     DcMotor shooterL, shooterM, shooterR;
 
@@ -111,7 +111,7 @@ public class TeleOpMain extends LinearOpMode {
         while (opModeIsActive()) {
 
             // ----------------- DRIVER INPUT -----------------
-            if (!driveReversed) { forward = gamepad1.left_stick_y; } // Reversable forward
+            if (!driveReversed) { forward = gamepad1.left_stick_y; } // Reversible forward
             else { forward = -gamepad1.left_stick_y; }
             rotation = gamepad1.right_stick_x;
             intakeSpeed = -gamepad2.left_stick_y;
@@ -189,43 +189,45 @@ public class TeleOpMain extends LinearOpMode {
             }
             yPrev = gamepad2.y;
 
-            // -------------------- SHOOT BY PATTERN LOGIC --------------------
+            // -------------------- PATTERN SHOOTING LOGIC --------------------
             if (shootingByPattern) {
 
                 String[] balls = {left_ball, mid_ball, right_ball};
                 Servo[] servos = {servoL, servoM, servoR};
 
-                if (!shooterSpunUp) {
+                // spin up shooters first
+                shooterL.setPower(shootingSpeed);
+                shooterM.setPower(-shootingSpeed);
+                shooterR.setPower(-shootingSpeed);
 
-                    shooterL.setPower(shootingSpeed);
-                    shooterM.setPower(-shootingSpeed);
-                    shooterR.setPower(-shootingSpeed);
+                sleep(1500); // wait for shooters to reach speed
 
-                    if (spinUpStartTime == 0)
-                        spinUpStartTime = System.currentTimeMillis();
+                // loop through the pattern
+                for (int i = 0; i < PATTERN.length; i++) {
 
-                    if (System.currentTimeMillis() - spinUpStartTime > 3000)
-                        shooterSpunUp = true;
-
-                } else if (patternIndex < PATTERN.length) {
-
+                    // look through all balls
                     for (int j = 0; j < balls.length; j++) {
-                        if (balls[j].equals(PATTERN[patternIndex])) {
+
+                        // if the ball matches the pattern color
+                        if (balls[j].equals(PATTERN[i])) {
+
                             servos[j].setPosition(servoPush);
                             sleep(800);
                             servos[j].setPosition(servoOpen);
-                            patternIndex++;
-                            break;
+
+                            break; // stop searching once we shot one
                         }
                     }
-
-                } else {
-                    shootingByPattern = false;
-                    shooterL.setPower(0);
-                    shooterM.setPower(0);
-                    shooterR.setPower(0);
                 }
+
+                // stop shooters after pattern finished
+                shooterL.setPower(0);
+                shooterM.setPower(0);
+                shooterR.setPower(0);
+
+                shootingByPattern = false;
             }
+
 
             // -------------------- SHOOTER POWER LOGIC --------------------
             double powerL = 0, powerM = 0, powerR = 0;

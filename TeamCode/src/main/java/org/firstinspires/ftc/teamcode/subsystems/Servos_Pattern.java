@@ -64,7 +64,7 @@ public class Servos_Pattern {
         // если shootState меньше длины массива, продолжаем стрелять
         if (shootState < shootOrder.length) {
             // либо первый шаг, либо таймер прошёл
-            if (shootState == 0 || timer.milliseconds() >= 700) {
+            if (shootState == 0 || timer.milliseconds() >= 1000) {
                 if (shootOrder[shootState] == servoR){
                     shootOrder[shootState].setPosition(servoOpen);
                 }

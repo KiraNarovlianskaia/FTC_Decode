@@ -51,6 +51,9 @@ public class Servos_Pattern_Red {
             case 4:
                 shootOrder = new Servo[]{servoM, servoR, servoL};
                 break;
+            case 5:
+                shootOrder = new Servo[]{servoL, servoR, servoM};
+                break;
             default:
                 shootOrder = new Servo[]{servoR, servoM, servoL};
                 break;
@@ -64,7 +67,7 @@ public class Servos_Pattern_Red {
         // если shootState меньше длины массива, продолжаем стрелять
         if (shootState < shootOrder.length) {
             // либо первый шаг, либо таймер прошёл
-            if (shootState == 0 || timer.milliseconds() >= 700) {
+            if (shootState == 0 || timer.milliseconds() >= 1000) {
                 if (shootOrder[shootState] == servoR){
                     shootOrder[shootState].setPosition(servoOpen);
                 }

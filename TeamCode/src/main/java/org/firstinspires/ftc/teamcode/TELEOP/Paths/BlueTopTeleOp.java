@@ -20,16 +20,18 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 @Configurable
-@TeleOp(name="RED TeleOp")
+@TeleOp(name="BLUE TOP TeleOp")
 
-public class RedTeleOp extends LinearOpMode {
+public class BlueTopTeleOp extends LinearOpMode {
 
     // ---------------- PEDRO PATHING ----------------
     private Follower follower;
     private boolean automatedDrive = false;
 
     private Supplier<PathChain> pathChainBase;
-    private Supplier<PathChain> pathChainShoot;
+    private Supplier<PathChain> pathChainShootBack;
+    private Supplier<PathChain> pathChainShootFront;
+    private Supplier<PathChain> pathChainPlayer;
 
     // ---------------- CONSTANTS ----------------
     static final double servoOpen = 0;
@@ -38,6 +40,8 @@ public class RedTeleOp extends LinearOpMode {
     static double shootingSpeed = 0.85;
     static double shootingSpeedM = shootingSpeed + 0.1;
     static double speed_factor = 0.8;
+    static double speed_goal = 0.6;
+    static double speed_normal = 0.8;
 
     String[] shootersToPower = {"L","M","R"};
     String[] PATTERN = {"Purple","Purple","Green"};
@@ -52,7 +56,7 @@ public class RedTeleOp extends LinearOpMode {
     NormalizedColorSensor colorSensorM;
     NormalizedColorSensor colorSensorR;
 
-    // ---------------- STATE ----------------
+    // ---------------- STATE -----------------
     boolean shootingByPattern = false;
     boolean yPrev = false;
     boolean rbBefore = false;
@@ -93,16 +97,16 @@ public class RedTeleOp extends LinearOpMode {
 
         servoL.setPosition(servoOpen);
         servoM.setPosition(servoOpen);
-        servoR.setPosition(servoOpen);
+        servoR.setPosition(servoPush);
 
         // ---------------- PEDRO INIT ----------------
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setStartingPose(new Pose(55.78,11.25,Math.toRadians(105)));
+        follower.setStartingPose(new Pose(48,96,Math.toRadians(135)));
 
         pathChainBase = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose,new Pose(38.677,33.552))))
+                .addPath(new Path(new BezierLine(follower::getPose,new Pose(105,34))))
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,
@@ -110,14 +114,33 @@ public class RedTeleOp extends LinearOpMode {
                                 0.8))
                 .build();
 
-        pathChainShoot = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose,new Pose(89.196,78.073))))
+        pathChainShootFront = () -> follower.pathBuilder()
+                .addPath(new Path(new BezierLine(follower::getPose,new Pose(48,96))))
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,
-                                Math.toRadians(225),
+                                Math.toRadians(135),
                                 0.8))
                 .build();
+
+        pathChainShootBack = () -> follower.pathBuilder()
+                .addPath(new Path(new BezierLine(follower::getPose,new Pose(60,11))))
+                .setHeadingInterpolation(
+                        HeadingInterpolator.linearFromPoint(
+                                follower::getHeading,
+                                Math.toRadians(105),
+                                0.8))
+                .build();
+
+        pathChainPlayer = () -> follower.pathBuilder()
+                .addPath(new Path(new BezierLine(follower::getPose,new Pose(15,9.5))))
+                .setHeadingInterpolation(
+                        HeadingInterpolator.linearFromPoint(
+                                follower::getHeading,
+                                Math.toRadians(180),
+                                0.8))
+                .build();
+
 
         waitForStart();
 
@@ -158,23 +181,27 @@ public class RedTeleOp extends LinearOpMode {
 
 
             if(gamepad1.dpad_down){
-                follower.followPath(pathChainBase.get());
+                follower.followPath(pathChainShootBack.get());
                 automatedDrive=true;
+                speed_factor = speed_normal;
             }
 
             if(gamepad1.dpad_up){
-                follower.followPath(pathChainShoot.get());
+                follower.followPath(pathChainShootFront.get());
                 automatedDrive=true;
+                speed_factor = speed_goal;
             }
 
             if(gamepad1.dpad_left){
-                follower.followPath(pathChainShoot.get());
+                follower.followPath(pathChainPlayer.get());
                 automatedDrive=true;
+                speed_factor = speed_normal;
             }
 
             if(gamepad1.dpad_right){
-                follower.followPath(pathChainShoot.get());
+                follower.followPath(pathChainBase.get());
                 automatedDrive=true;
+                speed_factor = speed_normal;
             }
 
             if (gamepad1.x) { servoL.setPosition(servoPush); sleep(1000); servoL.setPosition(servoOpen); }

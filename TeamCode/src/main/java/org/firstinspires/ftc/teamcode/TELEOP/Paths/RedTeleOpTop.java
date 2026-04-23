@@ -20,9 +20,9 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 @Configurable
-@TeleOp(name="RedTeleOpBottom")
+@TeleOp(name="Red TeleOp Top")
 
-public class RedTeleOpBottom extends LinearOpMode {
+public class RedTeleOpTop extends LinearOpMode {
 
     // ---------------- PEDRO PATHING ----------------
     private Follower follower;
@@ -36,8 +36,9 @@ public class RedTeleOpBottom extends LinearOpMode {
     // ---------------- CONSTANTS ----------------
     static final double servoOpen = 1;
     static final double servoPush = 0;
-    static final double shootingDown = 0.8;
-    static final double shootingUp = 0.6;
+    static double shootingdown = 0.8;
+    static double shootingup = 0.6;
+
     static double shootingSpeed = 0.85;
     static double shootingSpeedM = shootingSpeed + 0.1;
     static double speed_factor = 0.8;
@@ -178,23 +179,23 @@ public class RedTeleOpBottom extends LinearOpMode {
             lbBefore = gamepad1.left_bumper;
 
 
-            if (gamepad1.dpad_right) {
-                follower.followPath(pathChainBase.get());
+            if (gamepad1.dpad_down) {
+                follower.followPath(pathChainShootBottom.get());
                 automatedDrive = true;
+                speed_factor = shootingdown;
             }
 
             if (gamepad1.dpad_up) {
 
                 follower.followPath(pathChainShoot.get());
                 automatedDrive = true;
-                speed_factor = shootingUp;
+                speed_factor =shootingup;
             }
 
-            if (gamepad1.dpad_down) {
+            if (gamepad1.dpad_right) {
 
-                follower.followPath(pathChainShootBottom.get());
+                follower.followPath(pathChainBase.get());
                 automatedDrive = true;
-                speed_factor = shootingDown;
             }
 
             if (gamepad1.dpad_left) {

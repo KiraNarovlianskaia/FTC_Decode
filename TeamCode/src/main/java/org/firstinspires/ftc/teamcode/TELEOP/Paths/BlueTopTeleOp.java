@@ -40,6 +40,8 @@ public class BlueTopTeleOp extends LinearOpMode {
     static double shootingSpeed = 0.85;
     static double shootingSpeedM = shootingSpeed + 0.1;
     static double speed_factor = 0.8;
+    static double speed_goal = 0.6;
+    static double speed_normal = 0.8;
 
     String[] shootersToPower = {"L","M","R"};
     String[] PATTERN = {"Purple","Purple","Green"};
@@ -101,7 +103,7 @@ public class BlueTopTeleOp extends LinearOpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setStartingPose(new Pose(55.78,11.25,Math.toRadians(105)));
+        follower.setStartingPose(new Pose(48,96,Math.toRadians(135)));
 
         pathChainBase = () -> follower.pathBuilder()
                 .addPath(new Path(new BezierLine(follower::getPose,new Pose(105,34))))
@@ -179,23 +181,27 @@ public class BlueTopTeleOp extends LinearOpMode {
 
 
             if(gamepad1.dpad_down){
-                follower.followPath(pathChainBase.get());
+                follower.followPath(pathChainShootBack.get());
                 automatedDrive=true;
+                speed_factor = speed_normal;
             }
 
             if(gamepad1.dpad_up){
-                follower.followPath(pathChainShootBack.get());
+                follower.followPath(pathChainShootFront.get());
                 automatedDrive=true;
+                speed_factor = speed_goal;
             }
 
             if(gamepad1.dpad_left){
-                follower.followPath(pathChainShootFront.get());
+                follower.followPath(pathChainPlayer.get());
                 automatedDrive=true;
+                speed_factor = speed_normal;
             }
 
             if(gamepad1.dpad_right){
-                follower.followPath(pathChainPlayer.get());
+                follower.followPath(pathChainBase.get());
                 automatedDrive=true;
+                speed_factor = speed_normal;
             }
 
             if (gamepad1.x) { servoL.setPosition(servoPush); sleep(1000); servoL.setPosition(servoOpen); }

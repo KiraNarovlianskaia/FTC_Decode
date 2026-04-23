@@ -34,8 +34,8 @@ public class RedTeleOpBottom extends LinearOpMode {
     private Supplier<PathChain> pathChainHuman;
 
     // ---------------- CONSTANTS ----------------
-    static final double servoOpen = 1;
-    static final double servoPush = 0;
+    static final double servoOpen = 0;
+    static final double servoPush = 0.5;
     static final double shootingDown = 0.8;
     static final double shootingUp = 0.6;
     static double shootingSpeed = 0.85;
@@ -102,7 +102,7 @@ public class RedTeleOpBottom extends LinearOpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setStartingPose(new Pose(86.534, 8.720, Math.toRadians(-90))); //not decided yet
+        follower.setStartingPose(new Pose(84.551, 33.213, Math.toRadians(270))); //not decided yet
 
         pathChainBase = () -> follower.pathBuilder()
                 .addPath(new Path(new BezierLine(follower::getPose, new Pose(38.559, 33.490))))
@@ -214,25 +214,23 @@ public class RedTeleOpBottom extends LinearOpMode {
                 servoM.setPosition(servoOpen);
             }
             if (gamepad2.b) {
-                servoR.setPosition(servoPush);
-                sleep(1000);
                 servoR.setPosition(servoOpen);
+                sleep(1000);
+                servoR.setPosition(servoPush);
             }
             if (gamepad2.y) {
                 servoL.setPosition(servoPush);
                 servoM.setPosition(servoPush);
-                servoR.setPosition(servoPush);
+                servoR.setPosition(servoOpen);
                 sleep(1000);
                 servoL.setPosition(servoOpen);
                 servoM.setPosition(servoOpen);
-                servoR.setPosition(servoOpen);
+                servoR.setPosition(servoPush);
             }
 
             if (automatedDrive && (gamepad1.a || !follower.isBusy())) {
-
                 follower.startTeleopDrive();
                 automatedDrive = false;
-
             }
 
             // ---------------- INTAKE ----------------

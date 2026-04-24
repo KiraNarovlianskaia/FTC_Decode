@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Servos;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-
+@Disabled
 @Autonomous(name = "Blue_Base_9_Movements", group = "Autonomous")
 @Configurable
 public class Blue_Base_9_Movements extends OpMode {

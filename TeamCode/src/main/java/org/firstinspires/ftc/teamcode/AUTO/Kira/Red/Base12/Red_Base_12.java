@@ -12,6 +12,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -42,7 +43,7 @@ public class Red_Base_12 extends OpMode {
     private int detectedTagId = -1;
     private int finalTagId = -1;
 
-    private final double wheel_speed = 0.5;
+    private final double wheel_speed = 0.7;
     boolean autoFinished = false;
 
     // 🔥 ПАТТЕРН
@@ -56,7 +57,7 @@ public class Red_Base_12 extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(113.178, 129.292, Math.toRadians(0)));
+        follower.setStartingPose(new Pose(30.822, 129.292, Math.toRadians(180)));
 
         paths = new Paths(follower);
 
@@ -117,7 +118,7 @@ public class Red_Base_12 extends OpMode {
         panelsTelemetry.debug("Tag", finalTagId);
 
         // --- НОВАЯ ТЕЛЕМЕТРИЯ ДЛЯ ДАТЧИКОВ ---
-        servos.addTelemetryData(gamepad1, telemetry);
+        servos.addTelemetryData(gamepad1,telemetry);
 
         panelsTelemetry.update(telemetry);
     }
@@ -391,7 +392,8 @@ public class Red_Base_12 extends OpMode {
                 }
                 break;
             case 15:
-                if (!follower.isBusy()) {
+                if (timer.seconds() >= 3) {
+                    servos.closeAll();
                     follower.followPath(paths.Path12, wheel_speed, true);
                     pathState = 16;
                 }

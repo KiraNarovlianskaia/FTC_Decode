@@ -8,21 +8,16 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Servos_Pattern;
-import org.firstinspires.ftc.teamcode.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.ServosThree;
+import org.firstinspires.ftc.teamcode.subsystems.ShooterBottom;
 
-import java.util.List;
-
-
-@Autonomous(name = "BottomAll Blue", group = "Autonomous")
+@Autonomous(name = "BottomAllBlue", group = "Autonomous")
 @Configurable
 public class BottomAllBlue extends OpMode {
 
@@ -30,42 +25,31 @@ public class BottomAllBlue extends OpMode {
     public Follower follower;
     private int pathState;
     private Paths paths;
+
     private Intake intake = new Intake();
-    private Shooter shooter = new Shooter();
-    private Servos_Pattern servos = new Servos_Pattern();
+    private ShooterBottom shooter = new ShooterBottom();
+    private ServosThree servos = new ServosThree();
+
     private ElapsedTime pathTimer = new ElapsedTime();
-    ElapsedTime timer = new ElapsedTime();
-    boolean waitStarted = false;
-
-
-    private int detectedTagId = -1;      // последнее увиденное
-    private int finalTagId = -1;         // зафиксированное перед стартом
-    private int shoot_id = 1;
+    private ElapsedTime actionTimer = new ElapsedTime();
 
     private final double wheel_speed = 0.5;
-    boolean autoFinished = false;
+    private boolean autoFinished = false;
 
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(57.474, 8.799, Math.toRadians(-90)));
+
         paths = new Paths(follower);
 
         intake.init(hardwareMap);
         shooter.init(hardwareMap);
         servos.init(hardwareMap);
 
-
-
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
-    }
-
-    @Override
-    public void start() {
-        finalTagId = detectedTagId;  // фиксируем последний увиденный
     }
 
     @Override
@@ -73,44 +57,11 @@ public class BottomAllBlue extends OpMode {
         if (autoFinished) return;
 
         follower.update();
-        servos.update();
         pathState = autonomousPathUpdate();
 
         panelsTelemetry.debug("Path State", pathState);
-        panelsTelemetry.debug("X", follower.getPose().getX());
-        panelsTelemetry.debug("Y", follower.getPose().getY());
-        panelsTelemetry.debug("Heading", follower.getPose().getHeading());
         panelsTelemetry.update(telemetry);
     }
-    private int getVariant(int shootId) {
-        switch (finalTagId) {
-            case 21:
-                if (shootId == 1 || shootId == 2) return 1;
-                if (shootId == 3) return 2;
-                if (shootId == 4) return 3;
-                break;
-            case 22:
-                if (shootId == 1 || shootId == 2) return 2;
-                if (shootId == 3) return 1;
-                if (shootId == 4) return 4;
-                break;
-            case 23:
-                if (shootId == 1 || shootId == 2) return 3;
-                if (shootId == 3) return 4;
-                if (shootId == 4) return 1;
-                break;
-            case -1:
-                return 1;
-
-        }
-        return 1;
-    }
-
-
-
-
-
-
     public static class Paths {
         public PathChain Path1;
         public PathChain Path2;
@@ -119,7 +70,6 @@ public class BottomAllBlue extends OpMode {
         public PathChain Path5;
         public PathChain Path6;
         public PathChain Path7;
-        public PathChain Path8;
 
         public Paths(Follower follower) {
             Path1 = follower.pathBuilder().addPath(
@@ -191,133 +141,103 @@ public class BottomAllBlue extends OpMode {
                     ).setLinearHeadingInterpolation(Math.toRadians(-180), Math.toRadians(-60))
 
                     .build();
-
-            Path8 = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(59.209, 12.583),
-
-                                    new Pose(59.449, 33.213)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-60), Math.toRadians(-90))
-
-                    .build();
         }
     }
-
-
     public int autonomousPathUpdate() {
-
         switch (pathState) {
-
-            case 0:
-                shooter.start();
-                follower.followPath(paths.Path1,wheel_speed,true);
+            case 0: // Старт
+                //shooter.start(); // Включаем маховики шутера
+                follower.followPath(paths.Path1, wheel_speed, true);
                 pathTimer.reset();
                 pathState = 1;
                 break;
 
-            case 1:
-                if (!follower.isBusy()) {
-                    int shootId = 1; // пример, можешь выбрать динамически
-                    int variant = getVariant(shootId); // получаем вариант
-                    servos.startShooting(shootId, variant);
-                    timer.reset();
+            case 1: // ПОСЛЕ 1-ГО ПРОЕЗДА
+                if (!follower.isBusy() || pathTimer.seconds() > 3.0) {
+                    servos.shootAll();
+                    actionTimer.reset();
+                    pathState = 11; // Пауза на вылет
+                }
+                break;
+
+            case 11:
+                if (actionTimer.seconds() > 2) {
+                    servos.closeAll();
+                    //intake.start(); // Включаем забор, чтобы собирать по пути
+                    follower.followPath(paths.Path2, wheel_speed, true);
+                    pathTimer.reset();
                     pathState = 2;
                 }
                 break;
 
             case 2:
-                if (!follower.isBusy() && timer.seconds() >= 3) {
-                    servos.closeAll();
-                    intake.start();
-                    follower.followPath(paths.Path2, wheel_speed, true);
+                if (!follower.isBusy() || pathTimer.seconds() > 4.0) {
+                    follower.followPath(paths.Path3, wheel_speed, true);
                     pathTimer.reset();
                     pathState = 3;
                 }
                 break;
 
             case 3:
-                if (!follower.isBusy() || pathTimer.seconds() > 4.0) { // Для длинной кривой увеличил до 4с
-                    follower.followPath(paths.Path3, wheel_speed, true);
+                if (!follower.isBusy() || pathTimer.seconds() > 2.0) {
+                    follower.followPath(paths.Path4, wheel_speed, true);
                     pathTimer.reset();
                     pathState = 4;
                 }
                 break;
 
-            case 4:
-                if (!follower.isBusy() || pathTimer.seconds() > 2.0) {
-                    follower.followPath(paths.Path4, wheel_speed, true);
+            case 4: // ПОСЛЕ 4-ГО ПРОЕЗДА
+                if (!follower.isBusy() || pathTimer.seconds() > 3.0) {
+                    servos.shootAll();
+                    actionTimer.reset();
+                    pathState = 41;
+                }
+                break;
+
+            case 41:
+                if (actionTimer.seconds() > 2) {
+                    servos.closeAll();
+                    follower.followPath(paths.Path5, wheel_speed, true);
                     pathTimer.reset();
                     pathState = 5;
                 }
                 break;
 
             case 5:
-                if (!follower.isBusy()) {
-                    int shootId = 2; // пример, можешь выбрать динамически
-                    int variant = getVariant(shootId); // получаем вариант
-                    timer.reset();
+                if (!follower.isBusy() || pathTimer.seconds() > 4.0) {
+                    follower.followPath(paths.Path6, wheel_speed, true);
                     pathTimer.reset();
-                    servos.startShooting(shootId, variant);
                     pathState = 6;
                 }
                 break;
 
             case 6:
-                if (!follower.isBusy() && timer.seconds() >= 3) {
-                    servos.closeAll();
-                    follower.followPath(paths.Path5, wheel_speed, true);
+                if (!follower.isBusy() || pathTimer.seconds() > 2.0) {
+                    follower.followPath(paths.Path7, wheel_speed, true);
                     pathTimer.reset();
                     pathState = 7;
                 }
                 break;
 
-            case 7:
-                if (!follower.isBusy() || pathTimer.seconds() > 4.0) { // Для длинной кривой увеличил до 4с
-                    follower.followPath(paths.Path6, wheel_speed, true);
-                    pathTimer.reset();
-                    pathState = 8;
-                }
-                break;
-            case 8:
-                if (!follower.isBusy() || pathTimer.seconds() > 2.0) {
-                    follower.followPath(paths.Path7, wheel_speed, true);
-                    pathTimer.reset();
-                    pathState = 9;
-                }
-                break;
-            case 9:
-                if (!follower.isBusy()) {
-                    int shootId = 3; // пример, можешь выбрать динамически
-                    int variant = getVariant(shootId); // получаем вариант
-                    timer.reset();
-                    pathTimer.reset();
-                    servos.startShooting(shootId, variant);
-                    pathState = 10;
+            case 7: // ПОСЛЕ 7-ГО ПРОЕЗДА
+                if (!follower.isBusy() || pathTimer.seconds() > 4.0) {
+                    servos.shootAll();
+                    actionTimer.reset();
+                    pathState = 71;
                 }
                 break;
 
-            case 10:
-                if (!follower.isBusy() && timer.seconds() >= 3) {
+            case 71:
+                if (actionTimer.seconds() > 2) {
                     servos.closeAll();
-                    follower.followPath(paths.Path8, wheel_speed, true);
-                    pathState = 11;
-                }
-                break;
-
-            case 11:
-                if (!follower.isBusy()) {
-                    follower.breakFollowing();
-                    intake.stop();
-                    shooter.stop();
-                    servos.closeAll();
-
+                    //intake.stop();
+                    //shooter.stop();
                     autoFinished = true;
                 }
                 break;
-
         }
-
         return pathState;
     }
+
+    // Класс Paths остается без изменений, как в прошлом сообщении
 }

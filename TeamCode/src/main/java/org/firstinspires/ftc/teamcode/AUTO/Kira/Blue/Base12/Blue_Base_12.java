@@ -43,7 +43,7 @@ public class Blue_Base_12 extends OpMode {
     private int detectedTagId = -1;
     private int finalTagId = -1;
 
-    private final double wheel_speed = 0.5;
+    private final double wheel_speed = 0.7;
     boolean autoFinished = false;
 
     // 🔥 ПАТТЕРН
@@ -118,7 +118,7 @@ public class Blue_Base_12 extends OpMode {
         panelsTelemetry.debug("Tag", finalTagId);
 
         // --- НОВАЯ ТЕЛЕМЕТРИЯ ДЛЯ ДАТЧИКОВ ---
-        servos.addTelemetryData(gamepad1, telemetry);
+        servos.addTelemetryData(gamepad1,telemetry);
 
         panelsTelemetry.update(telemetry);
     }
@@ -415,7 +415,8 @@ public class Blue_Base_12 extends OpMode {
                 }
                 break;
             case 15:
-                if (!follower.isBusy()) {
+                if (timer.seconds() >= 3) {
+                    servos.closeAll();
                     follower.followPath(paths.Path12, wheel_speed, true);
                     pathState = 16;
                 }

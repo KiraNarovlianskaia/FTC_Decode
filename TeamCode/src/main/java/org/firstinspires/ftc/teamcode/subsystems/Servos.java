@@ -22,7 +22,7 @@ public class Servos {
     private ColorSensor sensorL, sensorM, sensorR;
 
     private final double servoPush = 0;
-    private final double servoOpen = 1;
+    private final double servoOpen = 0.5;
 
     private ElapsedTime timer = new ElapsedTime();
 
@@ -33,7 +33,6 @@ public class Servos {
     private List<BallColor> history = new ArrayList<>();
     private List<BallColor> shootSequence = new ArrayList<>();
 
-    private BallColor[] currentBalls = new BallColor[3];
     private Servo[] servos = new Servo[3];
     private boolean[] used = new boolean[3];
 
@@ -45,9 +44,15 @@ public class Servos {
         servoM = hwMap.get(Servo.class, "servo_mid");
         servoR = hwMap.get(Servo.class, "servo_right");
 
-        sensorL = hwMap.get(ColorSensor.class, "ball_color_left");
-        sensorM = hwMap.get(ColorSensor.class, "ball_color_mid");
-        sensorR = hwMap.get(ColorSensor.class, "ball_color_right");
+        // Даже если датчики не подключены, оставляем инициализацию,
+        // чтобы код не вылетал с ошибкой NullPointerException
+        try {
+            sensorL = hwMap.get(ColorSensor.class, "ball_color_left");
+            sensorM = hwMap.get(ColorSensor.class, "ball_color_mid");
+            sensorR = hwMap.get(ColorSensor.class, "ball_color_right");
+        } catch (Exception e) {
+            // Если датчиков физически нет в конфигурации, просто игнорируем
+        }
 
         servos[0] = servoL;
         servos[1] = servoM;
@@ -63,19 +68,12 @@ public class Servos {
         this.pattern = pattern;
         shootSequence.clear();
 
-        readSensors();
-
         // Сброс состояния использования серв
         for (int i = 0; i < 3; i++) used[i] = false;
 
-        // Формируем план на текущую серию (3 выстрела)
-        int ballsToShoot = 3;
-
-        for (int i = 0; i < ballsToShoot; i++) {
-            // Определяем, какой шар ДОЛЖЕН быть следующим по глобальному паттерну
-            int patternIndex = (history.size() + i) % pattern.size();
-            BallColor target = pattern.get(patternIndex);
-            shootSequence.add(target);
+        // Формируем план на 3 выстрела (заглушка, так как датчиков нет)
+        for (int i = 0; i < 3; i++) {
+            shootSequence.add(BallColor.UNKNOWN);
         }
 
         shooting = true;
@@ -83,53 +81,40 @@ public class Servos {
         timer.reset();
     }
 
-    // ================= UPDATE =================
+    // ================= UPDATE (БЕЗ ДАТЧИКОВ) =================
     public void update() {
         if (!shooting) return;
 
-        // Интервал между выстрелами 700мс (можно настроить)
+        // Интервал между выстрелами 700мс
         if (timer.milliseconds() < 700) return;
 
         if (currentIndex < shootSequence.size()) {
-            readSensors();
-            BallColor target = shootSequence.get(currentIndex);
 
             int foundIndex = -1;
 
-            // ШАГ 1: Ищем идеальное совпадение по цвету
+            // Просто ищем следующую по порядку серву, которая еще не стреляла
             for (int i = 0; i < 3; i++) {
-                if (!used[i] && currentBalls[i] == target && currentBalls[i] != BallColor.UNKNOWN) {
+                if (!used[i]) {
                     foundIndex = i;
                     break;
                 }
             }
 
-            // ШАГ 2: Если нужного цвета нет, ищем ЛЮБОЙ доступный шар
-            if (foundIndex == -1) {
-                for (int i = 0; i < 3; i++) {
-                    if (!used[i] && currentBalls[i] != BallColor.UNKNOWN) {
-                        foundIndex = i;
-                        break;
-                    }
-                }
-            }
-
-            // ШАГ 3: Если шар найден (целевой или запасной), стреляем
+            // Если нашли серву — стреляем
             if (foundIndex != -1) {
-                // Логика открытия (Right инвертирован согласно вашему коду)
+                // Логика движения
                 if (foundIndex == 2) {
-                    servos[foundIndex].setPosition(servoOpen);
+                    // Для правой сервы используем твою логику (0.0)
+                    servos[foundIndex].setPosition(servoPush+1);
                 } else {
-                    servos[foundIndex].setPosition(servoPush);
+                    // Для левой и средней (0.5)
+                    servos[foundIndex].setPosition(servoOpen);
                 }
 
-                // Запоминаем, что выстрелили (для истории паттерна)
-                history.add(currentBalls[foundIndex]);
                 used[foundIndex] = true;
                 currentIndex++;
                 timer.reset();
             } else {
-                // Если датчики не видят ни одного шара в доступных слотах — выходим
                 shooting = false;
             }
         } else {
@@ -137,39 +122,12 @@ public class Servos {
         }
     }
 
-    // ================= СЕНСОРЫ =================
-    private void readSensors() {
-        currentBalls[0] = getColor(sensorL);
-        currentBalls[1] = getColor(sensorM);
-        currentBalls[2] = getColor(sensorR);
-    }
-
-    private BallColor getColor(ColorSensor s) {
-        int r = s.red();
-        int g = s.green();
-        int b = s.blue();
-
-        // Порог "пустоты"
-        if (g < 130 && b < 130 && r < 130) return BallColor.UNKNOWN;
-
-        // Зеленый: G доминирует над R и B
-        if (g > r * 1.5 && g > b) {
-            return BallColor.GREEN;
-        }
-
-        // Фиолетовый: B доминирует над G и R
-        if (b > g && b > r) {
-            return BallColor.PURPLE;
-        }
-
-        return BallColor.UNKNOWN;
-    }
-
     // ================= СЕРВО УПРАВЛЕНИЕ =================
     public void closeAll() {
-        servoL.setPosition(servoOpen);
-        servoM.setPosition(servoOpen);
-        servoR.setPosition(servoPush);
+        // Устанавливаем сервы в исходное положение
+        servoL.setPosition(servoPush); // 0.0
+        servoM.setPosition(servoPush); // 0.0
+        servoR.setPosition(servoOpen); // 0.5
     }
 
     public void resetHistory() {
@@ -180,19 +138,16 @@ public class Servos {
         return shooting;
     }
 
+    // Метод getColor оставлен для совместимости, но не используется в update
+    private BallColor getColor(ColorSensor s) {
+        return BallColor.UNKNOWN;
+    }
+
     // ================= ТЕЛЕМЕТРИЯ =================
     public void addTelemetryData(com.qualcomm.robotcore.hardware.Gamepad gamepad, org.firstinspires.ftc.robotcore.external.Telemetry telemetry) {
-        telemetry.addLine("--- Color Sensors ---");
-        telemetry.addData("L", "%s (R:%d G:%d B:%d)", getColor(sensorL), sensorL.red(), sensorL.green(), sensorL.blue());
-        telemetry.addData("M", "%s (R:%d G:%d B:%d)", getColor(sensorM), sensorM.red(), sensorM.green(), sensorM.blue());
-        telemetry.addData("R", "%s (R:%d G:%d B:%d)", getColor(sensorR), sensorR.red(), sensorR.green(), sensorR.blue());
-
-        telemetry.addLine("--- Shooting State ---");
+        telemetry.addLine("--- SHOOTING (NO SENSORS MODE) ---");
         telemetry.addData("Status", shooting ? "SHOOTING" : "IDLE");
-        telemetry.addData("Progress", "%d / %d", currentIndex, shootSequence.size());
-        if (shooting && currentIndex < shootSequence.size()) {
-            telemetry.addData("Searching For", shootSequence.get(currentIndex));
-        }
-        telemetry.addData("Total History", history.size());
+        telemetry.addData("Current Index", currentIndex);
+        telemetry.addData("Timer (ms)", (int)timer.milliseconds());
     }
 }

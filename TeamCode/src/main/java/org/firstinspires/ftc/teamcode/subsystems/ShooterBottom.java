@@ -1,17 +1,16 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Shooter {
+public class ShooterBottom {
 
     private DcMotor shooterMotorL;
     private DcMotor shooterMotorM;
     private DcMotor shooterMotorR;
 
     // --------- CONSTANTS ----------
-    private double shooterPower = 0.65;   // мощность всасывания
+    private double shooterPower = 1;   // мощность всасывания
 
     public void init(HardwareMap hwMap) {
         shooterMotorL = hwMap.get(DcMotor.class, "shooter_left");
@@ -29,8 +28,8 @@ public class Shooter {
 
     // Запуск мотора
     public void start() {
-        shooterMotorL.setPower(shooterPower+0.05);
-        shooterMotorM.setPower(shooterPower-0.02);
+        shooterMotorL.setPower(shooterPower);
+        shooterMotorM.setPower(shooterPower);
         shooterMotorR.setPower(shooterPower);
     }
 

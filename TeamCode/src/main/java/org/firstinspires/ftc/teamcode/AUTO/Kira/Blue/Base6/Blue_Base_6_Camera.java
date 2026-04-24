@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Servos_Pattern;
+import org.firstinspires.ftc.teamcode.subsystems.Servos_Pattern_Blue;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -33,7 +33,7 @@ public class Blue_Base_6_Camera extends OpMode {
     private Paths paths;
     private Intake intake = new Intake();
     private Shooter shooter = new Shooter();
-    private Servos_Pattern servos = new Servos_Pattern();
+    private Servos_Pattern_Blue servos = new Servos_Pattern_Blue();
     ElapsedTime timer = new ElapsedTime();
     boolean waitStarted = false;
     private final double wheel_speed = 0.5;

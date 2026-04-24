@@ -10,7 +10,7 @@ public class ShooterBottom {
     private DcMotor shooterMotorR;
 
     // --------- CONSTANTS ----------
-    private double shooterPower = 1;   // мощность всасывания
+    private double shooterPower = 0.8;   // мощность всасывания
 
     public void init(HardwareMap hwMap) {
         shooterMotorL = hwMap.get(DcMotor.class, "shooter_left");

@@ -11,18 +11,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-import java.util.Arrays;
 import java.util.function.Supplier;
 
 @Configurable
-@TeleOp(name="BLUE Down TeleOp")
+@TeleOp(name="BLUE Top TeleOp")
 
-public class BlueTeleOpDown extends LinearOpMode {
+public class BlueTeleOpTop extends LinearOpMode {
 
     // ---------------- PEDRO PATHING ----------------
     private Follower follower;
@@ -97,7 +95,7 @@ public class BlueTeleOpDown extends LinearOpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setStartingPose(new Pose(59.449, 33.213, Math.toRadians(-90)));
+        follower.setStartingPose(new Pose(24.561,79.455,Math.toRadians(-90)));
 
         pathChainBase = () -> follower.pathBuilder()
                 .addPath(new Path(new BezierLine(follower::getPose, new Pose(103.403, 32.773))))

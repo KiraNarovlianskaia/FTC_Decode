@@ -62,6 +62,7 @@ public class BottomAllBlue extends OpMode {
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.update(telemetry);
     }
+
     public static class Paths {
         public PathChain Path1;
         public PathChain Path2;
@@ -70,6 +71,7 @@ public class BottomAllBlue extends OpMode {
         public PathChain Path5;
         public PathChain Path6;
         public PathChain Path7;
+        public PathChain Path8;
 
         public Paths(Follower follower) {
             Path1 = follower.pathBuilder().addPath(
@@ -78,7 +80,7 @@ public class BottomAllBlue extends OpMode {
 
                                     new Pose(59.318, 12.763)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-60))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-70))
 
                     .build();
 
@@ -88,7 +90,7 @@ public class BottomAllBlue extends OpMode {
                                     new Pose(44.006, 20.321),
                                     new Pose(19.247, 9.557)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-60), Math.toRadians(-180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-70), Math.toRadians(-180))
 
                     .build();
 
@@ -108,7 +110,7 @@ public class BottomAllBlue extends OpMode {
                                     new Pose(37.917, 18.924),
                                     new Pose(59.495, 12.583)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-180), Math.toRadians(-60))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-180), Math.toRadians(-70))
 
                     .build();
 
@@ -118,7 +120,7 @@ public class BottomAllBlue extends OpMode {
                                     new Pose(44.006, 20.321),
                                     new Pose(19.247, 9.557)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-60), Math.toRadians(-180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-70), Math.toRadians(-180))
 
                     .build();
 
@@ -138,22 +140,33 @@ public class BottomAllBlue extends OpMode {
                                     new Pose(38.073, 19.207),
                                     new Pose(59.209, 12.583)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-180), Math.toRadians(-60))
+                    ).setLinearHeadingInterpolation(Math.toRadians(-180), Math.toRadians(-70))
+
+                    .build();
+
+            Path8 = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(59.209, 12.583),
+
+                                    new Pose(59.449, 33.213)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(-70), Math.toRadians(-90))
 
                     .build();
         }
     }
+
     public int autonomousPathUpdate() {
         switch (pathState) {
             case 0: // Старт
-                //shooter.start(); // Включаем маховики шутера
+                shooter.start(); // Включаем маховики шутера
                 follower.followPath(paths.Path1, wheel_speed, true);
                 pathTimer.reset();
                 pathState = 1;
                 break;
 
             case 1: // ПОСЛЕ 1-ГО ПРОЕЗДА
-                if (!follower.isBusy() || pathTimer.seconds() > 3.0) {
+                if (pathTimer.seconds() > 3.0) {
                     servos.shootAll();
                     actionTimer.reset();
                     pathState = 11; // Пауза на вылет
@@ -163,7 +176,7 @@ public class BottomAllBlue extends OpMode {
             case 11:
                 if (actionTimer.seconds() > 2) {
                     servos.closeAll();
-                    //intake.start(); // Включаем забор, чтобы собирать по пути
+                    intake.start(); // Включаем забор, чтобы собирать по пути
                     follower.followPath(paths.Path2, wheel_speed, true);
                     pathTimer.reset();
                     pathState = 2;
@@ -230,8 +243,8 @@ public class BottomAllBlue extends OpMode {
             case 71:
                 if (actionTimer.seconds() > 2) {
                     servos.closeAll();
-                    //intake.stop();
-                    //shooter.stop();
+                    intake.stop();
+                    shooter.stop();
                     autoFinished = true;
                 }
                 break;

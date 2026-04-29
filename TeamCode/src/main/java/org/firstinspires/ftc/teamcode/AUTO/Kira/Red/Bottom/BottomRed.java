@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.AUTO.Kira.Blue.Bottom;
+package org.firstinspires.ftc.teamcode.AUTO.Kira.Red.Bottom;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -17,9 +17,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.ServosThree;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterBottom;
 
-@Autonomous(name = "BottomAllBlue", group = "Autonomous")
+@Autonomous(name = "BottomRed", group = "Autonomous")
 @Configurable
-public class BottomAllBlue extends OpMode {
+public class BottomRed extends OpMode {
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
@@ -40,7 +40,7 @@ public class BottomAllBlue extends OpMode {
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(57.474, 8.799, Math.toRadians(-90)));
+        follower.setStartingPose(new Pose(86.526, 8.799, Math.toRadians(270)));
 
         paths = new Paths(follower);
 
@@ -64,94 +64,91 @@ public class BottomAllBlue extends OpMode {
     }
 
     public static class Paths {
-        public PathChain Path1;
-        public PathChain Path2;
-        public PathChain Path3;
-        public PathChain Path4;
-        public PathChain Path5;
-        public PathChain Path6;
-        public PathChain Path7;
-        public PathChain Path8;
+        public PathChain Path1, Path2, Path3, Path4, Path5, Path6, Path7, Path8;
 
         public Paths(Follower follower) {
+            // Path 1
+            // 144 - 57.474 = 86.526 | 144 - 59.318 = 84.682
+            // Angles: 180 - (-90) = 270 | 180 - (-60) = 240
             Path1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(57.474, 8.799),
-
-                                    new Pose(59.318, 12.763)
+                                    new Pose(86.526, 8.799),
+                                    new Pose(84.682, 12.763)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-70))
-
+                    ).setLinearHeadingInterpolation(Math.toRadians(270), Math.toRadians(240))
                     .build();
 
+            // Path 2
+            // 144 - 59.318 = 84.682 | 144 - 44.006 = 99.994 | 144 - 19.247 = 124.753
+            // Angles: 180 - (-60) = 240 | 180 - (-180) = 360 (0)
             Path2 = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(59.318, 12.763),
-                                    new Pose(44.006, 20.321),
-                                    new Pose(19.247, 9.557)
+                                    new Pose(84.682, 12.763),
+                                    new Pose(99.994, 20.321),
+                                    new Pose(124.753, 9.557)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-70), Math.toRadians(-180))
-
+                    ).setLinearHeadingInterpolation(Math.toRadians(240), Math.toRadians(360))
                     .build();
 
+            // Path 3
+            // 144 - 19.247 = 124.753 | 144 - 9.477 = 134.523
             Path3 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(19.247, 9.557),
-
-                                    new Pose(9.477, 9.517)
+                                    new Pose(124.753, 9.557),
+                                    new Pose(134.523, 9.517)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-180), Math.toRadians(-180))
-
+                    ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
                     .build();
 
+            // Path 4
+            // Reverse curve
             Path4 = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(9.477, 9.517),
-                                    new Pose(37.917, 18.924),
-                                    new Pose(59.495, 12.583)
+                                    new Pose(134.523, 9.517),
+                                    new Pose(106.083, 18.924),
+                                    new Pose(84.505, 12.583)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-180), Math.toRadians(-70))
-
+                    ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(240))
                     .build();
 
+            // Path 5
             Path5 = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(59.495, 12.583),
-                                    new Pose(44.006, 20.321),
-                                    new Pose(19.247, 9.557)
+                                    new Pose(84.505, 12.583),
+                                    new Pose(99.994, 20.321),
+                                    new Pose(124.753, 9.557)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-70), Math.toRadians(-180))
-
+                    ).setLinearHeadingInterpolation(Math.toRadians(240), Math.toRadians(360))
                     .build();
 
+            // Path 6
             Path6 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(19.247, 9.557),
-
-                                    new Pose(9.477, 9.517)
+                                    new Pose(124.753, 9.557),
+                                    new Pose(134.523, 9.517)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-180), Math.toRadians(-180))
-
+                    ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
                     .build();
 
+            // Path 7
             Path7 = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(9.477, 9.517),
-                                    new Pose(38.073, 19.207),
-                                    new Pose(59.209, 12.583)
+                                    new Pose(134.523, 9.517),
+                                    new Pose(105.927, 19.207),
+                                    new Pose(84.791, 12.583)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-180), Math.toRadians(-70))
-
+                    ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(240))
                     .build();
 
+            // Path 8
+            // 144 - 59.209 = 84.791 | 144 - 59.449 = 84.551
+            // Angle: 180 - (-60) = 240 | 180 - (-90) = 270
             Path8 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(59.209, 12.583),
-
-                                    new Pose(59.449, 33.213)
+                                    new Pose(84.791, 12.583),
+                                    new Pose(84.551, 33.213)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-70), Math.toRadians(-90))
-
+                    ).setLinearHeadingInterpolation(Math.toRadians(240), Math.toRadians(270))
                     .build();
         }
     }

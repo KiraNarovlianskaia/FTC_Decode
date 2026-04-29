@@ -189,25 +189,25 @@ public class BlueTeleOpDown extends LinearOpMode {
 
             }
 
-            if (gamepad2.x) {
+            if (gamepad1.x) {
                 servoL.setPosition(servoPush);
                 sleep(1000);
                 servoL.setPosition(servoOpen);
             }
 
-            if (gamepad2.a) {
+            if (gamepad1.a) {
                 servoM.setPosition(servoPush);
                 sleep(1000);
                 servoM.setPosition(servoOpen);
             }
 
-            if (gamepad2.b) {
+            if (gamepad1.b) {
                 servoR.setPosition(servoOpen);
                 sleep(1000);
                 servoR.setPosition(servoPush);
             }
 
-            if (gamepad2.y) {
+            if (gamepad1.y) {
                 servoL.setPosition(servoPush);
                 servoM.setPosition(servoPush);
                 servoR.setPosition(servoOpen);
@@ -217,7 +217,7 @@ public class BlueTeleOpDown extends LinearOpMode {
                 servoR.setPosition(servoPush);
             }
 
-            if (automatedDrive && (gamepad1.a || !follower.isBusy())) {
+            if (automatedDrive && (gamepad2.a || !follower.isBusy())) {
                 follower.startTeleopDrive();
                 automatedDrive = false;
             }

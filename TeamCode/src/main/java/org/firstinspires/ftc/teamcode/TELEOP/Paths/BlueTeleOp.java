@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
-
+@Disabled
 @Configurable
 @TeleOp(name="BLUE TeleOp")
 

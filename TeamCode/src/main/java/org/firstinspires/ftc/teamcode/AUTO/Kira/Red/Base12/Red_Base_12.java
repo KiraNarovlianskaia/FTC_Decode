@@ -12,7 +12,6 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -23,6 +22,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Autonomous(name = "Red_Base_12", group = "Autonomous")
 @Configurable
 public class Red_Base_12 extends OpMode {
@@ -57,7 +57,7 @@ public class Red_Base_12 extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(30.822, 129.292, Math.toRadians(180)));
+        follower.setStartingPose(new Pose(113.178, 129.292, Math.toRadians(0)));
 
         paths = new Paths(follower);
 

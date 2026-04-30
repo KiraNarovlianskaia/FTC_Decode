@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-@Disabled
+
 @Autonomous (name="Auto Blue Goal")
 public class AutoBlueGoal extends LinearOpMode {
 
@@ -44,18 +44,18 @@ public class AutoBlueGoal extends LinearOpMode {
         leftBack = hardwareMap.get(DcMotor.class, "left_back");
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
-        intake = hardwareMap.get(DcMotor.class, "intake");
-        shooter = hardwareMap.get(DcMotor.class, "shooter");
+        //intake = hardwareMap.get(DcMotor.class, "intake");
+        //shooter = hardwareMap.get(DcMotor.class, "shooter");
 
-        servoL = hardwareMap.get(Servo.class, "left_servo");
-        servoR = hardwareMap.get(Servo.class, "right_servo");
+        //servoL = hardwareMap.get(Servo.class, "left_servo");
+        //servoR = hardwareMap.get(Servo.class, "right_servo");
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
-        intake.setDirection(DcMotor.Direction.FORWARD);
-        shooter.setDirection(DcMotor.Direction.FORWARD);
+        //intake.setDirection(DcMotor.Direction.FORWARD);
+        //shooter.setDirection(DcMotor.Direction.FORWARD);
 
         resetEncoders();
 
@@ -68,39 +68,8 @@ public class AutoBlueGoal extends LinearOpMode {
 
 
         waitForStart();
-
-        shooter();
-        servoClose();
-        moveForward(0.3, 95);
-        servoOpen();
-        sleep(1000);
-        stopshoot();
-        servoClose();
-        moveRotate(0.3, 135);
-        
-        intakeStart();
         moveForward(0.3, 60);
-        intakeStop();
-        moveForward(-0.3, 60);
-        shooter();
-        moveRotate(-0.3, 135);
-        servoOpen();
-        sleep(1000);
-        stopshoot();
-        servoClose();
-        moveRotate(0.3, 135);
-        moveSide(-0.3, 50);
-        intakeStart();
-        moveForward(0.3, 60); //collect
-        intakeStop();
-        moveForward(-0.3, 60);
-        moveSide(0.3, 50);
-        shooter();
-        moveRotate(-0.3, 135);
-        servoOpen();
-        sleep(1000);
-        stopshoot();
-        servoClose();
+
 
 
     }

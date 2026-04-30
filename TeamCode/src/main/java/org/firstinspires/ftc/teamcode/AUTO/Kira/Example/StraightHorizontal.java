@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-@Disabled
+
 @Autonomous(name = "StraightHorizontal", group = "Autonomous")
 @Configurable
 public class StraightHorizontal extends OpMode {
@@ -61,7 +61,7 @@ public class StraightHorizontal extends OpMode {
                             new BezierLine(
                                     new Pose(30.730, 129.238),
 
-                                    new Pose(62.622, 129.238)
+                                    new Pose(59.473, 129.238)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 

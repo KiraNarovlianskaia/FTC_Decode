@@ -18,9 +18,9 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import java.util.function.Supplier;
 
 @Configurable
-@TeleOp(name="RED Down TeleOp")
+@TeleOp(name="BLUE Top TeleOp Nothing")
 
-public class RedTeleOpDown extends LinearOpMode {
+public class BlueTeleOpTopNothing extends LinearOpMode {
 
     // ---------------- PEDRO PATHING ----------------
     private Follower follower;
@@ -95,10 +95,10 @@ public class RedTeleOpDown extends LinearOpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setStartingPose(new Pose(84.551, 33.213, Math.toRadians(270))); //not decided yet
+        follower.setStartingPose(new Pose(59.473,129.238,Math.toRadians(180)));
 
         pathChainBase = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose, new Pose(38.559, 33.490))))
+                .addPath(new Path(new BezierLine(follower::getPose, new Pose(103.403, 32.773))))
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,
@@ -107,29 +107,27 @@ public class RedTeleOpDown extends LinearOpMode {
                 .build();
 
         pathChainShoot = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose, new Pose(96.024, 95.652))))
+                .addPath(new Path(new BezierLine(follower::getPose, new Pose(48.594, 94.574))))
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,
-                                Math.toRadians(225),
+                                Math.toRadians(315),
                                 0.8))
                 .build();
-
         pathChainShootDown = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose, new Pose(82.385, 20.968))))
+                .addPath(new Path(new BezierLine(follower::getPose, new Pose(72.104, 21.931))))//new shoot down
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,
-                                Math.toRadians(245),
+                                Math.toRadians(305),
                                 0.8))
                 .build();
-
         pathChainHuman = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose, new Pose(29.291, 10.509))))
+                .addPath(new Path(new BezierLine(follower::getPose, new Pose(110.994, 11.824))))//new go to human player
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,
-                                Math.toRadians(180),
+                                Math.toRadians(0),
                                 0.8))
                 .build();
 

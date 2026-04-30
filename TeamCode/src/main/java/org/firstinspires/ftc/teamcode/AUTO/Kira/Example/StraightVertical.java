@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-@Disabled
+
 @Autonomous(name = "StraightVertical", group = "Autonomous")
 @Configurable
 public class StraightVertical extends OpMode {

@@ -88,7 +88,7 @@ public class BlueTeleOpDown extends LinearOpMode {
         colorSensorR = hardwareMap.get(NormalizedColorSensor.class, "ball_color_right");
 
         servoR.setDirection(Servo.Direction.REVERSE);
-        //shooterM.setDirection(DcMotor.Direction.REVERSE);
+        shooterL.setDirection(DcMotor.Direction.REVERSE);
         servoL.setPosition(servoOpen);
         servoM.setPosition(servoOpen);
         servoR.setPosition(servoOpen+0.5);

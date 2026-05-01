@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-
+@Disabled
 @Autonomous (name="Auto Blue Goal")
 public class AutoBlueGoal extends LinearOpMode {
 

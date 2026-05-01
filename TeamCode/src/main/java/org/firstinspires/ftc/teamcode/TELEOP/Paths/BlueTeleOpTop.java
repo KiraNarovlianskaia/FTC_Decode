@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import java.util.function.Supplier;
 
 @Configurable
-@TeleOp(name="BLUE Top TeleOp")
+@TeleOp(name="BLUE Top Button TeleOp")
 
 public class BlueTeleOpTop extends LinearOpMode {
 
@@ -35,9 +35,9 @@ public class BlueTeleOpTop extends LinearOpMode {
     static final double servoOpen = 0;
     static final double servoPush = 0.5;
 
-    static double shootingdown = 0.8;
-    static double shootingup = 0.6;
-    static double shootingSpeed = 0.85;
+    static double shootingdown = 0.7;
+    static double shootingup = 0.55;
+    static double shootingSpeed = 0.55;
 
     static double speed_factor = 0.8;
 
@@ -215,12 +215,16 @@ public class BlueTeleOpTop extends LinearOpMode {
                 servoR.setPosition(servoPush);
             }
 
-            if (automatedDrive && (gamepad2.a || !follower.isBusy())) {
+            if (automatedDrive && (Math.abs(gamepad1.left_stick_y) > 0.5 || Math.abs(gamepad1.left_stick_x) > 0.5 || !follower.isBusy() || gamepad2.a)) {
                 follower.startTeleopDrive();
                 automatedDrive = false;
             }
 
-            // ---------------- INTAKE ----------------
+            /*if (automatedDrive && (gamepad2.a || !follower.isBusy())) {
+                follower.startTeleopDrive();
+                automatedDrive = false;
+            }
+*/            // ---------------- INTAKE ----------------
 
             intake.setPower(-gamepad2.left_stick_y);
 

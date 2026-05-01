@@ -217,7 +217,7 @@ public class RedTeleOpTop extends LinearOpMode {
                 servoR.setPosition(servoPush);
             }
 
-            if (automatedDrive && (gamepad2.a || !follower.isBusy())) {
+            if (automatedDrive && (Math.abs(gamepad1.left_stick_y) > 0.5 || Math.abs(gamepad1.left_stick_x) > 0.5 || !follower.isBusy() || gamepad2.a)) {
                 follower.startTeleopDrive();
                 automatedDrive = false;
             }

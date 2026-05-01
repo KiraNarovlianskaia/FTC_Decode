@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.AUTO.Sasha;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -12,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.ArrayList;
 import java.util.List;
-
+@Disabled
 @Autonomous (name="Limelight Ty")
 public class LimelightTy extends LinearOpMode {
     Limelight3A limelight;

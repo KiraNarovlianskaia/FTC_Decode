@@ -35,11 +35,11 @@ public class BlueTeleOpTopNothing extends LinearOpMode {
     static final double servoOpen = 0;
     static final double servoPush = 0.5;
 
-    static double shootingdown = 0.8;
-    static double shootingup = 0.6;
+    static double shootingdown = 0.7;
+    static double shootingup = 0.55;
     static double shootingSpeed = 0.85;
 
-    static double speed_factor = 0.8;
+    static double speed_factor = 0.55;
 
     // ---------------- HARDWARE ----------------
     DcMotor intake;
@@ -95,7 +95,7 @@ public class BlueTeleOpTopNothing extends LinearOpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setStartingPose(new Pose(59.473,129.238,Math.toRadians(180)));
+        follower.setStartingPose(new Pose(48.246,119.9,Math.toRadians(-90)));
 
         pathChainBase = () -> follower.pathBuilder()
                 .addPath(new Path(new BezierLine(follower::getPose, new Pose(103.403, 32.773))))
@@ -215,7 +215,7 @@ public class BlueTeleOpTopNothing extends LinearOpMode {
                 servoR.setPosition(servoPush);
             }
 
-            if (automatedDrive && (gamepad2.a || !follower.isBusy())) {
+            if (automatedDrive && (Math.abs(gamepad1.left_stick_y) > 0.5 || Math.abs(gamepad1.left_stick_x) > 0.5 || !follower.isBusy() || gamepad2.a)) {
                 follower.startTeleopDrive();
                 automatedDrive = false;
             }

@@ -224,7 +224,7 @@ public class BlueTeleOpDown extends LinearOpMode {
 
             // ---------------- INTAKE ----------------
 
-            intake.setPower(-gamepad2.left_stick_y);
+
 
             // ---------------- SHOOTER MANUAL ----------------
 
@@ -233,6 +233,9 @@ public class BlueTeleOpDown extends LinearOpMode {
             shooterM.setPower(shooterStick * shootingSpeed);
             shooterR.setPower(shooterStick * shootingSpeed);
 
+            //intake.setPower(-gamepad2.left_stick_y);
+
+            intake.setPower(-gamepad2.left_stick_y-gamepad2.right_stick_y);
             // ---------------- SPEED ADJUST ----------------
 
             if (gamepad2.right_bumper && !rightBumperPrev) {

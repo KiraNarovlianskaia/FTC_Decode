@@ -11,7 +11,7 @@ public class Shooter {
     private DcMotor shooterMotorR;
 
     // --------- CONSTANTS ----------
-    private double shooterPower = 0.65;   // мощность всасывания
+    private double shooterPower = 0.6;   // мощность всасывания
 
     public void init(HardwareMap hwMap) {
         shooterMotorL = hwMap.get(DcMotor.class, "shooter_left");
@@ -29,8 +29,8 @@ public class Shooter {
 
     // Запуск мотора
     public void start() {
-        shooterMotorL.setPower(shooterPower+0.05);
-        shooterMotorM.setPower(shooterPower-0.02);
+        shooterMotorL.setPower(shooterPower);
+        shooterMotorM.setPower(shooterPower+0.05);
         shooterMotorR.setPower(shooterPower);
     }
 

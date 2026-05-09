@@ -37,7 +37,7 @@ public class BlueTeleOpDown extends LinearOpMode {
     static final double servoOpen = 0;
     static final double servoPush = 0.5;
 
-    static double shootingdown = 0.8;
+    static double shootingdown = 0.75;
     static double shootingup = 0.6;
     static double shootingSpeed = 0.85;
 
@@ -58,12 +58,16 @@ public class BlueTeleOpDown extends LinearOpMode {
     boolean lbBefore = false;
     boolean shootingByPattern = false;
     int patternIndex = 0;
+    double intakespeed = 0.8;
+
 
     boolean shooterSpunUp = false;
     long spinUpStart = 0;
 
     long servoTimer = 0;
     boolean servoActive = false;
+    boolean useRightStickForIntake = true;
+    boolean bBefore = false;
 
     boolean rightBumperPrev = false;
     boolean leftBumperPrev = false;
@@ -97,7 +101,7 @@ public class BlueTeleOpDown extends LinearOpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setStartingPose(new Pose(59.449, 33.213, Math.toRadians(-90)));
+        follower.setStartingPose(new Pose(35.33, 12.5, Math.toRadians(-90)));
 
         pathChainBase = () -> follower.pathBuilder()
                 .addPath(new Path(new BezierLine(follower::getPose, new Pose(103.403, 32.773))))
@@ -117,11 +121,11 @@ public class BlueTeleOpDown extends LinearOpMode {
                                 0.8))
                 .build();
         pathChainShootDown = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose, new Pose(72.104, 21.931))))//new shoot down
+                .addPath(new Path(new BezierLine(follower::getPose, new Pose(59.318, 12.763))))//new shoot down
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,
-                                Math.toRadians(305),
+                                Math.toRadians(-70),
                                 0.8))
                 .build();
         pathChainHuman = () -> follower.pathBuilder()
@@ -136,7 +140,6 @@ public class BlueTeleOpDown extends LinearOpMode {
         waitForStart();
 
         follower.startTeleopDrive();
-
 
         // ================= MAIN LOOP =================
 
@@ -186,7 +189,6 @@ public class BlueTeleOpDown extends LinearOpMode {
             if (gamepad1.dpad_up) {
                 follower.followPath(pathChainShoot.get());
                 automatedDrive = true;
-
             }
 
             if (gamepad1.x) {
@@ -207,7 +209,7 @@ public class BlueTeleOpDown extends LinearOpMode {
                 servoR.setPosition(servoPush);
             }
 
-            if (gamepad1.y) {
+            if (gamepad1.y || gamepad2.y) {
                 servoL.setPosition(servoPush);
                 servoM.setPosition(servoPush);
                 servoR.setPosition(servoOpen);
@@ -229,13 +231,17 @@ public class BlueTeleOpDown extends LinearOpMode {
             // ---------------- SHOOTER MANUAL ----------------
 
             double shooterStick = gamepad2.right_stick_y;
+            double intakepower = 0;
+
             shooterL.setPower(shooterStick * shootingSpeed);
             shooterM.setPower(shooterStick * shootingSpeed);
             shooterR.setPower(shooterStick * shootingSpeed);
 
-            //intake.setPower(-gamepad2.left_stick_y);
+            intake.setPower(-gamepad2.left_stick_y);
 
-            intake.setPower(-gamepad2.left_stick_y-gamepad2.right_stick_y);
+            //intake.setPower(intakepower);
+
+            //intake.setPower(-gamepad2.left_stick_y-gamepad2.right_stick_y);
             // ---------------- SPEED ADJUST ----------------
 
             if (gamepad2.right_bumper && !rightBumperPrev) {

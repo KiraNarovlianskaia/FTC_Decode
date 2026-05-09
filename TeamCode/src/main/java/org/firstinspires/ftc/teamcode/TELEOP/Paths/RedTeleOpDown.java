@@ -35,11 +35,13 @@ public class RedTeleOpDown extends LinearOpMode {
     static final double servoOpen = 0;
     static final double servoPush = 0.5;
 
-    static double shootingdown = 0.7;
+    static double shootingdown = 0.83;
     static double shootingup = 0.55;
     static double shootingSpeed = 0.85;
 
     static double speed_factor = 0.8;
+    boolean useRightStickForIntake = true;
+    boolean bBefore = false;
 
     // ---------------- HARDWARE ----------------
     DcMotor intake;
@@ -95,7 +97,7 @@ public class RedTeleOpDown extends LinearOpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setStartingPose(new Pose(108.2, 12.476, Math.toRadians(270))); //not decided yet
+        follower.setStartingPose(new Pose(84.5, 33.213, Math.toRadians(-90))); //not decided yet
 
         pathChainBase = () -> follower.pathBuilder()
                 .addPath(new Path(new BezierLine(follower::getPose, new Pose(38.559, 33.490))))
@@ -116,11 +118,11 @@ public class RedTeleOpDown extends LinearOpMode {
                 .build();
 
         pathChainShootDown = () -> follower.pathBuilder()
-                .addPath(new Path(new BezierLine(follower::getPose, new Pose(82.385, 20.968))))
+                .addPath(new Path(new BezierLine(follower::getPose, new Pose(84.7, 12.763))))
                 .setHeadingInterpolation(
                         HeadingInterpolator.linearFromPoint(
                                 follower::getHeading,
-                                Math.toRadians(245),
+                                Math.toRadians(250),
                                 0.8))
                 .build();
 
@@ -224,7 +226,7 @@ public class RedTeleOpDown extends LinearOpMode {
 
             // ---------------- INTAKE ----------------
 
-            intake.setPower(-gamepad2.left_stick_y);
+            //intake.setPower(-gamepad2.left_stick_y);
 
             // ---------------- SHOOTER MANUAL ----------------
 
@@ -246,6 +248,16 @@ public class RedTeleOpDown extends LinearOpMode {
                 if (shootingSpeed < 0) shootingSpeed = 0;
             }
             leftBumperPrev = gamepad2.left_bumper;
+            if (gamepad2.b && !bBefore){
+                useRightStickForIntake = !useRightStickForIntake;
+            }
+            bBefore = gamepad2.b;
+
+            if (useRightStickForIntake){
+                intake.setPower(-gamepad2.right_stick_y);
+            } else {
+                intake.setPower(-gamepad2.left_stick_y);
+            }
 
             // ---------------- TELEMETRY ----------------
 

@@ -37,7 +37,7 @@ public class BlueTeleOpTopNothing extends LinearOpMode {
 
     static double shootingdown = 0.7;
     static double shootingup = 0.55;
-    static double shootingSpeed = 0.85;
+    static double shootingSpeed = 0.55;
 
     static double speed_factor = 0.55;
 
@@ -56,6 +56,8 @@ public class BlueTeleOpTopNothing extends LinearOpMode {
     boolean lbBefore = false;
     boolean shootingByPattern = false;
     int patternIndex = 0;
+    boolean useRightStickForIntake = true;
+    boolean bBefore = false;
 
     boolean shooterSpunUp = false;
     long spinUpStart = 0;
@@ -222,7 +224,7 @@ public class BlueTeleOpTopNothing extends LinearOpMode {
 
             // ---------------- INTAKE ----------------
 
-            intake.setPower(-gamepad2.left_stick_y);
+            //intake.setPower(-gamepad2.left_stick_y);
 
             // ---------------- SHOOTER MANUAL ----------------
 
@@ -244,6 +246,16 @@ public class BlueTeleOpTopNothing extends LinearOpMode {
                 if (shootingSpeed < 0) shootingSpeed = 0;
             }
             leftBumperPrev = gamepad2.left_bumper;
+            if (gamepad2.b && !bBefore){
+                useRightStickForIntake = !useRightStickForIntake;
+            }
+            bBefore = gamepad2.b;
+
+            if (useRightStickForIntake){
+                intake.setPower(-gamepad2.right_stick_y);
+            } else {
+                intake.setPower(-gamepad2.left_stick_y);
+            }
 
             // ---------------- TELEMETRY ----------------
 

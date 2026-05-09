@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.AUTO.Kira.Blue.Bottom;
+package org.firstinspires.ftc.teamcode.AUTO.Kira.Red.Bottom;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
@@ -17,9 +16,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.ServosThree;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterBottom;
 
-@Autonomous(name = "BottomBlueNothing", group = "Autonomous")
+@Autonomous(name = "BottomRedNothing", group = "Autonomous")
 @Configurable
-public class BottomBlueNothing extends OpMode {
+public class BottomRedNothing extends OpMode {
 
     private TelemetryManager panelsTelemetry;
     public Follower follower;
@@ -40,7 +39,7 @@ public class BottomBlueNothing extends OpMode {
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(57.474, 8.799, Math.toRadians(-90)));
+        follower.setStartingPose(new Pose(86.5, 8.799, Math.toRadians(-90)));
 
         paths = new Paths(follower);
 
@@ -76,21 +75,21 @@ public class BottomBlueNothing extends OpMode {
         public Paths(Follower follower) {
             Path1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(57.474, 8.799),
+                                    new Pose(86.5, 8.799),
 
-                                    new Pose(59.318, 12.763)
+                                    new Pose(84.7, 12.763)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-70))
+                    ).setLinearHeadingInterpolation(Math.toRadians(270), Math.toRadians(250))
 
                     .build();
 
             Path2 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(59.209, 12.583),
+                                    new Pose(84.7, 12.763),
 
-                                    new Pose(35.33, 12.5)
+                                    new Pose(84.5, 33.213)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(-70), Math.toRadians(-90))
+                    ).setLinearHeadingInterpolation(Math.toRadians(250), Math.toRadians(-90))
 
                     .build();
         }

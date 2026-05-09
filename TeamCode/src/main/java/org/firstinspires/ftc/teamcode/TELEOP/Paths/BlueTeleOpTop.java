@@ -40,6 +40,8 @@ public class BlueTeleOpTop extends LinearOpMode {
     static double shootingSpeed = 0.55;
 
     static double speed_factor = 0.8;
+    boolean useRightStickForIntake = true;
+    boolean bBefore = false;
 
     // ---------------- HARDWARE ----------------
     DcMotor intake;
@@ -226,7 +228,7 @@ public class BlueTeleOpTop extends LinearOpMode {
             }
 */            // ---------------- INTAKE ----------------
 
-            intake.setPower(-gamepad2.left_stick_y);
+            //intake.setPower(-gamepad2.left_stick_y);
 
             // ---------------- SHOOTER MANUAL ----------------
 
@@ -248,6 +250,16 @@ public class BlueTeleOpTop extends LinearOpMode {
                 if (shootingSpeed < 0) shootingSpeed = 0;
             }
             leftBumperPrev = gamepad2.left_bumper;
+            if (gamepad2.b && !bBefore){
+                useRightStickForIntake = !useRightStickForIntake;
+            }
+            bBefore = gamepad2.b;
+
+            if (useRightStickForIntake){
+                intake.setPower(-gamepad2.right_stick_y);
+            } else {
+                intake.setPower(-gamepad2.left_stick_y);
+            }
 
             // ---------------- TELEMETRY ----------------
 

@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-@Autonomous(name="Leave Red", group="Red")
+@Autonomous(name="Leave Red")
 public class Matvei_RedAuto extends LinearOpMode {
     private DcMotor leftFront;
     private DcMotor leftBack;
@@ -50,7 +50,9 @@ public class Matvei_RedAuto extends LinearOpMode {
         leftBack = hardwareMap.get(DcMotor.class, "left_back");
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
+
         intakeMotor = hardwareMap.get(DcMotor.class, "intake");
+
         shooterL = hardwareMap.get(DcMotor.class, "shooter_left");
         shooterM = hardwareMap.get(DcMotor.class, "shooter_mid");
         shooterR = hardwareMap.get(DcMotor.class, "shooter_right");

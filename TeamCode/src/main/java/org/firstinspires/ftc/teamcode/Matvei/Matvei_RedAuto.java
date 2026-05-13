@@ -16,7 +16,9 @@ public class Matvei_RedAuto extends LinearOpMode {
     private DcMotor rightFront;
     private DcMotor rightBack;
     private DcMotor intakeMotor;
-    private DcMotor midtakeMotor;
+    private DcMotor shooterL;
+    private DcMotor shooterM;
+    private DcMotor shooterR;
     private DcMotor shooterMotor;
     private IMU imu;
 
@@ -49,24 +51,25 @@ public class Matvei_RedAuto extends LinearOpMode {
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
         intakeMotor = hardwareMap.get(DcMotor.class, "intake");
-        shooterMotor = hardwareMap.get(DcMotor.class, "shooter");
-        midtakeMotor = hardwareMap.get(DcMotor.class, "midtake");
+        shooterL = hardwareMap.get(DcMotor.class, "shooter_left");
+        shooterM = hardwareMap.get(DcMotor.class, "shooter_mid");
+        shooterR = hardwareMap.get(DcMotor.class, "shooter_right");
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
-        shooterMotor.setDirection(DcMotor.Direction.FORWARD);
-        midtakeMotor.setDirection(DcMotor.Direction.FORWARD);
+        shooterM.setDirection(DcMotor.Direction.REVERSE);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        midtakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooterL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooterM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooterR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

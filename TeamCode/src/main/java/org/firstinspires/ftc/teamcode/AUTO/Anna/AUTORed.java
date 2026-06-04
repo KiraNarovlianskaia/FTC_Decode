@@ -25,6 +25,7 @@ public class AUTORed extends LinearOpMode {
     DcMotor shooter;
     Servo servoL;
     Servo servoR;
+    Servo servoM;
 
     static final double PI = 3.14159265;
     static final double WHEEL_DIAMETER = 10.4;
@@ -42,8 +43,9 @@ public class AUTORed extends LinearOpMode {
 
         intake = hardwareMap.get(DcMotor.class, "intake");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
-        servoL = hardwareMap.get(Servo.class, "left_servo");
-        servoR = hardwareMap.get(Servo.class, "right_servo");
+        servoL = hardwareMap.get(Servo.class, "servo_left");
+        servoR = hardwareMap.get(Servo.class, "servo_right");
+        servoM = hardwareMap.get(Servo.class, "servo_mid");
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
@@ -66,17 +68,34 @@ public class AUTORed extends LinearOpMode {
         waitForStart();
 
         moveForward(-0.3, 50);
-        shoot();
+        shoot(); //+3
         moveRotate(0.3, 35);
         intakeStart();
         moveForward(0.3, 40);
         moveForward(-0.3, 40);
         moveRotate(-0.3, 35);
-        shoot(); //1st ball
-
+        shoot(); //+6
         intakeStop();
+
         moveRotate(0.3, 35);
         moveSide(0.3, 60);
+        intakeStart();
+        moveForward(0.3, 40);
+        moveForward(-0.3, 40);
+        moveSide(-0.3, 60);
+        moveRotate(-0.3, 35);
+        shoot();
+        intakeStop(); //+9
+
+        moveRotate(0.3, 35);
+        moveSide(0.3, 120);
+        intakeStart();
+        moveForward(0.3, 40);
+        moveForward(-0.3, 40);
+        moveSide(-0.3, 120);
+        moveRotate(0.3, 35);
+        shoot();
+        intakeStop(); //+12
 
     }
     public void moveForward(double speed, double distance) {
@@ -144,9 +163,11 @@ public class AUTORed extends LinearOpMode {
     public void pushServo() {
         servoL.setPosition(0.45);
         servoR.setPosition(0.45);
+        servoM.setPosition(0.45);
         sleep(400);
         servoL.setPosition(0);
         servoR.setPosition(0);
+        servoM.setPosition(0);
 
     }
 

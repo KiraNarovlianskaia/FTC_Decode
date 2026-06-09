@@ -113,20 +113,20 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
         intakeMotor.setPower(1);
         driveForward(0.2, 120);
         sleep(100);
-        driveForward(-0.5, 120);
+        driveForward(-0.2, 120);
         intakeMotor.setPower(0);
         rotate(-0.2, 45);
-        driveForward(0.5, 70);
+        driveForward(0.2, 70);
         shoot();
-        driveForward(-0.5, 70);
+        driveForward(-0.2, 70);
         rotate(0.2, 45);
         intakeMotor.setPower(1);
-        driveForward(0.5, 170);
+        driveForward(0.2, 170);
         sleep(100);
-        driveForward(-0.5, 170);
+        driveForward(-0.2, 170);
         intakeMotor.setPower(0);
         rotate(-0.2, 45);
-        driveForward(0.5, 70);
+        driveForward(0.2, 70);
         shoot();
 
     }

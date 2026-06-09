@@ -67,37 +67,38 @@ public class AUTORed extends LinearOpMode {
 
         waitForStart();
 
-        moveForward(-0.3, 50);
-        shoot(); //+3
+        moveForward(-0.3, 84);
+        sleep(1000);
         moveRotate(0.3, 35);
-        intakeStart();
         moveForward(0.3, 40);
+        sleep(1000);
         moveForward(-0.3, 40);
         moveRotate(-0.3, 35);
-        shoot(); //+6
-        intakeStop();
+        sleep(1000);
 
         moveRotate(0.3, 35);
         moveSide(0.3, 60);
-        intakeStart();
         moveForward(0.3, 40);
+        sleep(1000);
         moveForward(-0.3, 40);
         moveSide(-0.3, 60);
         moveRotate(-0.3, 35);
-        shoot();
-        intakeStop(); //+9
+        sleep(1000);
 
         moveRotate(0.3, 35);
-        moveSide(0.3, 120);
-        intakeStart();
+        moveSide(0.3, 30);
         moveForward(0.3, 40);
+        sleep(1000);
+        moveForward(-0.3, 40);
+        moveSide(0.3, 90);
+        sleep(1000);
         moveForward(-0.3, 40);
         moveSide(-0.3, 120);
         moveRotate(0.3, 35);
-        shoot();
-        intakeStop(); //+12
+        sleep(1000);
 
     }
+
     public void moveForward(double speed, double distance) {
 
         resetEncoders();
@@ -161,6 +162,7 @@ public class AUTORed extends LinearOpMode {
         shootStop();
     }
     public void pushServo() {
+
         servoL.setPosition(0.45);
         servoR.setPosition(0.45);
         servoM.setPosition(0.45);
@@ -168,7 +170,6 @@ public class AUTORed extends LinearOpMode {
         servoL.setPosition(0);
         servoR.setPosition(0);
         servoM.setPosition(0);
-
     }
 
     public void shootStart() {

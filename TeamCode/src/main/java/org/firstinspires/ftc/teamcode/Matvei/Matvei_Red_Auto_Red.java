@@ -5,18 +5,25 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-@Autonomous(name="Matvei Leave Red")
-public class Matvei_Leave_RedAuto extends LinearOpMode {
+@Autonomous(name="Matvei Auto Red")
+public class Matvei_Red_Auto_Red extends LinearOpMode {
     private DcMotor leftFront;
     private DcMotor leftBack;
     private DcMotor rightFront;
     private DcMotor rightBack;
-
+    private DcMotor intakeMotor;
+    private DcMotor shooterL;
+    private DcMotor shooterM;
+    private DcMotor shooterR;
     private IMU imu;
 
+    private Servo servoLeft;
+    private Servo servoMid;
+    private Servo servoRight;
 
     static  final double PI  = 3.1415;
 
@@ -46,16 +53,31 @@ public class Matvei_Leave_RedAuto extends LinearOpMode {
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
 
+        intakeMotor = hardwareMap.get(DcMotor.class, "intake");
+
+        shooterL = hardwareMap.get(DcMotor.class, "shooter_left");
+        shooterM = hardwareMap.get(DcMotor.class, "shooter_mid");
+        shooterR = hardwareMap.get(DcMotor.class, "shooter_right");
+
+        servoLeft = hardwareMap.get(Servo.class,"servo_left");
+        servoMid = hardwareMap.get(Servo.class,"servo_mid");
+        servoRight = hardwareMap.get(Servo.class,"servo_right");
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
+        intakeMotor.setDirection(DcMotor.Direction.FORWARD);
+        shooterM.setDirection(DcMotor.Direction.REVERSE);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooterL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooterM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooterR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -69,13 +91,43 @@ public class Matvei_Leave_RedAuto extends LinearOpMode {
 
         waitForStart();
 
+        servoRight.setPosition(1.0);
+        servoMid.setPosition(1.0);
+        servoLeft.setPosition(1.0);
+
         imu.resetYaw();
         driveForward(0.2, 90);
-        sleep(15000);
-        leftFront.setPower(0.2);
-        leftBack.setPower(0.2);
-        rightFront.setPower(0.2);
-        rightBack.setPower(0.2);
+        shoot();
+        driveForward(-0.2, 70);
+        rotate(0.2, 45);
+        intakeMotor.setPower(1);
+        driveForward(0.2, 70);
+        sleep(100);
+        driveForward(-0.2, 70);
+        intakeMotor.setPower(0);
+        rotate(-0.2, 45);
+        driveForward(0.2, 70);
+        shoot();
+        driveForward(-0.2, 70);
+        rotate(0.2, 45);
+        intakeMotor.setPower(1);
+        driveForward(0.2, 120);
+        sleep(100);
+        driveForward(-0.5, 120);
+        intakeMotor.setPower(0);
+        rotate(-0.2, 45);
+        driveForward(0.5, 70);
+        shoot();
+        driveForward(-0.5, 70);
+        rotate(0.2, 45);
+        intakeMotor.setPower(1);
+        driveForward(0.5, 170);
+        sleep(100);
+        driveForward(-0.5, 170);
+        intakeMotor.setPower(0);
+        rotate(-0.2, 45);
+        driveForward(0.5, 70);
+        shoot();
 
     }
 
@@ -116,6 +168,26 @@ public class Matvei_Leave_RedAuto extends LinearOpMode {
         rightFront.setPower(0);
         rightBack.setPower(0);
         sleep( 100);
+    }
+    public void shoot ()
+    {
+        shooterR.setPower(-1);
+        shooterM.setPower(1);
+        shooterL.setPower(1);
+        intakeMotor.setPower(1);
+        sleep(100);
+        servoRight.setPosition(1.0);
+        servoMid.setPosition(0);
+        servoLeft.setPosition(0);
+        sleep(1000);
+        shooterR.setPower(0);
+        shooterM.setPower(0);
+        shooterL.setPower(0);
+        intakeMotor.setPower(0);
+        servoRight.setPosition(0);
+        servoMid.setPosition(1.0);
+        servoLeft.setPosition(1.0);
+        sleep(100);
     }
     public double getHeading(){
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();

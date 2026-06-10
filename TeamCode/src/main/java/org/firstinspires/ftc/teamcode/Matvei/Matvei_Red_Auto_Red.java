@@ -96,45 +96,45 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
         servoMid.setPosition(1.0);
         servoLeft.setPosition(1.0);
 
-        driveForward(0.2, 90);
+        driveForward(0.2, 30);
         imu.resetYaw();
         //shoot();
-        rotate(-0.1, 135);
-        sideLeft(0.2, 30);
+        rotate(-0.2, 135);
+        sideLeft(0.4, 20);
         intakeMotor.setPower(1);
         driveForward(-0.2, 30);
         sleep(100);
         driveForward(0.2, 30);
         intakeMotor.setPower(0);
-        sideRight(0.2, 30);
+        sideRight(0.4, 30);
         imu.resetYaw();
-        rotate(0.1, 135);
+        rotate(0.2, 135);
         //shoot();
         imu.resetYaw();
-        rotate(-0.1, 135);
-        sideLeft(0.2, 30);
+        rotate(-0.2, 135);
+        sideLeft(0.3, 30);
         driveForward(-0.2, 40);
         intakeMotor.setPower(1);
         driveForward(-0.2, 20);
         sleep(100);
         intakeMotor.setPower(0);
         driveForward(0.2, 60);
-        sideRight(0.2, 30);
+        sideRight(0.3, 30);
         imu.resetYaw();
-        rotate(0.1, 135);
+        rotate(0.2, 135);
         //shoot();
         imu.resetYaw();
-        rotate(-0.1, 135);
-        sideLeft(0.2, 30);
+        rotate(-0.2, 135);
+        sideLeft(0.3, 30);
         driveForward(-0.2, 70);
         intakeMotor.setPower(1);
         driveForward(-0.2, 20);
         sleep(100);
         intakeMotor.setPower(0);
         driveForward(0.2, 90);
-        sideRight(0.2, 30);
+        sideRight(0.3, 30);
         imu.resetYaw();
-        rotate(0.1, 135);
+        rotate(0.2, 135);
         //shoot();
 
     }
@@ -162,6 +162,12 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
     {
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         while (opModeIsActive() && Math.abs(leftFront.getCurrentPosition()) < PULSE_PER_CM * distance)
         {

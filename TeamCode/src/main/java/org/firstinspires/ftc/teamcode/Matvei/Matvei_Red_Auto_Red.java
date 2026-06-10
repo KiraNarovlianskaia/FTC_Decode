@@ -25,6 +25,7 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
     private Servo servoMid;
     private Servo servoRight;
 
+    static final double sidedistance = -25;
     static  final double PI  = 3.1415;
 
     static  final double DIAMETER  = 9.6;
@@ -95,26 +96,46 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
         servoMid.setPosition(1.0);
         servoLeft.setPosition(1.0);
 
+        driveForward(-0.2, 90);
         imu.resetYaw();
-        shoot();
-        rotate(0.2, 45);
+        //shoot();
+        rotate(-0.2, 135);
+        sideLeft(0.2, 30);
         intakeMotor.setPower(1);
+        driveForward(0.2, 30);
+        sleep(100);
+        driveForward(-0.2, 30);
+        intakeMotor.setPower(0);
+        sideRight(0.2, 30);
+        imu.resetYaw();
+        rotate(0.2, 135);
+        //shoot();
+        imu.resetYaw();
+        rotate(-0.2, 135);
+        sideLeft(0.2, 30);
+        driveForward(0.2, 40);
+        intakeMotor.setPower(1);
+        driveForward(0.2, 20);
         sleep(100);
         intakeMotor.setPower(0);
-        rotate(-0.2, 45);
-        shoot();
-        rotate(0.2, 45);
+        driveForward(-0.2, 60);
+        sideRight(0.2, 30);
+        imu.resetYaw();
+        rotate(0.2, 135);
+        //shoot();
+        imu.resetYaw();
+        rotate(-0.2, 135);
+        sideLeft(0.2, 30);
+        driveForward(0.2, 70);
         intakeMotor.setPower(1);
+        driveForward(0.2, 20);
         sleep(100);
         intakeMotor.setPower(0);
-        rotate(-0.2, 45);
-        shoot();
-        rotate(0.2, 45);
-        intakeMotor.setPower(1);
-        sleep(100);
-        intakeMotor.setPower(0);
-        rotate(-0.2, 45);
-        shoot();
+        driveForward(-0.2, 90);
+        sideRight(0.2, 30);
+        imu.resetYaw();
+        rotate(0.2, 135);
+        //shoot();
 
     }
 
@@ -175,6 +196,45 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
         servoMid.setPosition(1.0);
         servoLeft.setPosition(1.0);
         sleep(100);
+    }
+    public void sideLeft (double sideSpeed, double distance)
+    {
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        while (opModeIsActive() && leftFront.getCurrentPosition() > sidedistance*distance)
+        {
+            leftFront.setPower(-sideSpeed);
+            leftBack.setPower(sideSpeed);
+            rightFront.setPower(sideSpeed);
+            rightBack.setPower(-sideSpeed);
+        }
+
+        leftFront.setPower(0);
+        leftBack.setPower(0);
+        rightFront.setPower(0);
+        rightBack.setPower(0);
+        sleep( 100);
+    }
+
+    public void sideRight (double sideSpeed, double distance)
+    {
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        while (opModeIsActive() && leftFront.getCurrentPosition() < -sidedistance*distance)
+        {
+            leftFront.setPower(sideSpeed);
+            leftBack.setPower(-sideSpeed);
+            rightFront.setPower(-sideSpeed);
+            rightBack.setPower(sideSpeed);
+        }
+
+        leftFront.setPower(0);
+        leftBack.setPower(0);
+        rightFront.setPower(0);
+        rightBack.setPower(0);
+        sleep( 100);
     }
     public double getHeading(){
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();

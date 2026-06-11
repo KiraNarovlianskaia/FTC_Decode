@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 @Autonomous(name="Matvei Leave Red")
-public class Matvei_Auto_Forward extends LinearOpMode {
+public class Matvei_Auto_MovementTest extends LinearOpMode {
     private DcMotor leftFront;
     private DcMotor leftBack;
     private DcMotor rightFront;
@@ -19,6 +19,7 @@ public class Matvei_Auto_Forward extends LinearOpMode {
     private IMU imu;
 
 
+    static final double sidedistance = -25;
     static  final double PI  = 3.1415;
 
     static  final double DIAMETER  = 9.6;
@@ -71,7 +72,13 @@ public class Matvei_Auto_Forward extends LinearOpMode {
         waitForStart();
 
         imu.resetYaw();
-        driveForward(0.2, 40);
+        driveForward(0.2, 30);
+        sleep(1000);
+        rotate(0.2, 90);
+        sleep(1000);
+        sideLeft(0.4, 30);
+        sleep(1000);
+        sideRight(0.4, 30);
 
     }
 
@@ -105,6 +112,45 @@ public class Matvei_Auto_Forward extends LinearOpMode {
             leftBack.setPower(forwardSpeed);
             rightFront.setPower(forwardSpeed);
             rightBack.setPower(forwardSpeed);
+        }
+
+        leftFront.setPower(0);
+        leftBack.setPower(0);
+        rightFront.setPower(0);
+        rightBack.setPower(0);
+        sleep( 100);
+    }
+    public void sideLeft (double sideSpeed, double distance)
+    {
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        while (opModeIsActive() && leftFront.getCurrentPosition() > sidedistance*distance)
+        {
+            leftFront.setPower(-sideSpeed);
+            leftBack.setPower(sideSpeed);
+            rightFront.setPower(sideSpeed);
+            rightBack.setPower(-sideSpeed);
+        }
+
+        leftFront.setPower(0);
+        leftBack.setPower(0);
+        rightFront.setPower(0);
+        rightBack.setPower(0);
+        sleep( 100);
+    }
+
+    public void sideRight (double sideSpeed, double distance)
+    {
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        while (opModeIsActive() && leftFront.getCurrentPosition() < -sidedistance*distance)
+        {
+            leftFront.setPower(sideSpeed);
+            leftBack.setPower(-sideSpeed);
+            rightFront.setPower(-sideSpeed);
+            rightBack.setPower(sideSpeed);
         }
 
         leftFront.setPower(0);

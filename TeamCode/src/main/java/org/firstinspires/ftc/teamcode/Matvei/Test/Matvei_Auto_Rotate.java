@@ -71,13 +71,7 @@ public class Matvei_Auto_Rotate extends LinearOpMode {
         waitForStart();
 
         imu.resetYaw();
-        driveForward(0.1, 40);
-        sleep(10000);
-        leftFront.setPower(0.1);
-        leftBack.setPower(0.1);
-        rightFront.setPower(0.1);
-        rightBack.setPower(0.1);
-        sleep(5000);
+        rotate(0.2,90);
 
     }
 

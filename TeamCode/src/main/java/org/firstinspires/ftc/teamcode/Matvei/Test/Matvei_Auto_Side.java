@@ -18,7 +18,7 @@ public class Matvei_Auto_Side extends LinearOpMode {
 
     private IMU imu;
 
-    
+
     static final double sidedistance = -25;
     static  final double PI  = 3.1415;
 
@@ -72,13 +72,8 @@ public class Matvei_Auto_Side extends LinearOpMode {
         waitForStart();
 
         imu.resetYaw();
-        driveForward(0.1, 40);
-        sleep(10000);
-        leftFront.setPower(0.1);
-        leftBack.setPower(0.1);
-        rightFront.setPower(0.1);
-        rightBack.setPower(0.1);
-        sleep(5000);
+        sideLeft(0.4, 30);
+        sideRight(0.4, 30);
 
     }
 

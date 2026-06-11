@@ -19,7 +19,6 @@ public class Matvei_Auto_Side extends LinearOpMode {
     private IMU imu;
 
 
-    static final double sidedistance = -25;
     static  final double PI  = 3.1415;
 
     static  final double DIAMETER  = 9.6;
@@ -72,8 +71,6 @@ public class Matvei_Auto_Side extends LinearOpMode {
         waitForStart();
 
         imu.resetYaw();
-        sideLeft(0.4, 30);
-        sideRight(0.4, 30);
 
     }
 
@@ -107,45 +104,6 @@ public class Matvei_Auto_Side extends LinearOpMode {
             leftBack.setPower(forwardSpeed);
             rightFront.setPower(forwardSpeed);
             rightBack.setPower(forwardSpeed);
-        }
-
-        leftFront.setPower(0);
-        leftBack.setPower(0);
-        rightFront.setPower(0);
-        rightBack.setPower(0);
-        sleep( 100);
-    }
-    public void sideLeft (double sideSpeed, double distance)
-    {
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        while (opModeIsActive() && leftFront.getCurrentPosition() > sidedistance*distance)
-        {
-            leftFront.setPower(-sideSpeed);
-            leftBack.setPower(sideSpeed);
-            rightFront.setPower(sideSpeed);
-            rightBack.setPower(-sideSpeed);
-        }
-
-        leftFront.setPower(0);
-        leftBack.setPower(0);
-        rightFront.setPower(0);
-        rightBack.setPower(0);
-        sleep( 100);
-    }
-
-    public void sideRight (double sideSpeed, double distance)
-    {
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        while (opModeIsActive() && leftFront.getCurrentPosition() < -sidedistance*distance)
-        {
-            leftFront.setPower(sideSpeed);
-            leftBack.setPower(-sideSpeed);
-            rightFront.setPower(-sideSpeed);
-            rightBack.setPower(sideSpeed);
         }
 
         leftFront.setPower(0);

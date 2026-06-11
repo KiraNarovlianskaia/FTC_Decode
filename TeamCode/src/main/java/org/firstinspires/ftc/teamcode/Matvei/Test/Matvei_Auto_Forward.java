@@ -71,7 +71,6 @@ public class Matvei_Auto_Forward extends LinearOpMode {
         waitForStart();
 
         imu.resetYaw();
-        driveForward(0.2, 40);
 
     }
 

@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-@Autonomous(name="Matvei Leave Red")
+@Autonomous(name="Matvei Movement Test")
 public class Matvei_Auto_MovementTest extends LinearOpMode {
     private DcMotor leftFront;
     private DcMotor leftBack;
@@ -74,11 +74,11 @@ public class Matvei_Auto_MovementTest extends LinearOpMode {
         imu.resetYaw();
         driveForward(0.2, 30);
         sleep(1000);
-        rotate(0.2, 90);
+        rotate(0.1, 90);
         sleep(1000);
-        sideLeft(0.4, 30);
+        sideLeft(0.2, 30);
         sleep(1000);
-        sideRight(0.4, 30);
+        sideRight(0.2, 30);
 
     }
 

@@ -72,10 +72,8 @@ public class Matvei_Auto_Side extends LinearOpMode {
         waitForStart();
 
         imu.resetYaw();
-        sideLeft(0.2, 30);
-        sideRight(0.2, 30);
-
-
+        sideLeft(0.4, 30);
+        sideRight(0.4, 30);
 
     }
 

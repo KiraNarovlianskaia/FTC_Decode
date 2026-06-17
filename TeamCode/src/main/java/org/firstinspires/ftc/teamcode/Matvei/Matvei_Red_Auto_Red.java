@@ -162,7 +162,7 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
         leftBack.setPower(0);
         rightFront.setPower(0);
         rightBack.setPower(0);
-        sleep( 400);
+        sleep( 100);
     }
     public void driveForward (double forwardSpeed, double distance)
     {
@@ -192,7 +192,7 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
     public void shoot ()
     {
         shooterR.setPower(-1);
-        shooterM.setPower(1);
+        shooterM.setPower(-1);
         shooterL.setPower(1);
         intakeMotor.setPower(1);
         sleep(100);

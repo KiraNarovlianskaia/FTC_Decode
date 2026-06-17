@@ -96,45 +96,45 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
         servoMid.setPosition(1.0);
         servoLeft.setPosition(1.0);
 
-        driveForward(0.4, 30);
+        driveForward(0.5, 30);
         imu.resetYaw();
         shoot();
-        rotate(0.2, 45);
-        sideLeft(0.4, 15);
+        rotate(0.1, 45);
+        sideLeft(0.5, 15);
         intakeMotor.setPower(1);
-        driveForward(0.4, 30);
+        driveForward(0.5, 30);
         sleep(100);
-        driveForward(-0.4, 30);
+        driveForward(-0.5, 30);
         intakeMotor.setPower(0);
-        sideRight(0.4, 15);
+        sideRight(0.5, 15);
         imu.resetYaw();
-        rotate(-0.2, 45);
+        rotate(-0.1, 45);
         shoot();
         imu.resetYaw();
-        rotate(0.2, 45);
-        sideLeft(0.4, 15);
-        driveForward(0.4, 50);
+        rotate(0.1, 45);
+        sideLeft(0.5, 15);
+        driveForward(0.5, 50);
         intakeMotor.setPower(1);
-        driveForward(0.4, 20);
+        driveForward(0.5, 20);
         sleep(100);
         intakeMotor.setPower(0);
-        driveForward(-0.4, 70);
-        sideRight(0.4, 15);
+        driveForward(-0.5, 70);
+        sideRight(0.5, 15);
         imu.resetYaw();
-        rotate(-0.2, 45);
+        rotate(-0.1, 45);
         shoot();
         imu.resetYaw();
-        rotate(0.2, 45);
-        sideLeft(0.4, 15);
-        driveForward(0.4, 70);
+        rotate(0.1, 45);
+        sideLeft(0.5, 15);
+        driveForward(0.5, 70);
         intakeMotor.setPower(1);
-        driveForward(0.4, 30);
+        driveForward(0.5, 30);
         sleep(100);
         intakeMotor.setPower(0);
-        driveForward(-0.4, 100);
-        sideRight(0.4, 15);
+        driveForward(-0.5, 100);
+        sideRight(0.5, 15);
         imu.resetYaw();
-        rotate(-0.2, 45);
+        rotate(-0.1, 45);
         shoot();
 
     }
@@ -191,22 +191,22 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
     }
     public void shoot ()
     {
-        shooterR.setPower(-1);
-        shooterM.setPower(-1);
-        shooterL.setPower(1);
+        shooterR.setPower(-0.2);
+        shooterM.setPower(0.2);
+        shooterL.setPower(0.2);
         intakeMotor.setPower(1);
-        sleep(100);
-        servoRight.setPosition(1.0);
-        servoMid.setPosition(0);
-        servoLeft.setPosition(0);
-        sleep(100);
+        sleep(2000);
+        servoRight.setPosition(0);
+        servoMid.setPosition(1.0);
+        servoLeft.setPosition(1.0);
+        sleep(1000);
         shooterR.setPower(0);
         shooterM.setPower(0);
         shooterL.setPower(0);
         intakeMotor.setPower(0);
-        servoRight.setPosition(0);
-        servoMid.setPosition(1.0);
-        servoLeft.setPosition(1.0);
+        servoRight.setPosition(1.0);
+        servoMid.setPosition(0);
+        servoLeft.setPosition(0);
     }
     public void sideLeft (double sideSpeed, double distance)
     {

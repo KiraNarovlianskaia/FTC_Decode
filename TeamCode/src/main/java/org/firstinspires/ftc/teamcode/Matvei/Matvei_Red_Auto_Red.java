@@ -195,7 +195,7 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
         shooterM.setPower(0.2);
         shooterL.setPower(0.2);
         intakeMotor.setPower(1);
-        sleep(2000);
+        sleep(1000);
         servoRight.setPosition(0);
         servoMid.setPosition(1.0);
         servoLeft.setPosition(1.0);

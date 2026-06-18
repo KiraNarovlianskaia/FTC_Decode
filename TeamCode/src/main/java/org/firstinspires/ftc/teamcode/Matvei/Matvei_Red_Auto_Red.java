@@ -99,7 +99,7 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
         driveForward(0.5, 30);
         imu.resetYaw();
         shoot();
-        rotate(0.1, 45);
+        rotate(0.2, 45);
         sideLeft(0.5, 15);
         intakeMotor.setPower(1);
         driveForward(0.5, 30);
@@ -108,10 +108,10 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
         intakeMotor.setPower(0);
         sideRight(0.5, 15);
         imu.resetYaw();
-        rotate(-0.1, 45);
+        rotate(-0.2, 45);
         shoot();
         imu.resetYaw();
-        rotate(0.1, 45);
+        rotate(0.2, 45);
         sideLeft(0.5, 15);
         driveForward(0.5, 50);
         intakeMotor.setPower(1);
@@ -121,10 +121,10 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
         driveForward(-0.5, 70);
         sideRight(0.5, 15);
         imu.resetYaw();
-        rotate(-0.1, 45);
+        rotate(-0.2, 45);
         shoot();
         imu.resetYaw();
-        rotate(0.1, 45);
+        rotate(0.2, 45);
         sideLeft(0.5, 15);
         driveForward(0.5, 70);
         intakeMotor.setPower(1);
@@ -134,7 +134,7 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
         driveForward(-0.5, 100);
         sideRight(0.5, 15);
         imu.resetYaw();
-        rotate(-0.1, 45);
+        rotate(-0.2, 45);
         shoot();
 
     }

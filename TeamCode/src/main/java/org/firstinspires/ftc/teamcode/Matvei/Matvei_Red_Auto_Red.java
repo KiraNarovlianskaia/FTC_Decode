@@ -92,7 +92,7 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
 
         waitForStart();
 
-        servoRight.setPosition(1.0);
+        servoRight.setPosition(0);
         servoMid.setPosition(0);
         servoLeft.setPosition(0);
 
@@ -196,7 +196,7 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
         shooterL.setPower(0.2);
         intakeMotor.setPower(1);
         sleep(1000);
-        servoRight.setPosition(0);
+        servoRight.setPosition(1.0);
         servoMid.setPosition(1.0);
         servoLeft.setPosition(1.0);
         sleep(1000);
@@ -204,7 +204,7 @@ public class Matvei_Red_Auto_Red extends LinearOpMode {
         shooterM.setPower(0);
         shooterL.setPower(0);
         intakeMotor.setPower(0);
-        servoRight.setPosition(1.0);
+        servoRight.setPosition(0);
         servoMid.setPosition(0);
         servoLeft.setPosition(0);
     }
